@@ -23,7 +23,7 @@ export default function Home() {
 
       <div className="mt-8 text-center px-6">
         <h1 className="text-3xl font-bold tracking-tight">LiftLog</h1>
-        <p className="mt-2 text-muted-foreground">Workout tracker — coming soon.</p>
+        <p className="mt-2 text-muted-foreground">Track your lifts — coming soon.</p>
       </div>
     </div>
   );
