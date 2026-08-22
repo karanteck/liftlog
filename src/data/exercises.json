@@ -1,0 +1,3702 @@
+[
+  {
+    "name": "Barbell bench press",
+    "aliases": [
+      "Flat bench press",
+      "Bench press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+bench+press+form"
+  },
+  {
+    "name": "Incline barbell bench press",
+    "aliases": [
+      "Incline bench press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+incline+barbell+bench+press+form"
+  },
+  {
+    "name": "Decline barbell bench press",
+    "aliases": [
+      "Decline bench press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+decline+barbell+bench+press+form"
+  },
+  {
+    "name": "Close-grip bench press",
+    "aliases": [
+      "CGBP"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [
+      "chest",
+      "front delts"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+close+grip+bench+press+form"
+  },
+  {
+    "name": "Dumbbell bench press",
+    "aliases": [
+      "Flat dumbbell press",
+      "Dumbbell press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+bench+press+form"
+  },
+  {
+    "name": "Incline dumbbell press",
+    "aliases": [
+      "Incline dumbbell bench press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+incline+dumbbell+press+form"
+  },
+  {
+    "name": "Decline dumbbell press",
+    "aliases": [],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+decline+dumbbell+press+form"
+  },
+  {
+    "name": "Smith machine bench press",
+    "aliases": [
+      "Smith bench press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+bench+press+form"
+  },
+  {
+    "name": "Smith machine incline press",
+    "aliases": [
+      "Smith incline bench press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+incline+press+form"
+  },
+  {
+    "name": "Machine chest press",
+    "aliases": [
+      "Seated chest press",
+      "Chest press machine"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+chest+press+form"
+  },
+  {
+    "name": "Machine incline chest press",
+    "aliases": [
+      "Incline chest press machine"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+incline+chest+press+form"
+  },
+  {
+    "name": "Dumbbell fly",
+    "aliases": [
+      "Flat dumbbell fly",
+      "DB fly"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "front delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+fly+form"
+  },
+  {
+    "name": "Incline dumbbell fly",
+    "aliases": [
+      "Incline DB fly"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "front delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+incline+dumbbell+fly+form"
+  },
+  {
+    "name": "Cable fly",
+    "aliases": [
+      "Cable crossover",
+      "Standing cable fly"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "front delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+fly+crossover+form"
+  },
+  {
+    "name": "Low cable fly",
+    "aliases": [
+      "Low to high cable fly"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "front delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+low+to+high+cable+fly+form"
+  },
+  {
+    "name": "High cable fly",
+    "aliases": [
+      "High to low cable fly"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "front delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+high+to+low+cable+fly+form"
+  },
+  {
+    "name": "Pec deck",
+    "aliases": [
+      "Pec deck fly",
+      "Machine fly",
+      "Butterfly"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "front delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pec+deck+machine+fly+form"
+  },
+  {
+    "name": "Torture fly",
+    "aliases": [
+      "Machine chest fly"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "front delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+chest+fly+form"
+  },
+  {
+    "name": "Chest dip",
+    "aliases": [
+      "Dip"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+chest+dip+form"
+  },
+  {
+    "name": "Push-up",
+    "aliases": [
+      "Press-up"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+push+up+proper+form"
+  },
+  {
+    "name": "Lat pulldown",
+    "aliases": [
+      "Wide grip lat pulldown"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+lat+pulldown+form"
+  },
+  {
+    "name": "Close-grip lat pulldown",
+    "aliases": [
+      "Narrow grip lat pulldown"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+close+grip+lat+pulldown+form"
+  },
+  {
+    "name": "Reverse-grip lat pulldown",
+    "aliases": [
+      "Underhand lat pulldown",
+      "Supinated lat pulldown"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+reverse+grip+lat+pulldown+form"
+  },
+  {
+    "name": "Single-arm lat pulldown",
+    "aliases": [
+      "One arm lat pulldown"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+arm+lat+pulldown+form"
+  },
+  {
+    "name": "Machine lat pulldown",
+    "aliases": [
+      "Plate loaded lat pulldown"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+lat+pulldown+form"
+  },
+  {
+    "name": "Pull-up",
+    "aliases": [
+      "Chin-up overhand"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pull+up+form"
+  },
+  {
+    "name": "Chin-up",
+    "aliases": [
+      "Underhand pull-up"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+chin+up+form"
+  },
+  {
+    "name": "Neutral-grip pull-up",
+    "aliases": [
+      "Hammer grip pull-up"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+neutral+grip+pull+up+form"
+  },
+  {
+    "name": "Assisted pull-up",
+    "aliases": [
+      "Machine assisted pull-up"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+assisted+pull+up+machine+form"
+  },
+  {
+    "name": "Seated row",
+    "aliases": [
+      "Seated cable row",
+      "Cable row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+seated+cable+row+form"
+  },
+  {
+    "name": "Wide-grip seated row",
+    "aliases": [
+      "Wide cable row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+wide+grip+seated+row+form"
+  },
+  {
+    "name": "Single-arm cable row",
+    "aliases": [
+      "One arm cable row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+arm+cable+row+form"
+  },
+  {
+    "name": "Machine seated row",
+    "aliases": [
+      "Plate loaded row machine",
+      "Chest-supported row machine"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+seated+row+form"
+  },
+  {
+    "name": "Barbell row",
+    "aliases": [
+      "Bent-over barbell row",
+      "BB row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+bent+over+row+form"
+  },
+  {
+    "name": "Pendlay row",
+    "aliases": [
+      "Dead-stop row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pendlay+row+form"
+  },
+  {
+    "name": "Dumbbell row",
+    "aliases": [
+      "Single-arm dumbbell row",
+      "One arm DB row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+arm+dumbbell+row+form"
+  },
+  {
+    "name": "Chest-supported dumbbell row",
+    "aliases": [
+      "Incline dumbbell row",
+      "Seal row dumbbell"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+chest+supported+dumbbell+row+form"
+  },
+  {
+    "name": "T-bar row",
+    "aliases": [
+      "Landmine row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+t+bar+row+form"
+  },
+  {
+    "name": "Chest-supported T-bar row",
+    "aliases": [
+      "Machine T-bar row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+chest+supported+t+bar+row+form"
+  },
+  {
+    "name": "Smith machine row",
+    "aliases": [
+      "Smith bent-over row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+bent+over+row+form"
+  },
+  {
+    "name": "Straight-arm pulldown",
+    "aliases": [
+      "Lat prayer",
+      "Straight-arm pushdown"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "core"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+straight+arm+lat+pulldown+form"
+  },
+  {
+    "name": "Cable pullover",
+    "aliases": [
+      "Standing cable pullover"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "chest",
+      "core"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+pullover+form"
+  },
+  {
+    "name": "Dumbbell pullover",
+    "aliases": [
+      "DB pullover"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "chest",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+pullover+form"
+  },
+  {
+    "name": "Deadlift",
+    "aliases": [
+      "Conventional deadlift",
+      "Barbell deadlift"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes",
+      "core",
+      "forearms"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+deadlift+proper+form"
+  },
+  {
+    "name": "Sumo deadlift",
+    "aliases": [
+      "Wide stance deadlift"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes",
+      "quads",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+sumo+deadlift+form"
+  },
+  {
+    "name": "Rack pull",
+    "aliases": [
+      "Block pull"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes",
+      "forearms"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+rack+pull+deadlift+form"
+  },
+  {
+    "name": "Hyperextension",
+    "aliases": [
+      "Back extension",
+      "45-degree back extension"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+back+extension+hyperextension+form"
+  },
+  {
+    "name": "Inverted row",
+    "aliases": [
+      "Body row",
+      "Australian pull-up"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+inverted+row+form"
+  },
+  {
+    "name": "Overhead press",
+    "aliases": [
+      "Military press",
+      "Barbell overhead press",
+      "OHP"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+overhead+press+barbell+form"
+  },
+  {
+    "name": "Seated dumbbell overhead press",
+    "aliases": [
+      "Seated dumbbell shoulder press",
+      "Seated DB press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+seated+dumbbell+shoulder+press+form"
+  },
+  {
+    "name": "Standing dumbbell overhead press",
+    "aliases": [
+      "Standing DB shoulder press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+standing+dumbbell+overhead+press+form"
+  },
+  {
+    "name": "Arnold press",
+    "aliases": [
+      "Arnold dumbbell press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+arnold+press+form"
+  },
+  {
+    "name": "Smith machine overhead press",
+    "aliases": [
+      "Smith machine shoulder press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+shoulder+press+form"
+  },
+  {
+    "name": "Machine shoulder press",
+    "aliases": [
+      "Shoulder press machine"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+shoulder+press+form"
+  },
+  {
+    "name": "Dumbbell lateral raise",
+    "aliases": [
+      "Lateral raise",
+      "Side raise",
+      "Side lateral raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "lateral_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+lateral+raise+form"
+  },
+  {
+    "name": "Cable lateral raise",
+    "aliases": [
+      "Cable side raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "lateral_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+lateral+raise+form"
+  },
+  {
+    "name": "Machine lateral raise",
+    "aliases": [
+      "Lateral raise machine"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "lateral_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+lateral+raise+form"
+  },
+  {
+    "name": "Leaning cable lateral raise",
+    "aliases": [
+      "Cross body cable lateral raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "lateral_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+leaning+cable+lateral+raise+form"
+  },
+  {
+    "name": "Dumbbell front raise",
+    "aliases": [
+      "Front raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "chest"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "front_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+front+raise+form"
+  },
+  {
+    "name": "Cable front raise",
+    "aliases": [],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "chest"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "front_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+front+raise+form"
+  },
+  {
+    "name": "Plate front raise",
+    "aliases": [],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "chest"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "front_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+plate+front+raise+form"
+  },
+  {
+    "name": "Rear delt cable pull",
+    "aliases": [
+      "Cable face pull",
+      "Face pull",
+      "Rear delt pull"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "rear delts",
+      "traps"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+face+pull+rear+delt+cable+form"
+  },
+  {
+    "name": "Reverse pec deck",
+    "aliases": [
+      "Reverse fly machine",
+      "Rear delt fly machine"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "rear delts",
+      "traps"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+reverse+pec+deck+rear+delt+fly+form"
+  },
+  {
+    "name": "Dumbbell rear delt fly",
+    "aliases": [
+      "Bent-over reverse fly",
+      "Rear delt raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "rear delts",
+      "traps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+rear+delt+fly+form"
+  },
+  {
+    "name": "Cable rear delt fly",
+    "aliases": [
+      "Reverse cable fly"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "rear delts",
+      "traps"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+rear+delt+fly+form"
+  },
+  {
+    "name": "Barbell upright row",
+    "aliases": [
+      "Upright row"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps",
+      "biceps"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+upright+row+form"
+  },
+  {
+    "name": "Dumbbell upright row",
+    "aliases": [],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps",
+      "biceps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+upright+row+form"
+  },
+  {
+    "name": "Cable upright row",
+    "aliases": [],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps",
+      "biceps"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+upright+row+form"
+  },
+  {
+    "name": "Barbell shrug",
+    "aliases": [
+      "Shrug"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "shrug",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+shrug+form"
+  },
+  {
+    "name": "Dumbbell shrug",
+    "aliases": [
+      "DB shrug"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "shrug",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+shrug+form"
+  },
+  {
+    "name": "Smith machine shrug",
+    "aliases": [],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "shrug",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+shrug+form"
+  },
+  {
+    "name": "Trap bar shrug",
+    "aliases": [
+      "Hex bar shrug"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "shrug",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+trap+bar+shrug+form"
+  },
+  {
+    "name": "Barbell curl",
+    "aliases": [
+      "Standing barbell curl",
+      "BB curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+curl+form"
+  },
+  {
+    "name": "EZ bar curl",
+    "aliases": [
+      "EZ curl",
+      "Easy bar curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "ez_bar",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+ez+bar+curl+form"
+  },
+  {
+    "name": "Dumbbell curl",
+    "aliases": [
+      "Standing dumbbell curl",
+      "DB curl",
+      "Dumbbell bicep curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+bicep+curl+form"
+  },
+  {
+    "name": "Seated bicep curl",
+    "aliases": [
+      "Seated dumbbell curl",
+      "Seated incline curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+seated+incline+dumbbell+curl+form"
+  },
+  {
+    "name": "Incline dumbbell curl",
+    "aliases": [
+      "Incline curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+incline+dumbbell+curl+form"
+  },
+  {
+    "name": "Hammer curl",
+    "aliases": [
+      "Neutral grip curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms",
+      "brachialis"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+hammer+curl+form"
+  },
+  {
+    "name": "Cable curl",
+    "aliases": [
+      "Standing cable curl",
+      "Cable bicep curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+bicep+curl+form"
+  },
+  {
+    "name": "Cable hammer curl",
+    "aliases": [
+      "Rope hammer curl",
+      "Cable rope curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms",
+      "brachialis"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+rope+hammer+curl+form"
+  },
+  {
+    "name": "Preacher curl",
+    "aliases": [
+      "EZ bar preacher curl",
+      "Scott curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "ez_bar",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+preacher+curl+form"
+  },
+  {
+    "name": "Dumbbell preacher curl",
+    "aliases": [
+      "Single arm preacher curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+preacher+curl+form"
+  },
+  {
+    "name": "Machine preacher curl",
+    "aliases": [
+      "Preacher curl machine"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+preacher+curl+form"
+  },
+  {
+    "name": "Concentration curl",
+    "aliases": [
+      "Seated concentration curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+concentration+curl+form"
+  },
+  {
+    "name": "Spider curl",
+    "aliases": [
+      "Prone incline curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+spider+curl+form"
+  },
+  {
+    "name": "Machine bicep curl",
+    "aliases": [
+      "Bicep curl machine"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+bicep+curl+form"
+  },
+  {
+    "name": "Reverse curl",
+    "aliases": [
+      "EZ bar reverse curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms",
+      "brachialis"
+    ],
+    "equipment": "ez_bar",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+reverse+curl+form"
+  },
+  {
+    "name": "Cable bayesian curl",
+    "aliases": [
+      "Bayesian curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+bayesian+cable+curl+form"
+  },
+  {
+    "name": "Tricep dip",
+    "aliases": [
+      "Weighted dip",
+      "Parallel bar dip"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [
+      "chest",
+      "front delts"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+tricep+dip+form"
+  },
+  {
+    "name": "Machine dip",
+    "aliases": [
+      "Assisted dip machine",
+      "Dip machine"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [
+      "chest",
+      "front delts"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+tricep+dip+form"
+  },
+  {
+    "name": "Rope pushdown",
+    "aliases": [
+      "Tricep rope pushdown",
+      "Cable rope pushdown"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+tricep+rope+pushdown+form"
+  },
+  {
+    "name": "Cable pushdown",
+    "aliases": [
+      "Tricep pushdown",
+      "Straight bar pushdown",
+      "V-bar pushdown"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+tricep+cable+pushdown+form"
+  },
+  {
+    "name": "Single-arm cable pushdown",
+    "aliases": [
+      "One arm tricep pushdown"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+arm+cable+tricep+pushdown+form"
+  },
+  {
+    "name": "Skullcrusher",
+    "aliases": [
+      "Lying tricep extension",
+      "EZ bar skullcrusher",
+      "Nosebreaker"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "ez_bar",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+skullcrusher+lying+tricep+extension+form"
+  },
+  {
+    "name": "Dumbbell skullcrusher",
+    "aliases": [
+      "Dumbbell lying tricep extension"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+skullcrusher+form"
+  },
+  {
+    "name": "Overhead tricep extension (cable)",
+    "aliases": [
+      "Cable overhead extension",
+      "Rope overhead extension"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+overhead+tricep+extension+form"
+  },
+  {
+    "name": "Overhead tricep extension (dumbbell)",
+    "aliases": [
+      "Dumbbell overhead extension",
+      "French press dumbbell"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+overhead+tricep+extension+form"
+  },
+  {
+    "name": "Overhead tricep extension (EZ bar)",
+    "aliases": [
+      "French press",
+      "EZ bar overhead extension"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "ez_bar",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+ez+bar+overhead+tricep+extension+form"
+  },
+  {
+    "name": "Tricep kickback",
+    "aliases": [
+      "Dumbbell kickback"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+tricep+kickback+form"
+  },
+  {
+    "name": "Cable kickback",
+    "aliases": [
+      "Cable tricep kickback"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+tricep+kickback+form"
+  },
+  {
+    "name": "Machine tricep extension",
+    "aliases": [
+      "Tricep extension machine"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+tricep+extension+form"
+  },
+  {
+    "name": "Diamond push-up",
+    "aliases": [
+      "Close grip push-up",
+      "Triangle push-up"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [
+      "chest",
+      "front delts"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+diamond+push+up+form"
+  },
+  {
+    "name": "Barbell squat",
+    "aliases": [
+      "Back squat",
+      "Squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+back+squat+form"
+  },
+  {
+    "name": "Front squat",
+    "aliases": [
+      "Barbell front squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+front+squat+barbell+form"
+  },
+  {
+    "name": "Goblet squat",
+    "aliases": [
+      "Dumbbell goblet squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+goblet+squat+form"
+  },
+  {
+    "name": "Kettlebell squat",
+    "aliases": [
+      "Kettlebell goblet squat",
+      "KB squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "kettlebell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+kettlebell+goblet+squat+form"
+  },
+  {
+    "name": "Smith machine squat",
+    "aliases": [
+      "Smith squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+squat+form"
+  },
+  {
+    "name": "Hack squat",
+    "aliases": [
+      "Machine hack squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+hack+squat+machine+form"
+  },
+  {
+    "name": "Leg press",
+    "aliases": [
+      "Machine leg press",
+      "45 degree leg press"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+leg+press+form"
+  },
+  {
+    "name": "Horizontal leg press",
+    "aliases": [
+      "Seated leg press"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+seated+horizontal+leg+press+form"
+  },
+  {
+    "name": "Pendulum squat",
+    "aliases": [
+      "Pendulum squat machine"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pendulum+squat+form"
+  },
+  {
+    "name": "Belt squat",
+    "aliases": [
+      "Belt squat machine"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+belt+squat+form"
+  },
+  {
+    "name": "V-squat",
+    "aliases": [
+      "V squat machine"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+v+squat+machine+form"
+  },
+  {
+    "name": "Sissy squat",
+    "aliases": [],
+    "muscle_group": "quads",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "squat",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+sissy+squat+form"
+  },
+  {
+    "name": "Leg extension",
+    "aliases": [
+      "Machine leg extension",
+      "Quad extension"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "leg_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+leg+extension+machine+form"
+  },
+  {
+    "name": "Single-leg extension",
+    "aliases": [
+      "One leg extension"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "leg_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+leg+extension+form"
+  },
+  {
+    "name": "Barbell lunge",
+    "aliases": [
+      "Walking lunge barbell"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "lunge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+lunge+form"
+  },
+  {
+    "name": "Dumbbell lunge",
+    "aliases": [
+      "Walking lunge",
+      "DB lunge"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "lunge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+walking+lunge+form"
+  },
+  {
+    "name": "Reverse lunge",
+    "aliases": [
+      "Dumbbell reverse lunge"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "lunge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+reverse+lunge+form"
+  },
+  {
+    "name": "Bulgarian split squat",
+    "aliases": [
+      "Rear foot elevated split squat",
+      "RFESS"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "lunge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+bulgarian+split+squat+form"
+  },
+  {
+    "name": "Smith machine lunge",
+    "aliases": [
+      "Smith split squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "lunge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+lunge+form"
+  },
+  {
+    "name": "Step-up",
+    "aliases": [
+      "Dumbbell step-up"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "lunge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+step+up+form"
+  },
+  {
+    "name": "Wall sit",
+    "aliases": [
+      "Wall squat hold"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "squat",
+    "tracking_type": "time",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+wall+sit+form"
+  },
+  {
+    "name": "Romanian deadlift",
+    "aliases": [
+      "RDL",
+      "Barbell RDL"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+romanian+deadlift+RDL+form"
+  },
+  {
+    "name": "Romanian deadlift (dumbbell)",
+    "aliases": [
+      "Dumbbell RDL",
+      "DB Romanian deadlift"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+romanian+deadlift+form"
+  },
+  {
+    "name": "Single-leg Romanian deadlift",
+    "aliases": [
+      "Single-leg RDL"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+leg+romanian+deadlift+form"
+  },
+  {
+    "name": "Stiff-leg deadlift",
+    "aliases": [
+      "Straight-leg deadlift",
+      "SLDL"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+stiff+leg+deadlift+form"
+  },
+  {
+    "name": "Smith machine Romanian deadlift",
+    "aliases": [
+      "Smith machine RDL"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+romanian+deadlift+form"
+  },
+  {
+    "name": "Seated hamstring curl",
+    "aliases": [
+      "Seated leg curl",
+      "Machine seated leg curl"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+seated+hamstring+curl+form"
+  },
+  {
+    "name": "Lying hamstring curl",
+    "aliases": [
+      "Lying leg curl",
+      "Prone leg curl"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+lying+leg+curl+form"
+  },
+  {
+    "name": "Standing hamstring curl",
+    "aliases": [
+      "Standing leg curl"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+standing+hamstring+curl+form"
+  },
+  {
+    "name": "Nordic hamstring curl",
+    "aliases": [
+      "Nordic curl",
+      "Natural glute-ham raise"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+nordic+hamstring+curl+form"
+  },
+  {
+    "name": "Glute-ham raise",
+    "aliases": [
+      "GHR",
+      "GHD raise"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+glute+ham+raise+form"
+  },
+  {
+    "name": "Good morning",
+    "aliases": [
+      "Barbell good morning"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+good+morning+form"
+  },
+  {
+    "name": "Barbell hip thrust",
+    "aliases": [
+      "Hip thrust"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+hip+thrust+form"
+  },
+  {
+    "name": "Smith machine hip thrust",
+    "aliases": [],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": "smith_machine",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+hip+thrust+form"
+  },
+  {
+    "name": "Machine hip thrust",
+    "aliases": [
+      "Hip thrust machine"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+hip+thrust+form"
+  },
+  {
+    "name": "Glute bridge",
+    "aliases": [
+      "Bodyweight glute bridge"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+glute+bridge+form"
+  },
+  {
+    "name": "Single-leg glute bridge",
+    "aliases": [
+      "One leg glute bridge"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+leg+glute+bridge+form"
+  },
+  {
+    "name": "Cable pull-through",
+    "aliases": [
+      "Pull-through"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+pull+through+form"
+  },
+  {
+    "name": "Cable kickback (glute)",
+    "aliases": [
+      "Cable glute kickback"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+glute+kickback+form"
+  },
+  {
+    "name": "Machine glute kickback",
+    "aliases": [
+      "Glute kickback machine"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+glute+kickback+form"
+  },
+  {
+    "name": "Hip abduction machine",
+    "aliases": [
+      "Abductor machine",
+      "Seated hip abduction"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "hip_abduction",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+hip+abduction+machine+form"
+  },
+  {
+    "name": "Hip adduction machine",
+    "aliases": [
+      "Adductor machine",
+      "Seated hip adduction",
+      "Inner thigh machine"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "adductors"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "hip_adduction",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+hip+adduction+machine+form"
+  },
+  {
+    "name": "Kettlebell swing",
+    "aliases": [
+      "KB swing"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "shoulders"
+    ],
+    "equipment": "kettlebell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+kettlebell+swing+form"
+  },
+  {
+    "name": "Standing calf raise",
+    "aliases": [
+      "Machine calf raise"
+    ],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+standing+calf+raise+machine+form"
+  },
+  {
+    "name": "Seated calf raise",
+    "aliases": [
+      "Machine seated calf raise"
+    ],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+seated+calf+raise+form"
+  },
+  {
+    "name": "Smith machine calf raise",
+    "aliases": [],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "smith_machine",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+smith+machine+calf+raise+form"
+  },
+  {
+    "name": "Leg press calf raise",
+    "aliases": [
+      "Calf press"
+    ],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+leg+press+calf+raise+form"
+  },
+  {
+    "name": "Dumbbell calf raise",
+    "aliases": [
+      "Single leg calf raise"
+    ],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+calf+raise+form"
+  },
+  {
+    "name": "Bodyweight calf raise",
+    "aliases": [
+      "Standing calf raise bodyweight"
+    ],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+bodyweight+calf+raise+form"
+  },
+  {
+    "name": "Crunch",
+    "aliases": [
+      "Ab crunch"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+crunch+ab+exercise+form"
+  },
+  {
+    "name": "Machine crunch",
+    "aliases": [
+      "Ab crunch machine",
+      "Seated crunch machine"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+machine+ab+crunch+form"
+  },
+  {
+    "name": "Cable crunch",
+    "aliases": [
+      "Kneeling cable crunch"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+crunch+form"
+  },
+  {
+    "name": "Decline crunch",
+    "aliases": [
+      "Decline sit-up"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+decline+crunch+sit+up+form"
+  },
+  {
+    "name": "Hanging leg raise",
+    "aliases": [
+      "Hanging knee raise"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "hip flexors"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+hanging+leg+raise+form"
+  },
+  {
+    "name": "Captain's chair leg raise",
+    "aliases": [
+      "Vertical knee raise"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "hip flexors"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+captains+chair+leg+raise+form"
+  },
+  {
+    "name": "Lying leg raise",
+    "aliases": [
+      "Flat leg raise"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "hip flexors"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+lying+leg+raise+form"
+  },
+  {
+    "name": "Ab wheel rollout",
+    "aliases": [
+      "Ab roller"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+ab+wheel+rollout+form"
+  },
+  {
+    "name": "Russian twist",
+    "aliases": [
+      "Seated twist"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "obliques"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_rotation",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+russian+twist+form"
+  },
+  {
+    "name": "Cable woodchop",
+    "aliases": [
+      "Wood chop",
+      "Cable rotation"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "obliques"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "core_rotation",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+woodchop+form"
+  },
+  {
+    "name": "Plank",
+    "aliases": [
+      "Front plank",
+      "Forearm plank"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "core",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_stability",
+    "tracking_type": "time",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+plank+proper+form"
+  },
+  {
+    "name": "Side plank",
+    "aliases": [],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "obliques"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_stability",
+    "tracking_type": "time",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+side+plank+form"
+  },
+  {
+    "name": "Dead bug",
+    "aliases": [],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_stability",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dead+bug+exercise+form"
+  },
+  {
+    "name": "Pallof press",
+    "aliases": [
+      "Cable Pallof press",
+      "Anti-rotation press"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "obliques",
+      "core"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "core_stability",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pallof+press+form"
+  },
+  {
+    "name": "Mountain climber",
+    "aliases": [],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "hip flexors",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+mountain+climber+exercise+form"
+  },
+  {
+    "name": "Bicycle crunch",
+    "aliases": [],
+    "muscle_group": "abs",
+    "secondary_muscles": [
+      "obliques"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_rotation",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+bicycle+crunch+form"
+  },
+  {
+    "name": "Toe touch crunch",
+    "aliases": [
+      "V-up"
+    ],
+    "muscle_group": "abs",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "core_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+v+up+toe+touch+crunch+form"
+  },
+  {
+    "name": "Wrist curl",
+    "aliases": [
+      "Barbell wrist curl",
+      "Forearm curl"
+    ],
+    "muscle_group": "forearms",
+    "secondary_muscles": [],
+    "equipment": "barbell",
+    "movement_pattern": "wrist_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+wrist+curl+form"
+  },
+  {
+    "name": "Reverse wrist curl",
+    "aliases": [
+      "Wrist extension"
+    ],
+    "muscle_group": "forearms",
+    "secondary_muscles": [],
+    "equipment": "barbell",
+    "movement_pattern": "wrist_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+reverse+wrist+curl+form"
+  },
+  {
+    "name": "Dumbbell wrist curl",
+    "aliases": [
+      "DB wrist curl"
+    ],
+    "muscle_group": "forearms",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "wrist_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+wrist+curl+form"
+  },
+  {
+    "name": "Farmer's walk",
+    "aliases": [
+      "Farmer's carry"
+    ],
+    "muscle_group": "forearms",
+    "secondary_muscles": [
+      "traps",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "carry",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+farmers+walk+carry+form"
+  },
+  {
+    "name": "Dead hang",
+    "aliases": [
+      "Bar hang"
+    ],
+    "muscle_group": "forearms",
+    "secondary_muscles": [
+      "back",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "grip",
+    "tracking_type": "time",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dead+hang+bar+form"
+  },
+  {
+    "name": "Treadmill",
+    "aliases": [
+      "Treadmill run",
+      "Treadmill walk"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes",
+      "calves"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "cardio",
+    "tracking_type": "distance_time",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+use+treadmill+properly"
+  },
+  {
+    "name": "Rowing machine",
+    "aliases": [
+      "Erg",
+      "Concept 2",
+      "Indoor rower"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "quads",
+      "hamstrings",
+      "biceps",
+      "core"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "cardio",
+    "tracking_type": "distance_time",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+use+rowing+machine+form"
+  },
+  {
+    "name": "Stationary bike",
+    "aliases": [
+      "Exercise bike",
+      "Spin bike"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes",
+      "calves"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "cardio",
+    "tracking_type": "distance_time",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+use+stationary+bike+properly"
+  },
+  {
+    "name": "Elliptical",
+    "aliases": [
+      "Cross trainer"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "cardio",
+    "tracking_type": "distance_time",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+use+elliptical+properly"
+  },
+  {
+    "name": "Stair climber",
+    "aliases": [
+      "StairMaster",
+      "Stair stepper"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "calves"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "cardio",
+    "tracking_type": "distance_time",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+use+stairmaster+stair+climber"
+  },
+  {
+    "name": "Battle ropes",
+    "aliases": [
+      "Heavy ropes"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "core",
+      "arms"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "cardio",
+    "tracking_type": "time",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+use+battle+ropes+form"
+  },
+  {
+    "name": "Box jump",
+    "aliases": [
+      "Plyometric box jump"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "calves"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "plyometric",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+box+jump+form"
+  },
+  {
+    "name": "Burpee",
+    "aliases": [],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "chest",
+      "shoulders",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "full_body",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+burpee+proper+form"
+  },
+  {
+    "name": "Kettlebell clean and press",
+    "aliases": [
+      "KB clean and press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "core",
+      "glutes",
+      "back"
+    ],
+    "equipment": "kettlebell",
+    "movement_pattern": "full_body",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+kettlebell+clean+and+press+form"
+  },
+  {
+    "name": "Kettlebell snatch",
+    "aliases": [
+      "KB snatch"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "core",
+      "glutes",
+      "back"
+    ],
+    "equipment": "kettlebell",
+    "movement_pattern": "full_body",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+kettlebell+snatch+form"
+  },
+  {
+    "name": "Kettlebell Turkish get-up",
+    "aliases": [
+      "Turkish get-up",
+      "TGU"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "core",
+      "glutes"
+    ],
+    "equipment": "kettlebell",
+    "movement_pattern": "full_body",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+turkish+get+up+form"
+  },
+  {
+    "name": "Barbell clean",
+    "aliases": [
+      "Power clean"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "quads",
+      "glutes",
+      "shoulders",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "full_body",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+power+clean+barbell+form"
+  },
+  {
+    "name": "Barbell snatch",
+    "aliases": [
+      "Power snatch"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "shoulders",
+      "quads",
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "full_body",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+snatch+form"
+  },
+  {
+    "name": "Thruster",
+    "aliases": [
+      "Barbell thruster"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "shoulders",
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "full_body",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+thruster+form"
+  },
+  {
+    "name": "Dumbbell thruster",
+    "aliases": [
+      "DB thruster"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "shoulders",
+      "glutes",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "full_body",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+thruster+form"
+  },
+  {
+    "name": "Landmine press",
+    "aliases": [
+      "Single arm landmine press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "chest",
+      "triceps",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+landmine+press+form"
+  },
+  {
+    "name": "Landmine squat",
+    "aliases": [],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+landmine+squat+form"
+  },
+  {
+    "name": "Trap bar deadlift",
+    "aliases": [
+      "Hex bar deadlift"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "quads",
+      "hamstrings",
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+trap+bar+hex+bar+deadlift+form"
+  },
+  {
+    "name": "Deficit deadlift",
+    "aliases": [],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "hamstrings",
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "hip_hinge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+deficit+deadlift+form"
+  },
+  {
+    "name": "Pause squat",
+    "aliases": [
+      "Paused barbell squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "hamstrings",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pause+squat+form"
+  },
+  {
+    "name": "Zercher squat",
+    "aliases": [],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "core",
+      "biceps"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+zercher+squat+form"
+  },
+  {
+    "name": "Sumo squat",
+    "aliases": [
+      "Wide stance squat",
+      "Plie squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "adductors"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "squat",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+sumo+squat+dumbbell+form"
+  },
+  {
+    "name": "Cossack squat",
+    "aliases": [
+      "Lateral squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "adductors"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "squat",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cossack+squat+form"
+  },
+  {
+    "name": "Pistol squat",
+    "aliases": [
+      "Single leg squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "squat",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pistol+squat+form"
+  },
+  {
+    "name": "Cable lateral lunge",
+    "aliases": [],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes",
+      "adductors"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "lunge",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+lateral+lunge+form"
+  },
+  {
+    "name": "Resistance band pull-apart",
+    "aliases": [
+      "Band pull-apart"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "rear delts",
+      "traps"
+    ],
+    "equipment": "resistance_band",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+band+pull+apart+form"
+  },
+  {
+    "name": "Resistance band face pull",
+    "aliases": [
+      "Band face pull"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "rear delts",
+      "traps"
+    ],
+    "equipment": "resistance_band",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+band+face+pull+form"
+  },
+  {
+    "name": "Resistance band curl",
+    "aliases": [
+      "Band bicep curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "resistance_band",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+resistance+band+bicep+curl+form"
+  },
+  {
+    "name": "Resistance band row",
+    "aliases": [
+      "Band row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "resistance_band",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+resistance+band+row+form"
+  },
+  {
+    "name": "Resistance band squat",
+    "aliases": [
+      "Band squat"
+    ],
+    "muscle_group": "quads",
+    "secondary_muscles": [
+      "glutes"
+    ],
+    "equipment": "resistance_band",
+    "movement_pattern": "squat",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+resistance+band+squat+form"
+  },
+  {
+    "name": "Resistance band lateral walk",
+    "aliases": [
+      "Band walk",
+      "Monster walk"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [],
+    "equipment": "resistance_band",
+    "movement_pattern": "hip_abduction",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+resistance+band+lateral+walk+form"
+  },
+  {
+    "name": "Bench press (dumbbell, neutral grip)",
+    "aliases": [
+      "Neutral grip dumbbell press",
+      "Hammer grip press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+neutral+grip+dumbbell+bench+press+form"
+  },
+  {
+    "name": "Floor press",
+    "aliases": [
+      "Dumbbell floor press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+floor+press+form"
+  },
+  {
+    "name": "Barbell floor press",
+    "aliases": [],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "heavy_compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+barbell+floor+press+form"
+  },
+  {
+    "name": "Meadows row",
+    "aliases": [
+      "Landmine row single arm"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+meadows+row+form"
+  },
+  {
+    "name": "Seal row",
+    "aliases": [
+      "Chest supported barbell row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+seal+row+form"
+  },
+  {
+    "name": "Lat pulldown (V-bar)",
+    "aliases": [
+      "V-bar pulldown"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+v+bar+lat+pulldown+form"
+  },
+  {
+    "name": "Behind-the-neck lat pulldown",
+    "aliases": [],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+behind+neck+lat+pulldown+form"
+  },
+  {
+    "name": "Single-arm dumbbell overhead press",
+    "aliases": [
+      "One arm DB press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+arm+dumbbell+overhead+press+form"
+  },
+  {
+    "name": "Push press",
+    "aliases": [
+      "Barbell push press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps",
+      "quads",
+      "core"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+push+press+barbell+form"
+  },
+  {
+    "name": "Lu raise",
+    "aliases": [
+      "Lu Xiaojun raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "lateral_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+lu+raise+form"
+  },
+  {
+    "name": "Prone Y raise",
+    "aliases": [
+      "Y raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+prone+y+raise+form"
+  },
+  {
+    "name": "Zottman curl",
+    "aliases": [],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms",
+      "brachialis"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+zottman+curl+form"
+  },
+  {
+    "name": "Cross-body hammer curl",
+    "aliases": [
+      "Pinwheel curl"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms",
+      "brachialis"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cross+body+hammer+curl+form"
+  },
+  {
+    "name": "21s bicep curl",
+    "aliases": [
+      "21s"
+    ],
+    "muscle_group": "biceps",
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": "ez_bar",
+    "movement_pattern": "elbow_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+21s+bicep+curl+form"
+  },
+  {
+    "name": "Dumbbell bench press (single arm)",
+    "aliases": [
+      "Single arm dumbbell press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+arm+dumbbell+bench+press+form"
+  },
+  {
+    "name": "Cable chest press",
+    "aliases": [
+      "Standing cable press"
+    ],
+    "muscle_group": "chest",
+    "secondary_muscles": [
+      "triceps",
+      "front delts"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+standing+cable+chest+press+form"
+  },
+  {
+    "name": "Reverse grip barbell row",
+    "aliases": [
+      "Underhand barbell row",
+      "Yates row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+reverse+grip+barbell+row+form"
+  },
+  {
+    "name": "Kroc row",
+    "aliases": [
+      "Heavy dumbbell row"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "forearms"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "horizontal_pull",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+kroc+row+form"
+  },
+  {
+    "name": "Cable face pull (rope)",
+    "aliases": [
+      "High cable face pull"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "rear delts",
+      "traps"
+    ],
+    "equipment": "cable",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+face+pull+rope+form"
+  },
+  {
+    "name": "Incline Y raise",
+    "aliases": [
+      "Incline dumbbell Y raise"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "traps",
+      "rear delts"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "rear_delt",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+incline+y+raise+form"
+  },
+  {
+    "name": "JM press",
+    "aliases": [],
+    "muscle_group": "triceps",
+    "secondary_muscles": [
+      "chest"
+    ],
+    "equipment": "barbell",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+JM+press+form"
+  },
+  {
+    "name": "Bench dip",
+    "aliases": [
+      "Tricep bench dip"
+    ],
+    "muscle_group": "triceps",
+    "secondary_muscles": [
+      "chest",
+      "front delts"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+bench+dip+form"
+  },
+  {
+    "name": "Leg curl (dumbbell)",
+    "aliases": [
+      "Dumbbell hamstring curl"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [],
+    "equipment": "dumbbell",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+leg+curl+form"
+  },
+  {
+    "name": "Cable leg curl",
+    "aliases": [
+      "Standing cable hamstring curl"
+    ],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+cable+leg+curl+form"
+  },
+  {
+    "name": "Donkey calf raise",
+    "aliases": [],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "machine",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+donkey+calf+raise+form"
+  },
+  {
+    "name": "Reverse hyperextension",
+    "aliases": [
+      "Reverse hyper"
+    ],
+    "muscle_group": "glutes",
+    "secondary_muscles": [
+      "hamstrings",
+      "back"
+    ],
+    "equipment": "machine",
+    "movement_pattern": "hip_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+reverse+hyperextension+form"
+  },
+  {
+    "name": "Weighted pull-up",
+    "aliases": [
+      "Pull-up weighted"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "biceps",
+      "rear delts",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+weighted+pull+up+form"
+  },
+  {
+    "name": "Muscle-up",
+    "aliases": [
+      "Bar muscle-up"
+    ],
+    "muscle_group": "back",
+    "secondary_muscles": [
+      "chest",
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "vertical_pull",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+muscle+up+bar+form"
+  },
+  {
+    "name": "Handstand push-up",
+    "aliases": [
+      "HSPU",
+      "Wall handstand push-up"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+handstand+push+up+form"
+  },
+  {
+    "name": "Pike push-up",
+    "aliases": [],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "bodyweight",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+pike+push+up+form"
+  },
+  {
+    "name": "Dumbbell Y press",
+    "aliases": [
+      "Y press"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "vertical_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+dumbbell+y+press+form"
+  },
+  {
+    "name": "Standing calf raise (bodyweight, single leg)",
+    "aliases": [
+      "Single leg calf raise"
+    ],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "reps_only",
+    "default_rep_tier": "isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+single+leg+calf+raise+form"
+  },
+  {
+    "name": "Wrist roller",
+    "aliases": [],
+    "muscle_group": "forearms",
+    "secondary_muscles": [],
+    "equipment": "barbell",
+    "movement_pattern": "wrist_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+wrist+roller+forearm+exercise"
+  },
+  {
+    "name": "Plate pinch hold",
+    "aliases": [
+      "Plate pinch"
+    ],
+    "muscle_group": "forearms",
+    "secondary_muscles": [],
+    "equipment": "barbell",
+    "movement_pattern": "grip",
+    "tracking_type": "time",
+    "default_rep_tier": "small_isolation",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+plate+pinch+hold+grip+form"
+  },
+  {
+    "name": "Suitcase carry",
+    "aliases": [
+      "Single arm farmer's walk"
+    ],
+    "muscle_group": "core",
+    "secondary_muscles": [
+      "forearms",
+      "traps",
+      "obliques"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "carry",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+suitcase+carry+form"
+  },
+  {
+    "name": "Overhead carry",
+    "aliases": [
+      "Waiter's walk"
+    ],
+    "muscle_group": "shoulders",
+    "secondary_muscles": [
+      "core",
+      "traps"
+    ],
+    "equipment": "dumbbell",
+    "movement_pattern": "carry",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound",
+    "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+overhead+carry+form"
+  }
+]
