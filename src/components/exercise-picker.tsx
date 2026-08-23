@@ -32,16 +32,16 @@ const MUSCLE_GROUPS = [
 ];
 
 const EQUIPMENT_OPTIONS = [
-  "all",
-  "barbell",
-  "dumbbell",
-  "cable",
-  "machine",
-  "bodyweight",
-  "smith machine",
-  "kettlebell",
-  "EZ bar",
-  "resistance band",
+  { value: "all", label: "All equip." },
+  { value: "barbell", label: "Barbell" },
+  { value: "dumbbell", label: "Dumbbell" },
+  { value: "cable", label: "Cable" },
+  { value: "machine", label: "Machine" },
+  { value: "bodyweight", label: "Bodyweight" },
+  { value: "smith_machine", label: "Smith machine" },
+  { value: "kettlebell", label: "Kettlebell" },
+  { value: "ez_bar", label: "EZ bar" },
+  { value: "resistance_band", label: "Resistance band" },
 ];
 
 export function ExercisePicker({
@@ -157,15 +157,15 @@ export function ExercisePicker({
         <div className="flex gap-1.5 px-4 pb-2 overflow-x-auto">
           {EQUIPMENT_OPTIONS.map((eq) => (
             <button
-              key={eq}
-              onClick={() => setEquipmentFilter(eq)}
+              key={eq.value}
+              onClick={() => setEquipmentFilter(eq.value)}
               className={`shrink-0 text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                equipmentFilter === eq
+                equipmentFilter === eq.value
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-border text-muted-foreground hover:text-foreground"
               }`}
             >
-              {eq === "all" ? "All equip." : eq.charAt(0).toUpperCase() + eq.slice(1)}
+              {eq.label}
             </button>
           ))}
         </div>
