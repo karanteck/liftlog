@@ -53,7 +53,7 @@ export function E1rmChart({ data }: { data: DataPoint[] }) {
               unit="kg"
             />
             <Tooltip
-              formatter={(value: number) => [`${value} kg`, "Est. 1RM"]}
+              formatter={(value) => [`${value} kg`, "Est. 1RM"]}
             />
             <Line
               type="monotone"

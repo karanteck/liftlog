@@ -105,7 +105,7 @@ export function VolumeTrendChart({ sets }: { sets: SetRecord[] }) {
             <XAxis dataKey="week" tick={{ fontSize: 11 }} />
             <YAxis tick={{ fontSize: 11 }} width={45} />
             <Tooltip
-              formatter={(value: number) => [`${value} kg`, undefined]}
+              formatter={(value) => [`${value} kg`, undefined]}
             />
             <Legend wrapperStyle={{ fontSize: 11 }} iconSize={10} />
             {muscleGroups.map((g) => (

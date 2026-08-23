@@ -83,7 +83,7 @@ export function FrequencyChart({ dates }: { dates: string[] }) {
               allowDecimals={false}
             />
             <Tooltip
-              formatter={(value: number) => [`${value}`, "Workouts"]}
+              formatter={(value) => [`${value}`, "Workouts"]}
             />
             <ReferenceLine
               y={avg}
