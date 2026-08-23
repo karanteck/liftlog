@@ -87,7 +87,29 @@ empty app is far cheaper than debugging it later on a half-built one.
 
 ## Current phase
 
-**Phase 1: logging only.**
+**Phase 2: history, PRs, and routine editing.**
 
-Do not build analytics, charts, the plateau engine, or notifications yet. If I
-ask for them, remind me they are Phase 3 and later.
+Phase 1 (logging) is complete — all 12 build steps done.
+
+Phase 2 steps:
+1. Per-exercise history page — DONE
+2. PR detection (heaviest weight, best e1RM, best single-set volume)
+3. Bodyweight log with trend (standalone table, not just workout-attached)
+4. Routine list page
+5. Routine editor — view, reorder (arrow buttons, not drag), remove
+6. Routine editor — add exercises from library (filter/search)
+7. Duplicate routine
+8. Create custom exercise
+9. Create new routine from scratch
+10. Home page updates (recent workouts, routines link, bodyweight link)
+
+Also done: delete workout button, back button on workout logging screen
+(from Kriti's feedback).
+
+Pending from Kriti's feedback (do after routine builder):
+- Seed a Core routine for Kriti
+- Cardio/sports logging needs time/distance input UI in workout session
+- Clarify what "sports or other activities" means specifically
+
+Do not build analytics, charts, the plateau engine, or notifications yet.
+Those are Phase 3 and later.

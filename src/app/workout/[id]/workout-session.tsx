@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RestTimer } from "@/components/rest-timer";
 import { ExerciseSearch } from "@/components/exercise-search";
+import { checkNewPRs, computePRs, PR_LABELS, type PRRecord, type PRType } from "@/lib/pr";
 
 type ExerciseInfo = {
   exerciseId: string;
@@ -153,6 +155,7 @@ export function WorkoutSession({
   previousPerformance,
   existingSets,
   userId,
+  exercisePRs: initialPRs,
 }: {
   workout: {
     id: string;
@@ -164,6 +167,7 @@ export function WorkoutSession({
   previousPerformance: Record<string, PrevSet[]>;
   existingSets: ExistingSet[];
   userId: string;
+  exercisePRs: Record<string, PRRecord>;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -177,6 +181,8 @@ export function WorkoutSession({
   } | null>(null);
   const [finishing, setFinishing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [currentPRs, setCurrentPRs] = useState<Record<string, PRRecord>>(initialPRs);
+  const [prFlash, setPrFlash] = useState<{ exerciseName: string; types: PRType[] } | null>(null);
 
   const addExercise = useCallback(
     (exercise: { id: string; name: string; repTier: string }) => {
@@ -327,9 +333,39 @@ export function WorkoutSession({
 
       if (!set.isWarmup) {
         setRestTimer({ duration: restDuration(ex.repTier) });
+
+        const prRecord = currentPRs[ex.exerciseId] ?? {
+          maxWeight: null,
+          bestE1rm: null,
+          bestVolume: null,
+        };
+        const newPRs = checkNewPRs(prRecord, weight, reps);
+        if (newPRs.length > 0) {
+          setPrFlash({ exerciseName: ex.name, types: newPRs });
+          setTimeout(() => setPrFlash(null), 4000);
+
+          const allSetsForExercise = exerciseStates[exIdx].sets
+            .filter((s) => s.isCompleted && !s.isWarmup)
+            .map((s) => ({
+              weight: s.weight ? parseFloat(s.weight) : null,
+              reps: s.reps ? parseInt(s.reps, 10) : null,
+              isWarmup: false,
+            }));
+          allSetsForExercise.push({ weight, reps, isWarmup: false });
+
+          const previousSets = (previousPerformance[ex.exerciseId] ?? []).map(
+            (s) => ({ weight: s.weight, reps: s.reps, isWarmup: false })
+          );
+
+          const combined = [...previousSets, ...allSetsForExercise];
+          setCurrentPRs((prev) => ({
+            ...prev,
+            [ex.exerciseId]: computePRs(combined),
+          }));
+        }
       }
     },
-    [exerciseStates, supabase, workout.id]
+    [exerciseStates, supabase, workout.id, currentPRs, previousPerformance]
   );
 
   const addSet = useCallback((exIdx: number) => {
@@ -402,15 +438,23 @@ export function WorkoutSession({
     <div className="flex flex-col min-h-screen pb-24">
       <header className="sticky top-0 z-40 bg-background border-b px-4 py-2">
         <div className="flex items-center justify-between max-w-lg mx-auto">
-          <div>
-            <h1 className="font-bold">
-              {workout.routineName ?? "Empty Workout"}
-            </h1>
-            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="font-mono tabular-nums">
-                {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
-              </span>
-              <span>{totalCompleted} sets done</span>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="text-sm text-muted-foreground hover:text-foreground px-1 py-1"
+            >
+              &larr;
+            </Link>
+            <div>
+              <h1 className="font-bold">
+                {workout.routineName ?? "Empty Workout"}
+              </h1>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="font-mono tabular-nums">
+                  {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
+                </span>
+                <span>{totalCompleted} sets done</span>
+              </div>
             </div>
           </div>
           <Button
@@ -572,6 +616,18 @@ export function WorkoutSession({
           onSelect={addExercise}
           onClose={() => setShowSearch(false)}
         />
+      )}
+
+      {prFlash && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-bounce">
+          <div className="rounded-lg bg-amber-500 text-white px-4 py-2 shadow-lg text-center">
+            <p className="font-bold text-sm">New PR!</p>
+            <p className="text-xs">
+              {prFlash.exerciseName} &mdash;{" "}
+              {prFlash.types.map((t) => PR_LABELS[t]).join(", ")}
+            </p>
+          </div>
+        </div>
       )}
 
       {restTimer && (

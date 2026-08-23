@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { WorkoutSession } from "./workout-session";
+import { computePRs, type PRRecord } from "@/lib/pr";
 
 export default async function WorkoutPage({
   params,
@@ -88,6 +89,7 @@ export default async function WorkoutPage({
     string,
     { weight: number | null; reps: number | null; rpe: number | null }[]
   > = {};
+  const exercisePRs: Record<string, PRRecord> = {};
 
   if (exerciseIds.length > 0) {
     const { data: prevSets } = await supabase
@@ -155,6 +157,21 @@ export default async function WorkoutPage({
           .sort((a, b) => a.setNumber - b.setNumber)
           .map((s) => ({ weight: s.weight, reps: s.reps, rpe: s.rpe }));
       }
+      const prByExercise: Record<
+        string,
+        { weight: number | null; reps: number | null; isWarmup: boolean }[]
+      > = {};
+      for (const s of prevSets) {
+        if (!prByExercise[s.exercise_id]) prByExercise[s.exercise_id] = [];
+        prByExercise[s.exercise_id].push({
+          weight: s.weight,
+          reps: s.reps,
+          isWarmup: s.is_warmup,
+        });
+      }
+      for (const [exId, exSets] of Object.entries(prByExercise)) {
+        exercisePRs[exId] = computePRs(exSets);
+      }
     }
   }
 
@@ -186,6 +203,7 @@ export default async function WorkoutPage({
         })) ?? []
       }
       userId={user.id}
+      exercisePRs={exercisePRs}
     />
   );
 }

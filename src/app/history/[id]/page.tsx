@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DeleteWorkoutButton } from "@/components/delete-workout-button";
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
@@ -44,6 +45,7 @@ export default async function WorkoutDetailPage({
     .select(
       `
       id,
+      user_id,
       date,
       started_at,
       ended_at,
@@ -116,13 +118,18 @@ export default async function WorkoutDetailPage({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="flex items-center gap-3 px-4 py-3 border-b">
-        <Link href="/history">
-          <Button variant="ghost" size="sm">
-            Back
-          </Button>
-        </Link>
-        <h1 className="text-lg font-bold">{routineName}</h1>
+      <header className="flex items-center justify-between px-4 py-3 border-b">
+        <div className="flex items-center gap-3">
+          <Link href="/history">
+            <Button variant="ghost" size="sm">
+              Back
+            </Button>
+          </Link>
+          <h1 className="text-lg font-bold">{routineName}</h1>
+        </div>
+        {workout.user_id === user.id && (
+          <DeleteWorkoutButton workoutId={workout.id} />
+        )}
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
@@ -148,7 +155,12 @@ export default async function WorkoutDetailPage({
         {Array.from(exerciseMap.entries()).map(([exId, ex]) => (
           <Card key={exId}>
             <CardContent className="py-3 px-4">
-              <p className="font-semibold mb-2">{ex.name}</p>
+              <Link
+                href={`/exercises/${exId}`}
+                className="font-semibold mb-2 block text-primary underline-offset-2 hover:underline"
+              >
+                {ex.name}
+              </Link>
               <div className="space-y-1">
                 <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                   <span>Set</span>
