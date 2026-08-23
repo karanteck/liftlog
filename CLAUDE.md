@@ -110,5 +110,17 @@ Offline-first was removed from the spec (not pursuing).
 9 database migrations exist (00001–00009). Migration 00009 needs to be
 pushed to Supabase.
 
-Phase 3 tasks (analytics) are next. Do not build the plateau engine or
-notifications yet — those are Phase 4 and 5.
+Phase 3 tasks (analytics — SPEC.md section 6 Phase 3):
+1. Analytics page scaffold — create `/analytics` page with nav link from home
+2. e1RM trend chart per exercise — Recharts line chart on exercise history
+   page, Epley formula already in `src/lib/pr.ts`, only sets ≤12 reps
+3. Weekly hard sets per muscle group — bar chart (the spec calls this "the
+   actual hypertrophy driver")
+4. Volume load trend per muscle group — line chart of sets × reps × weight
+   per muscle group per week
+5. Training frequency & adherence — workouts per week chart
+6. Imbalance ratios — push:pull, quad:hamstring computed from weekly volume
+   by movement pattern
+
+Do not build the plateau engine or notifications yet — those are Phase 4
+and 5.
