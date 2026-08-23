@@ -50,18 +50,27 @@ export default async function Home() {
             Start Workout
           </Button>
         </Link>
+        <Link href="/history" className="w-full max-w-xs">
+          <Button
+            className="w-full h-12 text-base"
+            size="lg"
+            variant="outline"
+          >
+            History
+          </Button>
+        </Link>
       </main>
 
-      {profile.is_admin && (
-        <footer className="px-4 py-3 border-t text-center">
+      <footer className="px-4 py-3 border-t text-center flex justify-center gap-4">
+        {profile.is_admin && (
           <Link
             href="/admin"
             className="text-sm text-muted-foreground hover:text-foreground"
           >
             Admin panel
           </Link>
-        </footer>
-      )}
+        )}
+      </footer>
     </div>
   );
 }
