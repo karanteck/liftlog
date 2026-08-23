@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RestTimer } from "@/components/rest-timer";
+import { ExerciseSearch } from "@/components/exercise-search";
 
 type ExerciseInfo = {
   exerciseId: string;
@@ -127,6 +128,7 @@ export function WorkoutSession({
   exercises,
   previousPerformance,
   existingSets,
+  userId,
 }: {
   workout: {
     id: string;
@@ -137,6 +139,7 @@ export function WorkoutSession({
   exercises: ExerciseInfo[];
   previousPerformance: Record<string, PrevSet[]>;
   existingSets: ExistingSet[];
+  userId: string;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -149,6 +152,41 @@ export function WorkoutSession({
     duration: number;
   } | null>(null);
   const [finishing, setFinishing] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
+  const addExercise = useCallback(
+    (exercise: { id: string; name: string; repTier: string }) => {
+      const repRanges: Record<string, [number, number]> = {
+        heavy_compound: [5, 8],
+        compound: [8, 12],
+        isolation: [10, 15],
+        small_isolation: [12, 20],
+      };
+      const [repMin, repMax] = repRanges[exercise.repTier] ?? [8, 12];
+
+      setExerciseStates((prev) => [
+        ...prev,
+        {
+          exerciseId: exercise.id,
+          name: exercise.name,
+          repTier: exercise.repTier,
+          targetRepMin: repMin,
+          targetRepMax: repMax,
+          sets: Array.from({ length: 3 }, (_, i) => ({
+            dbId: null,
+            setNumber: i + 1,
+            weight: "",
+            reps: "",
+            isWarmup: false,
+            isCompleted: false,
+          })),
+          previousSets: [],
+        },
+      ]);
+      setShowSearch(false);
+    },
+    []
+  );
 
   useEffect(() => {
     if (workout.isFinished) return;
@@ -441,12 +479,23 @@ export function WorkoutSession({
           </Card>
         ))}
 
-        {exerciseStates.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>Empty workout — exercise search coming soon.</p>
-          </div>
-        )}
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => setShowSearch(true)}
+        >
+          + Add Exercise
+        </Button>
       </main>
+
+      {showSearch && (
+        <ExerciseSearch
+          excludeIds={exerciseStates.map((e) => e.exerciseId)}
+          userId={userId}
+          onSelect={addExercise}
+          onClose={() => setShowSearch(false)}
+        />
+      )}
 
       {restTimer && (
         <RestTimer

@@ -185,6 +185,7 @@ export default async function WorkoutPage({
           isWarmup: s.is_warmup,
         })) ?? []
       }
+      userId={user.id}
     />
   );
 }
