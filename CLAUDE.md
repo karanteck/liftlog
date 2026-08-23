@@ -109,6 +109,17 @@ Phase 4 (plateau engine) is complete — all 5 tasks done:
 Pre-Phase 3 fixes (all done):
 - Household toggle, bodyweight & notes inputs, 250 exercises, equipment filter
 
+Post-audit bug fixes (all done):
+- Custom exercise form: equipment and movement pattern values now use
+  underscored format matching the database (was breaking imbalance chart
+  and plateau engine for custom exercises)
+- Exercise picker: equipment filter for smith machine, EZ bar, and
+  resistance band now matches seeded exercise values (was returning zero
+  results)
+- RPE input: optional 1-10 select dropdown added to each working set row
+  for weight_reps, bodyweight_reps, and reps_only tracking types (the
+  sets table already had the rpe column but no UI was writing to it)
+
 Kriti feedback items (all done):
 - Delete workout, back buttons, retroactive logging, sports/cardio tracking
 - Core routine — Kriti builds herself using routine builder
@@ -119,3 +130,6 @@ Offline-first was removed from the spec (not pursuing).
 to be pushed to Supabase.
 
 Phase 5 tasks (notifications) are next. See SPEC.md section 8.
+
+There is a Next.js middleware deprecation warning (middleware → proxy
+convention) that is not blocking but should be addressed eventually.
