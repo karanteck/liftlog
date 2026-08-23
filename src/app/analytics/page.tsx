@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { HardSetsChart } from "@/components/hard-sets-chart";
+import { VolumeTrendChart } from "@/components/volume-trend-chart";
 
 export default async function AnalyticsPage() {
   const supabase = await createClient();
@@ -14,11 +15,13 @@ export default async function AnalyticsPage() {
 
   if (!user) redirect("/login");
 
-  const { data: hardSets } = await supabase
+  const { data: rawSets } = await supabase
     .from("sets")
     .select(
       `
       id,
+      weight,
+      reps,
       is_warmup,
       exercises ( muscle_group ),
       workouts!inner ( date, user_id )
@@ -27,17 +30,43 @@ export default async function AnalyticsPage() {
     .eq("is_warmup", false)
     .eq("workouts.user_id", user.id);
 
-  const hardSetsData = (hardSets ?? [])
+  type ParsedSet = {
+    date: string;
+    muscleGroup: string;
+    weight: number | null;
+    reps: number | null;
+  };
+
+  const parsedSets: ParsedSet[] = (rawSets ?? [])
     .filter((s) => {
       const ex = s.exercises as unknown as { muscle_group: string } | null;
-      const wo = s.workouts as unknown as { date: string; user_id: string } | null;
+      const wo = s.workouts as unknown as { date: string } | null;
       return ex && wo;
     })
     .map((s) => {
       const ex = s.exercises as unknown as { muscle_group: string };
       const wo = s.workouts as unknown as { date: string };
-      return { date: wo.date, muscleGroup: ex.muscle_group };
+      return {
+        date: wo.date,
+        muscleGroup: ex.muscle_group,
+        weight: s.weight != null ? Number(s.weight) : null,
+        reps: s.reps != null ? Number(s.reps) : null,
+      };
     });
+
+  const hardSetsData = parsedSets.map((s) => ({
+    date: s.date,
+    muscleGroup: s.muscleGroup,
+  }));
+
+  const volumeData = parsedSets
+    .filter((s) => s.weight != null && s.weight > 0 && s.reps != null && s.reps > 0)
+    .map((s) => ({
+      date: s.date,
+      muscleGroup: s.muscleGroup,
+      weight: s.weight!,
+      reps: s.reps!,
+    }));
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -57,12 +86,7 @@ export default async function AnalyticsPage() {
 
         <HardSetsChart sets={hardSetsData} />
 
-        <Card>
-          <CardContent className="py-6 text-center text-muted-foreground text-sm">
-            <p className="font-medium text-foreground">Volume Load Trends</p>
-            <p className="mt-1">Coming soon</p>
-          </CardContent>
-        </Card>
+        <VolumeTrendChart sets={volumeData} />
 
         <Card>
           <CardContent className="py-6 text-center text-muted-foreground text-sm">
