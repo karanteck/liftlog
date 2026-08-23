@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { computeE1rm } from "@/lib/pr";
+import { E1rmChart } from "@/components/e1rm-chart";
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
@@ -174,6 +175,23 @@ export default async function ExerciseHistoryPage({
 
   const hasPRs = prMaxWeight || prBestE1rm || prBestVolume;
 
+  const e1rmTrendData = sessions
+    .filter((s) => s.isOwnWorkout)
+    .map((s) => {
+      const workingSets = s.sets.filter((set) => !set.isWarmup);
+      let bestE1rm: number | null = null;
+      for (const set of workingSets) {
+        if (set.weight == null || set.weight <= 0 || set.reps == null) continue;
+        const e1rm = computeE1rm(set.weight, set.reps);
+        if (e1rm !== null && (bestE1rm === null || e1rm > bestE1rm)) {
+          bestE1rm = e1rm;
+        }
+      }
+      return bestE1rm !== null ? { date: s.date, e1rm: bestE1rm } : null;
+    })
+    .filter((d): d is { date: string; e1rm: number } => d !== null)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
   const tierLabels: Record<string, string> = {
     heavy_compound: "Heavy compound",
     compound: "Compound",
@@ -242,6 +260,8 @@ export default async function ExerciseHistoryPage({
             </CardContent>
           </Card>
         )}
+
+        <E1rmChart data={e1rmTrendData} />
 
         <p className="text-sm text-muted-foreground">
           {sessions.length} {sessions.length === 1 ? "session" : "sessions"}{" "}
