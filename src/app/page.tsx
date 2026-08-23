@@ -59,6 +59,15 @@ export default async function Home() {
             History
           </Button>
         </Link>
+        <Link href="/plates" className="w-full max-w-xs">
+          <Button
+            className="w-full h-12 text-base"
+            size="lg"
+            variant="outline"
+          >
+            Plate Calculator
+          </Button>
+        </Link>
       </main>
 
       <footer className="px-4 py-3 border-t text-center flex justify-center gap-4">
