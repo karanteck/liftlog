@@ -43,6 +43,7 @@ type SetState = {
   setNumber: number;
   weight: string;
   reps: string;
+  rpe: string;
   duration: string;
   distance: string;
   isWarmup: boolean;
@@ -127,6 +128,7 @@ function buildInitialState(
           setNumber: i + 1,
           weight: existing.weight?.toString() ?? "",
           reps: existing.reps?.toString() ?? "",
+          rpe: existing.rpe?.toString() ?? "",
           duration: "",
           distance: "",
           isWarmup: existing.isWarmup,
@@ -139,6 +141,7 @@ function buildInitialState(
           setNumber: i + 1,
           weight: prevForSet?.weight?.toString() ?? "",
           reps: prevForSet?.reps?.toString() ?? "",
+          rpe: "",
           duration: "",
           distance: "",
           isWarmup: false,
@@ -242,6 +245,7 @@ export function WorkoutSession({
             setNumber: i + 1,
             weight: "",
             reps: "",
+            rpe: "",
             duration: "",
             distance: "",
             isWarmup: false,
@@ -294,7 +298,7 @@ export function WorkoutSession({
   }, [workout.startedAt, workout.isFinished, isBackdated]);
 
   const updateSet = useCallback(
-    (exIdx: number, setIdx: number, field: "weight" | "reps" | "duration" | "distance", value: string) => {
+    (exIdx: number, setIdx: number, field: "weight" | "reps" | "rpe" | "duration" | "distance", value: string) => {
       setExerciseStates((prev) => {
         const next = [...prev];
         const ex = { ...next[exIdx], sets: [...next[exIdx].sets] };
@@ -327,6 +331,7 @@ export function WorkoutSession({
 
       const weight = set.weight ? parseFloat(set.weight) : null;
       const reps = set.reps ? parseInt(set.reps, 10) : null;
+      const rpe = set.rpe ? parseFloat(set.rpe) : null;
       const durationSeconds = set.duration ? parseDuration(set.duration) : null;
       const distanceMeters = set.distance ? parseFloat(set.distance) * 1000 : null;
 
@@ -338,6 +343,7 @@ export function WorkoutSession({
           set_number: set.setNumber,
           weight,
           reps,
+          rpe,
           duration_seconds: durationSeconds,
           distance_meters: distanceMeters,
           is_warmup: set.isWarmup,
@@ -432,6 +438,7 @@ export function WorkoutSession({
         setNumber: ex.sets.length + 1,
         weight: lastSet?.weight ?? "",
         reps: lastSet?.reps ?? "",
+        rpe: "",
         duration: lastSet?.duration ?? "",
         distance: lastSet?.distance ?? "",
         isWarmup: false,
@@ -647,25 +654,28 @@ export function WorkoutSession({
 
               <div className="space-y-1.5">
                 {ex.trackingType === "weight_reps" && (
-                  <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>kg</span>
                     <span>Reps</span>
+                    <span>RPE</span>
                     <span />
                   </div>
                 )}
                 {ex.trackingType === "bodyweight_reps" && (
-                  <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>+kg</span>
                     <span>Reps</span>
+                    <span>RPE</span>
                     <span />
                   </div>
                 )}
                 {ex.trackingType === "reps_only" && (
-                  <div className="grid grid-cols-[2rem_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_3rem_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>Reps</span>
+                    <span>RPE</span>
                     <span />
                   </div>
                 )}
@@ -689,9 +699,13 @@ export function WorkoutSession({
                   <div
                     key={setIdx}
                     className={`grid ${
-                      ex.trackingType === "reps_only" || ex.trackingType === "time"
+                      ex.trackingType === "time"
                         ? "grid-cols-[2rem_1fr_2.5rem]"
-                        : "grid-cols-[2rem_1fr_1fr_2.5rem]"
+                        : ex.trackingType === "reps_only"
+                          ? "grid-cols-[2rem_1fr_3rem_2.5rem]"
+                          : ex.trackingType === "distance_time"
+                            ? "grid-cols-[2rem_1fr_1fr_2.5rem]"
+                            : "grid-cols-[2rem_1fr_1fr_3rem_2.5rem]"
                     } gap-2 items-center px-1 py-1 rounded ${
                       set.isCompleted
                         ? "bg-green-500/10"
@@ -746,6 +760,17 @@ export function WorkoutSession({
                           disabled={set.isCompleted}
                           className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
+                        <select
+                          value={set.rpe}
+                          onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
+                        >
+                          <option value="">—</option>
+                          {[1,2,3,4,5,6,7,8,9,10].map(v => (
+                            <option key={v} value={v.toString()}>{v}</option>
+                          ))}
+                        </select>
                       </>
                     )}
 
@@ -769,19 +794,43 @@ export function WorkoutSession({
                           disabled={set.isCompleted}
                           className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
+                        <select
+                          value={set.rpe}
+                          onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
+                        >
+                          <option value="">—</option>
+                          {[1,2,3,4,5,6,7,8,9,10].map(v => (
+                            <option key={v} value={v.toString()}>{v}</option>
+                          ))}
+                        </select>
                       </>
                     )}
 
                     {ex.trackingType === "reps_only" && (
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        placeholder="0"
-                        value={set.reps}
-                        onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
-                        disabled={set.isCompleted}
-                        className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
-                      />
+                      <>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="0"
+                          value={set.reps}
+                          onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        />
+                        <select
+                          value={set.rpe}
+                          onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
+                        >
+                          <option value="">—</option>
+                          {[1,2,3,4,5,6,7,8,9,10].map(v => (
+                            <option key={v} value={v.toString()}>{v}</option>
+                          ))}
+                        </select>
+                      </>
                     )}
 
                     {ex.trackingType === "time" && (
