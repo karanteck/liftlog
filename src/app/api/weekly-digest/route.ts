@@ -12,14 +12,11 @@ function createAdminClient() {
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
-  const expected = process.env.CRON_SECRET;
-  if (authHeader !== `Bearer ${expected}`) {
-    return NextResponse.json(
-      { error: "Unauthorized", hasSecret: !!expected, secretLength: expected?.length ?? 0 },
-      { status: 401 }
-    );
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  try {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const supabase = createAdminClient();
 
@@ -86,4 +83,10 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ results });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Unexpected error", message: err instanceof Error ? err.message : "Unknown" },
+      { status: 500 }
+    );
+  }
 }
