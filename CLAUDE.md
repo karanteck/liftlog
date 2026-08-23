@@ -85,21 +85,17 @@ empty app is far cheaper than debugging it later on a half-built one.
 
 ## Current phase
 
-**Phase 2: history, PRs, and routine editing.**
+**Phase 3: Analytics.**
 
 Phase 1 (logging) is complete — all 12 build steps done.
 
-Phase 2 steps (all DONE):
-1. Per-exercise history page
-2. PR detection (heaviest weight, best e1RM, best single-set volume)
-3. Bodyweight log with trend (standalone table, Recharts chart)
-4. Routine list page
-5. Routine editor — view, reorder (arrow buttons, not drag), remove
-6. Routine editor — add exercises from library (filter/search)
-7. Duplicate routine
-8. Create custom exercise
-9. Create new routine from scratch
-10. Home page updates (routines link, bodyweight link)
+Phase 2 (history, PRs, routine editing) is complete — all 10 steps done.
+
+Pre-Phase 3 fixes (all DONE):
+1. Household toggle on workout history (Mine / Household view)
+2. Bodyweight and notes inputs added to workout session
+3. Exercise library topped up from 240 to 250 (spec minimum)
+4. Equipment filter added to exercise picker in routine builder
 
 Also done from Kriti's feedback:
 - Delete workout button (two-step confirm, own workouts only)
@@ -107,9 +103,12 @@ Also done from Kriti's feedback:
 - Retroactive workout logging (date picker on workout creation)
 - Sports/cardio tracking (10 exercises seeded, UI adapts per tracking
   type: weight+reps, bodyweight+reps, reps-only, duration, distance+time)
-
-Remaining from Kriti's feedback:
 - Core routine — Kriti will build it herself using routine builder
 
-Do not build analytics, charts, the plateau engine, or notifications yet.
-Those are Phase 3 and later.
+Offline-first was removed from the spec (not pursuing).
+
+9 database migrations exist (00001–00009). Migration 00009 needs to be
+pushed to Supabase.
+
+Phase 3 tasks (analytics) are next. Do not build the plateau engine or
+notifications yet — those are Phase 4 and 5.
