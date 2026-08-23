@@ -10,15 +10,35 @@ const MUSCLE_GROUPS = [
 ];
 
 const EQUIPMENT = [
-  "barbell", "dumbbell", "cable", "machine", "smith machine",
-  "bodyweight", "kettlebell", "resistance band", "EZ bar",
+  { value: "barbell", label: "Barbell" },
+  { value: "dumbbell", label: "Dumbbell" },
+  { value: "cable", label: "Cable" },
+  { value: "machine", label: "Machine" },
+  { value: "smith_machine", label: "Smith machine" },
+  { value: "bodyweight", label: "Bodyweight" },
+  { value: "kettlebell", label: "Kettlebell" },
+  { value: "resistance_band", label: "Resistance band" },
+  { value: "ez_bar", label: "EZ bar" },
 ];
 
 const MOVEMENT_PATTERNS = [
-  "horizontal press", "vertical press", "horizontal pull", "vertical pull",
-  "hip hinge", "squat", "lunge", "elbow flexion", "elbow extension",
-  "lateral raise", "fly", "leg extension", "leg curl", "calf raise",
-  "core", "carry", "rotation",
+  { value: "horizontal_press", label: "Horizontal press" },
+  { value: "vertical_press", label: "Vertical press" },
+  { value: "horizontal_pull", label: "Horizontal pull" },
+  { value: "vertical_pull", label: "Vertical pull" },
+  { value: "hip_hinge", label: "Hip hinge" },
+  { value: "squat", label: "Squat" },
+  { value: "lunge", label: "Lunge" },
+  { value: "elbow_flexion", label: "Elbow flexion" },
+  { value: "elbow_extension", label: "Elbow extension" },
+  { value: "lateral_raise", label: "Lateral raise" },
+  { value: "fly", label: "Fly" },
+  { value: "leg_extension", label: "Leg extension" },
+  { value: "leg_curl", label: "Leg curl" },
+  { value: "calf_raise", label: "Calf raise" },
+  { value: "core", label: "Core" },
+  { value: "carry", label: "Carry" },
+  { value: "rotation", label: "Rotation" },
 ];
 
 const TRACKING_TYPES = [
@@ -56,7 +76,7 @@ export function CustomExerciseForm({
   const [name, setName] = useState("");
   const [muscleGroup, setMuscleGroup] = useState("chest");
   const [equipment, setEquipment] = useState("machine");
-  const [movementPattern, setMovementPattern] = useState("horizontal press");
+  const [movementPattern, setMovementPattern] = useState("horizontal_press");
   const [trackingType, setTrackingType] = useState("weight_reps");
   const [repTier, setRepTier] = useState("compound");
   const [saving, setSaving] = useState(false);
@@ -142,8 +162,8 @@ export function CustomExerciseForm({
             className="h-10 w-full rounded-md border bg-transparent px-3 text-sm"
           >
             {EQUIPMENT.map((eq) => (
-              <option key={eq} value={eq}>
-                {eq.charAt(0).toUpperCase() + eq.slice(1)}
+              <option key={eq.value} value={eq.value}>
+                {eq.label}
               </option>
             ))}
           </select>
@@ -159,8 +179,8 @@ export function CustomExerciseForm({
             className="h-10 w-full rounded-md border bg-transparent px-3 text-sm"
           >
             {MOVEMENT_PATTERNS.map((mp) => (
-              <option key={mp} value={mp}>
-                {mp.charAt(0).toUpperCase() + mp.slice(1)}
+              <option key={mp.value} value={mp.value}>
+                {mp.label}
               </option>
             ))}
           </select>
