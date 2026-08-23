@@ -2,10 +2,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { HardSetsChart } from "@/components/hard-sets-chart";
 import { VolumeTrendChart } from "@/components/volume-trend-chart";
 import { FrequencyChart } from "@/components/frequency-chart";
+import { ImbalanceChart } from "@/components/imbalance-chart";
 
 export default async function AnalyticsPage() {
   const supabase = await createClient();
@@ -24,7 +24,7 @@ export default async function AnalyticsPage() {
       weight,
       reps,
       is_warmup,
-      exercises ( muscle_group ),
+      exercises ( muscle_group, movement_pattern ),
       workouts!inner ( date, user_id )
     `
     )
@@ -34,22 +34,24 @@ export default async function AnalyticsPage() {
   type ParsedSet = {
     date: string;
     muscleGroup: string;
+    movementPattern: string;
     weight: number | null;
     reps: number | null;
   };
 
   const parsedSets: ParsedSet[] = (rawSets ?? [])
     .filter((s) => {
-      const ex = s.exercises as unknown as { muscle_group: string } | null;
+      const ex = s.exercises as unknown as { muscle_group: string; movement_pattern: string } | null;
       const wo = s.workouts as unknown as { date: string } | null;
       return ex && wo;
     })
     .map((s) => {
-      const ex = s.exercises as unknown as { muscle_group: string };
+      const ex = s.exercises as unknown as { muscle_group: string; movement_pattern: string };
       const wo = s.workouts as unknown as { date: string };
       return {
         date: wo.date,
         muscleGroup: ex.muscle_group,
+        movementPattern: ex.movement_pattern,
         weight: s.weight != null ? Number(s.weight) : null,
         reps: s.reps != null ? Number(s.reps) : null,
       };
@@ -67,6 +69,11 @@ export default async function AnalyticsPage() {
     .not("ended_at", "is", null);
 
   const workoutDates = (workouts ?? []).map((w) => w.date as string);
+
+  const imbalanceData = parsedSets.map((s) => ({
+    date: s.date,
+    movementPattern: s.movementPattern,
+  }));
 
   const volumeData = parsedSets
     .filter((s) => s.weight != null && s.weight > 0 && s.reps != null && s.reps > 0)
@@ -90,7 +97,7 @@ export default async function AnalyticsPage() {
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
         <p className="text-sm text-muted-foreground">
-          Charts and trends from your training data. More sections coming soon.
+          Charts and trends from your training data.
         </p>
 
         <HardSetsChart sets={hardSetsData} />
@@ -99,12 +106,7 @@ export default async function AnalyticsPage() {
 
         <FrequencyChart dates={workoutDates} />
 
-        <Card>
-          <CardContent className="py-6 text-center text-muted-foreground text-sm">
-            <p className="font-medium text-foreground">Imbalance Ratios</p>
-            <p className="mt-1">Coming soon</p>
-          </CardContent>
-        </Card>
+        <ImbalanceChart sets={imbalanceData} />
       </main>
     </div>
   );

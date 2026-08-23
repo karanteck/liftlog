@@ -115,7 +115,7 @@ Phase 3 tasks (analytics — SPEC.md section 6 Phase 3):
 2. ~~e1RM trend chart per exercise~~ DONE
 3. ~~Weekly hard sets per muscle group~~ DONE
 4. ~~Volume load trend per muscle group~~ DONE
-5. Training frequency & adherence — workouts per week chart
+5. ~~Training frequency & adherence~~ DONE
 6. Imbalance ratios — push:pull, quad:hamstring computed from weekly volume
    by movement pattern
 
