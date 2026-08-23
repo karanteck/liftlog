@@ -44,6 +44,12 @@ type SetState = {
   isCompleted: boolean;
 };
 
+type ProgressionPrompt = {
+  previousWeight: number;
+  suggestedWeight: number;
+  summary: string;
+};
+
 type ExerciseState = {
   exerciseId: string;
   name: string;
@@ -52,6 +58,7 @@ type ExerciseState = {
   targetRepMax: number;
   sets: SetState[];
   previousSets: PrevSet[];
+  progressionPrompt: ProgressionPrompt | null;
 };
 
 function restDuration(repTier: string): number {
@@ -111,6 +118,22 @@ function buildInitialState(
       }
     }
 
+    let progressionPrompt: ProgressionPrompt | null = null;
+    if (
+      prev.length > 0 &&
+      prev.every(
+        (s) => s.reps != null && s.weight != null && s.reps >= ex.targetRepMax
+      )
+    ) {
+      const prevWeight = prev[0].weight!;
+      const increment = 2.5;
+      progressionPrompt = {
+        previousWeight: prevWeight,
+        suggestedWeight: prevWeight + increment,
+        summary: `${prev.length}×${ex.targetRepMax} at ${prevWeight}kg`,
+      };
+    }
+
     return {
       exerciseId: ex.exerciseId,
       name: ex.name,
@@ -119,6 +142,7 @@ function buildInitialState(
       targetRepMax: ex.targetRepMax,
       sets,
       previousSets: prev,
+      progressionPrompt,
     };
   });
 }
@@ -181,12 +205,39 @@ export function WorkoutSession({
             isCompleted: false,
           })),
           previousSets: [],
+          progressionPrompt: null,
         },
       ]);
       setShowSearch(false);
     },
     []
   );
+
+  const acceptProgression = useCallback((exIdx: number) => {
+    setExerciseStates((prev) => {
+      const next = [...prev];
+      const ex = { ...next[exIdx], sets: [...next[exIdx].sets] };
+      const prompt = ex.progressionPrompt;
+      if (!prompt) return prev;
+
+      ex.sets = ex.sets.map((s) =>
+        s.isCompleted
+          ? s
+          : { ...s, weight: prompt.suggestedWeight.toString() }
+      );
+      ex.progressionPrompt = null;
+      next[exIdx] = ex;
+      return next;
+    });
+  }, []);
+
+  const dismissProgression = useCallback((exIdx: number) => {
+    setExerciseStates((prev) => {
+      const next = [...prev];
+      next[exIdx] = { ...next[exIdx], progressionPrompt: null };
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     if (workout.isFinished) return;
@@ -390,6 +441,32 @@ export function WorkoutSession({
                   )}
                 </div>
               </div>
+
+              {ex.progressionPrompt && (
+                <div className="mb-3 rounded-md bg-blue-500/10 border border-blue-500/20 px-3 py-2">
+                  <p className="text-sm font-medium text-blue-400">
+                    Add weight? You hit {ex.progressionPrompt.summary}
+                  </p>
+                  <div className="flex gap-2 mt-1.5">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
+                      onClick={() => acceptProgression(exIdx)}
+                    >
+                      Use {ex.progressionPrompt.suggestedWeight}kg
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 text-xs text-muted-foreground"
+                      onClick={() => dismissProgression(exIdx)}
+                    >
+                      Keep {ex.progressionPrompt.previousWeight}kg
+                    </Button>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-1.5">
                 <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
