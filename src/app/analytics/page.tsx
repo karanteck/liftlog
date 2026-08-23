@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { HardSetsChart } from "@/components/hard-sets-chart";
 import { VolumeTrendChart } from "@/components/volume-trend-chart";
+import { FrequencyChart } from "@/components/frequency-chart";
 
 export default async function AnalyticsPage() {
   const supabase = await createClient();
@@ -59,6 +60,14 @@ export default async function AnalyticsPage() {
     muscleGroup: s.muscleGroup,
   }));
 
+  const { data: workouts } = await supabase
+    .from("workouts")
+    .select("date")
+    .eq("user_id", user.id)
+    .not("ended_at", "is", null);
+
+  const workoutDates = (workouts ?? []).map((w) => w.date as string);
+
   const volumeData = parsedSets
     .filter((s) => s.weight != null && s.weight > 0 && s.reps != null && s.reps > 0)
     .map((s) => ({
@@ -88,12 +97,7 @@ export default async function AnalyticsPage() {
 
         <VolumeTrendChart sets={volumeData} />
 
-        <Card>
-          <CardContent className="py-6 text-center text-muted-foreground text-sm">
-            <p className="font-medium text-foreground">Training Frequency</p>
-            <p className="mt-1">Coming soon</p>
-          </CardContent>
-        </Card>
+        <FrequencyChart dates={workoutDates} />
 
         <Card>
           <CardContent className="py-6 text-center text-muted-foreground text-sm">
