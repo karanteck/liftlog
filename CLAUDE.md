@@ -52,8 +52,6 @@ do not switch without my agreement.
   is a built-in alternative, and confirm it is free.
 - **Secrets live in `.env.local` only.** Never hardcode them. Never commit
   them. Confirm `.env.local` is in `.gitignore` before the first commit.
-- **Offline first writes.** Workout logging must write locally and sync on
-  reconnect. Build this in Phase 1, not later.
 - **Everything stays on free tiers.** Flag anything that would create a
   recurring cost.
 - **Do not invent exercise definitions.** SPEC.md section 3 flags two exercise

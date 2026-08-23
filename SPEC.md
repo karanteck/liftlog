@@ -186,7 +186,6 @@ Sequence matters. If the core logging loop is slow, we stop using the app in wee
 - Rest timer that auto-starts when a set is marked complete
 - Plate calculator (what plates to load per side for a target barbell weight)
 - Double progression prompt (section 4)
-- Offline first: writes go to local storage and sync when connection returns. Gym basements have no signal. Build this in Phase 1, not later.
 
 **Target: under 5 taps to log a set.**
 

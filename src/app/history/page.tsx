@@ -30,7 +30,12 @@ function formatDuration(startedAt: string, endedAt: string | null): string {
   return `${hrs}h ${rem}m`;
 }
 
-export default async function HistoryPage() {
+export default async function HistoryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
+  const { view } = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -39,23 +44,41 @@ export default async function HistoryPage() {
 
   if (!user) redirect("/login");
 
-  const { data: workouts } = await supabase
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("household_id")
+    .eq("id", user.id)
+    .single();
+
+  const hasHousehold = !!profile?.household_id;
+  const showAll = hasHousehold && view === "all";
+
+  let query = supabase
     .from("workouts")
     .select(
       `
       id,
+      user_id,
       date,
       started_at,
       ended_at,
       routines (
         name
+      ),
+      profiles (
+        name
       )
     `
     )
-    .eq("user_id", user.id)
     .order("date", { ascending: false })
     .order("started_at", { ascending: false })
     .limit(50);
+
+  if (!showAll) {
+    query = query.eq("user_id", user.id);
+  }
+
+  const { data: workouts } = await query;
 
   const workoutIds = workouts?.map((w) => w.id) ?? [];
 
@@ -86,6 +109,29 @@ export default async function HistoryPage() {
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-2">
+        {hasHousehold && (
+          <div className="flex gap-1 mb-2">
+            <Link href="/history?view=mine" replace>
+              <Button
+                variant={showAll ? "ghost" : "secondary"}
+                size="sm"
+                className="h-8 text-xs"
+              >
+                Mine
+              </Button>
+            </Link>
+            <Link href="/history?view=all" replace>
+              <Button
+                variant={showAll ? "secondary" : "ghost"}
+                size="sm"
+                className="h-8 text-xs"
+              >
+                Household
+              </Button>
+            </Link>
+          </div>
+        )}
+
         {(!workouts || workouts.length === 0) && (
           <div className="text-center py-12 text-muted-foreground">
             <p>No workouts yet.</p>
@@ -99,6 +145,9 @@ export default async function HistoryPage() {
           const routineName =
             (w.routines as unknown as { name: string } | null)?.name ??
             "Empty Workout";
+          const ownerName =
+            (w.profiles as unknown as { name: string } | null)?.name ?? "";
+          const isOwn = w.user_id === user.id;
           const sets = setCounts[w.id] ?? 0;
 
           return (
@@ -107,7 +156,14 @@ export default async function HistoryPage() {
                 <CardContent className="py-3 px-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold">{routineName}</p>
+                      <p className="font-semibold">
+                        {routineName}
+                        {showAll && !isOwn && (
+                          <span className="text-muted-foreground font-normal ml-1.5 text-sm">
+                            ({ownerName.split(" ")[0]})
+                          </span>
+                        )}
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         {formatDate(w.date)} &middot;{" "}
                         {formatDuration(w.started_at, w.ended_at)} &middot;{" "}
