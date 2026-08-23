@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
+import { PlateauAlerts } from "@/components/plateau-alerts";
+import { runPlateauDetection } from "@/lib/plateau-runner";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -33,6 +35,8 @@ export default async function Home() {
     );
   }
 
+  const alerts = await runPlateauDetection(supabase, user.id);
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex items-center justify-between px-4 py-3 border-b">
@@ -45,6 +49,7 @@ export default async function Home() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 gap-6">
         <p className="text-2xl font-bold">Hey {profile.name.split(" ")[0]}</p>
+        <PlateauAlerts alerts={alerts} />
         <Link href="/workout/new" className="w-full max-w-xs">
           <Button className="w-full h-14 text-lg font-semibold" size="lg">
             Start Workout
