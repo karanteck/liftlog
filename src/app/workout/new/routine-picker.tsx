@@ -28,15 +28,25 @@ export function RoutinePicker({ routines }: { routines: Routine[] }) {
   const router = useRouter();
   const supabase = createClient();
   const [starting, setStarting] = useState<string | null>(null);
+  const todayStr = new Date().toISOString().split("T")[0];
+  const [selectedDate, setSelectedDate] = useState(todayStr);
+
+  const isToday = selectedDate === todayStr;
 
   async function startWorkout(routineId: string | null) {
     setStarting(routineId ?? "empty");
+
+    const startedAt = isToday
+      ? new Date().toISOString()
+      : new Date(selectedDate + "T12:00:00").toISOString();
 
     const { data, error } = await supabase
       .from("workouts")
       .insert({
         user_id: (await supabase.auth.getUser()).data.user!.id,
         routine_id: routineId,
+        date: selectedDate,
+        started_at: startedAt,
       })
       .select("id")
       .single();
@@ -62,6 +72,36 @@ export function RoutinePicker({ routines }: { routines: Routine[] }) {
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-3">
+        <div className="flex items-center gap-3">
+          <label className="text-sm font-medium shrink-0">Date</label>
+          <input
+            type="date"
+            value={selectedDate}
+            max={todayStr}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="h-9 flex-1 rounded-md border bg-transparent px-3 text-sm"
+          />
+          {!isToday && (
+            <button
+              onClick={() => setSelectedDate(todayStr)}
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        {!isToday && (
+          <p className="text-xs text-muted-foreground">
+            Logging a past workout for{" "}
+            {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-GB", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}
+          </p>
+        )}
+
         {routines.map((r) => (
           <Card
             key={r.id}

@@ -160,6 +160,7 @@ export function WorkoutSession({
   workout: {
     id: string;
     routineName: string | null;
+    date: string;
     startedAt: string;
     isFinished: boolean;
   };
@@ -245,14 +246,16 @@ export function WorkoutSession({
     });
   }, []);
 
+  const isBackdated = workout.date !== new Date().toISOString().split("T")[0];
+
   useEffect(() => {
-    if (workout.isFinished) return;
+    if (workout.isFinished || isBackdated) return;
     const start = new Date(workout.startedAt).getTime();
     const tick = () => setElapsed(Math.floor((Date.now() - start) / 1000));
     tick();
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
-  }, [workout.startedAt, workout.isFinished]);
+  }, [workout.startedAt, workout.isFinished, isBackdated]);
 
   const updateSet = useCallback(
     (exIdx: number, setIdx: number, field: "weight" | "reps", value: string) => {
@@ -450,9 +453,18 @@ export function WorkoutSession({
                 {workout.routineName ?? "Empty Workout"}
               </h1>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="font-mono tabular-nums">
-                  {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
-                </span>
+                {isBackdated ? (
+                  <span>
+                    {new Date(workout.date + "T00:00:00").toLocaleDateString(
+                      "en-GB",
+                      { day: "numeric", month: "short" }
+                    )}
+                  </span>
+                ) : (
+                  <span className="font-mono tabular-nums">
+                    {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
+                  </span>
+                )}
                 <span>{totalCompleted} sets done</span>
               </div>
             </div>

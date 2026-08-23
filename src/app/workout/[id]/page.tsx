@@ -23,6 +23,7 @@ export default async function WorkoutPage({
       `
       id,
       routine_id,
+      date,
       started_at,
       ended_at,
       routines (
@@ -186,6 +187,7 @@ export default async function WorkoutPage({
       workout={{
         id: workout.id,
         routineName: (workout.routines as unknown as { name: string } | null)?.name ?? null,
+        date: workout.date,
         startedAt: workout.started_at,
         isFinished: !!workout.ended_at,
       }}
