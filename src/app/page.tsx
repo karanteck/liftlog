@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SignOutButton } from "@/components/sign-out-button";
+import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -41,14 +43,25 @@ export default async function Home() {
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4">
-        <div className="text-center">
-          <p className="text-2xl font-bold">Hey {profile.name}</p>
-          <p className="mt-1 text-muted-foreground">
-            Workout logging is coming next.
-          </p>
-        </div>
+      <main className="flex-1 flex flex-col items-center justify-center px-4 gap-6">
+        <p className="text-2xl font-bold">Hey {profile.name.split(" ")[0]}</p>
+        <Link href="/workout/new" className="w-full max-w-xs">
+          <Button className="w-full h-14 text-lg font-semibold" size="lg">
+            Start Workout
+          </Button>
+        </Link>
       </main>
+
+      {profile.is_admin && (
+        <footer className="px-4 py-3 border-t text-center">
+          <Link
+            href="/admin"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Admin panel
+          </Link>
+        </footer>
+      )}
     </div>
   );
 }
