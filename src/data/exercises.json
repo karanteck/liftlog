@@ -3698,5 +3698,105 @@
     "tracking_type": "weight_reps",
     "default_rep_tier": "compound",
     "youtube_search_url": "https://www.youtube.com/results?search_query=how+to+overhead+carry+form"
+  },
+  {
+    "name": "Farmer walk",
+    "aliases": ["Farmer's carry", "Farmer's walk"],
+    "muscle_group": "forearms",
+    "secondary_muscles": ["traps", "core", "quads"],
+    "equipment": "dumbbell",
+    "movement_pattern": "carry",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "compound"
+  },
+  {
+    "name": "Behind-the-back wrist curl",
+    "aliases": ["Behind back wrist curl"],
+    "muscle_group": "forearms",
+    "secondary_muscles": [],
+    "equipment": "barbell",
+    "movement_pattern": "wrist_flexion",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "small_isolation"
+  },
+  {
+    "name": "Single-leg calf raise",
+    "aliases": ["One-leg calf raise", "Unilateral calf raise"],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "calf_raise",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "small_isolation"
+  },
+  {
+    "name": "Tibialis raise",
+    "aliases": ["Tib raise", "Tibialis anterior raise"],
+    "muscle_group": "calves",
+    "secondary_muscles": [],
+    "equipment": "bodyweight",
+    "movement_pattern": "tibialis_raise",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "small_isolation"
+  },
+  {
+    "name": "Swiss ball hamstring curl",
+    "aliases": ["Stability ball leg curl", "Physio ball hamstring curl"],
+    "muscle_group": "hamstrings",
+    "secondary_muscles": ["glutes", "core"],
+    "equipment": "bodyweight",
+    "movement_pattern": "leg_curl",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "isolation"
+  },
+  {
+    "name": "Cable overhead tricep extension",
+    "aliases": ["Overhead cable extension", "Cable French press"],
+    "muscle_group": "triceps",
+    "secondary_muscles": [],
+    "equipment": "cable",
+    "movement_pattern": "elbow_extension",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation"
+  },
+  {
+    "name": "Low cable crossover",
+    "aliases": ["Low to high cable fly", "Low cable fly"],
+    "muscle_group": "chest",
+    "secondary_muscles": ["front delts"],
+    "equipment": "cable",
+    "movement_pattern": "fly",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation"
+  },
+  {
+    "name": "Svend press",
+    "aliases": ["Plate squeeze press"],
+    "muscle_group": "chest",
+    "secondary_muscles": ["front delts", "triceps"],
+    "equipment": "bodyweight",
+    "movement_pattern": "horizontal_press",
+    "tracking_type": "weight_reps",
+    "default_rep_tier": "isolation"
+  },
+  {
+    "name": "Hanging knee raise",
+    "aliases": ["Hanging knee tuck", "Knee raise"],
+    "muscle_group": "abs",
+    "secondary_muscles": ["hip flexors"],
+    "equipment": "bodyweight",
+    "movement_pattern": "core",
+    "tracking_type": "bodyweight_reps",
+    "default_rep_tier": "isolation"
+  },
+  {
+    "name": "Copenhagen plank",
+    "aliases": ["Copenhagen adductor plank"],
+    "muscle_group": "abs",
+    "secondary_muscles": ["adductors", "obliques"],
+    "equipment": "bodyweight",
+    "movement_pattern": "core",
+    "tracking_type": "time",
+    "default_rep_tier": "isolation"
   }
 ]
