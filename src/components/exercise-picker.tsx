@@ -31,6 +31,19 @@ const MUSCLE_GROUPS = [
   "forearms",
 ];
 
+const EQUIPMENT_OPTIONS = [
+  "all",
+  "barbell",
+  "dumbbell",
+  "cable",
+  "machine",
+  "bodyweight",
+  "smith machine",
+  "kettlebell",
+  "EZ bar",
+  "resistance band",
+];
+
 export function ExercisePicker({
   excludeIds,
   onSelect,
@@ -49,6 +62,7 @@ export function ExercisePicker({
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [query, setQuery] = useState("");
   const [muscleFilter, setMuscleFilter] = useState("all");
+  const [equipmentFilter, setEquipmentFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [showCustomForm, setShowCustomForm] = useState(false);
 
@@ -72,6 +86,10 @@ export function ExercisePicker({
       list = list.filter((e) => e.muscle_group === muscleFilter);
     }
 
+    if (equipmentFilter !== "all") {
+      list = list.filter((e) => e.equipment === equipmentFilter);
+    }
+
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter(
@@ -84,7 +102,7 @@ export function ExercisePicker({
     }
 
     return list;
-  }, [exercises, excludeIds, query, muscleFilter]);
+  }, [exercises, excludeIds, query, muscleFilter, equipmentFilter]);
 
   function handleCustomCreated(exercise: Exercise) {
     setExercises((prev) => [...prev, exercise]);
@@ -121,7 +139,7 @@ export function ExercisePicker({
             className="flex-1"
           />
         </div>
-        <div className="flex gap-1.5 px-4 pb-2 overflow-x-auto">
+        <div className="flex gap-1.5 px-4 pb-1.5 overflow-x-auto">
           {MUSCLE_GROUPS.map((mg) => (
             <button
               key={mg}
@@ -133,6 +151,21 @@ export function ExercisePicker({
               }`}
             >
               {mg === "all" ? "All" : mg.charAt(0).toUpperCase() + mg.slice(1)}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-1.5 px-4 pb-2 overflow-x-auto">
+          {EQUIPMENT_OPTIONS.map((eq) => (
+            <button
+              key={eq}
+              onClick={() => setEquipmentFilter(eq)}
+              className={`shrink-0 text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                equipmentFilter === eq
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "border-border text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {eq === "all" ? "All equip." : eq.charAt(0).toUpperCase() + eq.slice(1)}
             </button>
           ))}
         </div>
