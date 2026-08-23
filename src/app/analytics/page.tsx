@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { HardSetsChart } from "@/components/hard-sets-chart";
 
 export default async function AnalyticsPage() {
   const supabase = await createClient();
@@ -12,6 +13,31 @@ export default async function AnalyticsPage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  const { data: hardSets } = await supabase
+    .from("sets")
+    .select(
+      `
+      id,
+      is_warmup,
+      exercises ( muscle_group ),
+      workouts!inner ( date, user_id )
+    `
+    )
+    .eq("is_warmup", false)
+    .eq("workouts.user_id", user.id);
+
+  const hardSetsData = (hardSets ?? [])
+    .filter((s) => {
+      const ex = s.exercises as unknown as { muscle_group: string } | null;
+      const wo = s.workouts as unknown as { date: string; user_id: string } | null;
+      return ex && wo;
+    })
+    .map((s) => {
+      const ex = s.exercises as unknown as { muscle_group: string };
+      const wo = s.workouts as unknown as { date: string };
+      return { date: wo.date, muscleGroup: ex.muscle_group };
+    });
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -29,12 +55,7 @@ export default async function AnalyticsPage() {
           Charts and trends from your training data. More sections coming soon.
         </p>
 
-        <Card>
-          <CardContent className="py-6 text-center text-muted-foreground text-sm">
-            <p className="font-medium text-foreground">Hard Sets per Muscle Group</p>
-            <p className="mt-1">Coming soon</p>
-          </CardContent>
-        </Card>
+        <HardSetsChart sets={hardSetsData} />
 
         <Card>
           <CardContent className="py-6 text-center text-muted-foreground text-sm">

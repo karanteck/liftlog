@@ -112,8 +112,7 @@ pushed to Supabase.
 
 Phase 3 tasks (analytics — SPEC.md section 6 Phase 3):
 1. ~~Analytics page scaffold~~ DONE
-2. e1RM trend chart per exercise — Recharts line chart on exercise history
-   page, Epley formula already in `src/lib/pr.ts`, only sets ≤12 reps
+2. ~~e1RM trend chart per exercise~~ DONE
 3. Weekly hard sets per muscle group — bar chart (the spec calls this "the
    actual hypertrophy driver")
 4. Volume load trend per muscle group — line chart of sets × reps × weight
