@@ -59,6 +59,15 @@ export default async function Home() {
             History
           </Button>
         </Link>
+        <Link href="/bodyweight" className="w-full max-w-xs">
+          <Button
+            className="w-full h-12 text-base"
+            size="lg"
+            variant="outline"
+          >
+            Bodyweight
+          </Button>
+        </Link>
         <Link href="/plates" className="w-full max-w-xs">
           <Button
             className="w-full h-12 text-base"
