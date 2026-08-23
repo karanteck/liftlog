@@ -85,39 +85,31 @@ empty app is far cheaper than debugging it later on a half-built one.
 
 ## Current phase
 
-**Phase 3: Analytics.**
+**Phase 4: Plateau engine.**
 
 Phase 1 (logging) is complete — all 12 build steps done.
 
 Phase 2 (history, PRs, routine editing) is complete — all 10 steps done.
 
-Pre-Phase 3 fixes (all DONE):
-1. Household toggle on workout history (Mine / Household view)
-2. Bodyweight and notes inputs added to workout session
-3. Exercise library topped up from 240 to 250 (spec minimum)
-4. Equipment filter added to exercise picker in routine builder
+Phase 3 (analytics) is complete — all 6 tasks done:
+1. Analytics page scaffold (`/analytics` with nav link from home)
+2. e1RM trend chart per exercise (Recharts line chart on exercise history)
+3. Weekly hard sets per muscle group (stacked bar chart)
+4. Volume load trend per muscle group (multi-line chart)
+5. Training frequency & adherence (workouts per week bar chart with average)
+6. Imbalance ratios (push:pull and quad:hamstring grouped bar charts)
 
-Also done from Kriti's feedback:
-- Delete workout button (two-step confirm, own workouts only)
-- Back button on workout logging screen
-- Retroactive workout logging (date picker on workout creation)
-- Sports/cardio tracking (10 exercises seeded, UI adapts per tracking
-  type: weight+reps, bodyweight+reps, reps-only, duration, distance+time)
-- Core routine — Kriti will build it herself using routine builder
+Pre-Phase 3 fixes (all done):
+- Household toggle, bodyweight & notes inputs, 250 exercises, equipment filter
+
+Kriti feedback items (all done):
+- Delete workout, back buttons, retroactive logging, sports/cardio tracking
+- Core routine — Kriti builds herself using routine builder
 
 Offline-first was removed from the spec (not pursuing).
 
 9 database migrations exist (00001–00009). Migration 00009 needs to be
 pushed to Supabase.
 
-Phase 3 tasks (analytics — SPEC.md section 6 Phase 3):
-1. ~~Analytics page scaffold~~ DONE
-2. ~~e1RM trend chart per exercise~~ DONE
-3. ~~Weekly hard sets per muscle group~~ DONE
-4. ~~Volume load trend per muscle group~~ DONE
-5. ~~Training frequency & adherence~~ DONE
-6. Imbalance ratios — push:pull, quad:hamstring computed from weekly volume
-   by movement pattern
-
-Do not build the plateau engine or notifications yet — those are Phase 4
-and 5.
+Phase 4 tasks (plateau engine) are next. Do not build notifications
+yet — that is Phase 5.
