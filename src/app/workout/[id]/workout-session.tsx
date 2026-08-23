@@ -212,6 +212,9 @@ export function WorkoutSession({
   const [showSearch, setShowSearch] = useState(false);
   const [currentPRs, setCurrentPRs] = useState<Record<string, PRRecord>>(initialPRs);
   const [prFlash, setPrFlash] = useState<{ exerciseName: string; types: PRType[] } | null>(null);
+  const [bodyweight, setBodyweight] = useState("");
+  const [notes, setNotes] = useState("");
+  const [showDetails, setShowDetails] = useState(false);
 
   const addExercise = useCallback(
     (exercise: { id: string; name: string; repTier: string; trackingType: string }) => {
@@ -442,10 +445,27 @@ export function WorkoutSession({
   const finishWorkout = useCallback(async () => {
     setFinishing(true);
 
+    const bw = bodyweight ? parseFloat(bodyweight) : null;
+    const updateData: Record<string, unknown> = {
+      ended_at: new Date().toISOString(),
+    };
+    if (bw && bw > 0) updateData.bodyweight = bw;
+    if (notes.trim()) updateData.notes = notes.trim();
+
     await supabase
       .from("workouts")
-      .update({ ended_at: new Date().toISOString() })
+      .update(updateData)
       .eq("id", workout.id);
+
+    if (bw && bw > 0) {
+      const todayStr = workout.date;
+      await supabase
+        .from("bodyweight_log")
+        .upsert(
+          { user_id: userId, date: todayStr, weight: bw },
+          { onConflict: "user_id,date" }
+        );
+    }
 
     const routineExercise = exercises[0];
     if (routineExercise) {
@@ -464,7 +484,7 @@ export function WorkoutSession({
     }
 
     router.push("/");
-  }, [supabase, workout.id, exercises, router]);
+  }, [supabase, workout.id, exercises, router, bodyweight, notes, userId]);
 
   const elapsedMin = Math.floor(elapsed / 60);
   const elapsedSec = elapsed % 60;
@@ -531,6 +551,45 @@ export function WorkoutSession({
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
+        <button
+          onClick={() => setShowDetails((v) => !v)}
+          className="text-xs text-muted-foreground hover:text-foreground w-full text-left"
+        >
+          {showDetails ? "Hide" : "Add"} bodyweight &amp; notes {showDetails ? "▲" : "▼"}
+        </button>
+
+        {showDetails && (
+          <Card>
+            <CardContent className="py-3 px-4 space-y-3">
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">
+                  Bodyweight (kg)
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="e.g. 75.0"
+                  value={bodyweight}
+                  onChange={(e) => setBodyweight(e.target.value)}
+                  className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">
+                  Notes
+                </label>
+                <textarea
+                  placeholder="How did it feel?"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={2}
+                  className="w-full rounded-md border bg-transparent px-2 py-1.5 text-sm resize-none"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {exerciseStates.map((ex, exIdx) => (
           <Card key={ex.exerciseId}>
             <CardContent className="py-3 px-4">
