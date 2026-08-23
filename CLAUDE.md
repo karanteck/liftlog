@@ -85,7 +85,7 @@ empty app is far cheaper than debugging it later on a half-built one.
 
 ## Current phase
 
-**Phase 4: Plateau engine.**
+**Phase 5: Notifications.**
 
 Phase 1 (logging) is complete — all 12 build steps done.
 
@@ -99,6 +99,13 @@ Phase 3 (analytics) is complete — all 6 tasks done:
 5. Training frequency & adherence (workouts per week bar chart with average)
 6. Imbalance ratios (push:pull and quad:hamstring grouped bar charts)
 
+Phase 4 (plateau engine) is complete — all 5 tasks done:
+1. Database migration (`plateau_alerts` table with RLS)
+2. Detection engine (`src/lib/plateau.ts`) — 6 signals, 4 guardrails
+3. Server runner (`src/lib/plateau-runner.ts`) — data fetching, variation
+   map from exercises table, deduplication, alert storage
+4. Home page insight cards with dismiss and 14-day cooldown
+
 Pre-Phase 3 fixes (all done):
 - Household toggle, bodyweight & notes inputs, 250 exercises, equipment filter
 
@@ -108,8 +115,7 @@ Kriti feedback items (all done):
 
 Offline-first was removed from the spec (not pursuing).
 
-9 database migrations exist (00001–00009). Migration 00009 needs to be
-pushed to Supabase.
+10 database migrations exist (00001–00010). Migrations 00009–00010 need
+to be pushed to Supabase.
 
-Phase 4 tasks (plateau engine) are next. Do not build notifications
-yet — that is Phase 5.
+Phase 5 tasks (notifications) are next. See SPEC.md section 8.
