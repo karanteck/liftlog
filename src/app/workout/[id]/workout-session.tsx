@@ -15,6 +15,7 @@ type ExerciseInfo = {
   exerciseId: string;
   name: string;
   repTier: string;
+  trackingType: string;
   targetSets: number;
   targetRepMin: number;
   targetRepMax: number;
@@ -42,6 +43,8 @@ type SetState = {
   setNumber: number;
   weight: string;
   reps: string;
+  duration: string;
+  distance: string;
   isWarmup: boolean;
   isCompleted: boolean;
 };
@@ -56,12 +59,32 @@ type ExerciseState = {
   exerciseId: string;
   name: string;
   repTier: string;
+  trackingType: string;
   targetRepMin: number;
   targetRepMax: number;
   sets: SetState[];
   previousSets: PrevSet[];
   progressionPrompt: ProgressionPrompt | null;
 };
+
+function parseDuration(input: string): number | null {
+  if (input.includes(":")) {
+    const parts = input.split(":");
+    const mins = parseInt(parts[0], 10) || 0;
+    const secs = parseInt(parts[1], 10) || 0;
+    return mins * 60 + secs;
+  }
+  const mins = parseFloat(input);
+  if (isNaN(mins)) return null;
+  return Math.round(mins * 60);
+}
+
+function formatDurationValue(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  if (secs === 0) return `${mins}`;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
 
 function restDuration(repTier: string): number {
   if (repTier === "heavy_compound") return 180;
@@ -104,6 +127,8 @@ function buildInitialState(
           setNumber: i + 1,
           weight: existing.weight?.toString() ?? "",
           reps: existing.reps?.toString() ?? "",
+          duration: "",
+          distance: "",
           isWarmup: existing.isWarmup,
           isCompleted: true,
         });
@@ -114,6 +139,8 @@ function buildInitialState(
           setNumber: i + 1,
           weight: prevForSet?.weight?.toString() ?? "",
           reps: prevForSet?.reps?.toString() ?? "",
+          duration: "",
+          distance: "",
           isWarmup: false,
           isCompleted: false,
         });
@@ -140,6 +167,7 @@ function buildInitialState(
       exerciseId: ex.exerciseId,
       name: ex.name,
       repTier: ex.repTier,
+      trackingType: ex.trackingType ?? "weight_reps",
       targetRepMin: ex.targetRepMin,
       targetRepMax: ex.targetRepMax,
       sets,
@@ -186,7 +214,7 @@ export function WorkoutSession({
   const [prFlash, setPrFlash] = useState<{ exerciseName: string; types: PRType[] } | null>(null);
 
   const addExercise = useCallback(
-    (exercise: { id: string; name: string; repTier: string }) => {
+    (exercise: { id: string; name: string; repTier: string; trackingType: string }) => {
       const repRanges: Record<string, [number, number]> = {
         heavy_compound: [5, 8],
         compound: [8, 12],
@@ -194,6 +222,8 @@ export function WorkoutSession({
         small_isolation: [12, 20],
       };
       const [repMin, repMax] = repRanges[exercise.repTier] ?? [8, 12];
+      const tt = exercise.trackingType ?? "weight_reps";
+      const numSets = tt === "time" || tt === "distance_time" ? 1 : 3;
 
       setExerciseStates((prev) => [
         ...prev,
@@ -201,13 +231,16 @@ export function WorkoutSession({
           exerciseId: exercise.id,
           name: exercise.name,
           repTier: exercise.repTier,
+          trackingType: tt,
           targetRepMin: repMin,
           targetRepMax: repMax,
-          sets: Array.from({ length: 3 }, (_, i) => ({
+          sets: Array.from({ length: numSets }, (_, i) => ({
             dbId: null,
             setNumber: i + 1,
             weight: "",
             reps: "",
+            duration: "",
+            distance: "",
             isWarmup: false,
             isCompleted: false,
           })),
@@ -258,7 +291,7 @@ export function WorkoutSession({
   }, [workout.startedAt, workout.isFinished, isBackdated]);
 
   const updateSet = useCallback(
-    (exIdx: number, setIdx: number, field: "weight" | "reps", value: string) => {
+    (exIdx: number, setIdx: number, field: "weight" | "reps" | "duration" | "distance", value: string) => {
       setExerciseStates((prev) => {
         const next = [...prev];
         const ex = { ...next[exIdx], sets: [...next[exIdx].sets] };
@@ -291,6 +324,8 @@ export function WorkoutSession({
 
       const weight = set.weight ? parseFloat(set.weight) : null;
       const reps = set.reps ? parseInt(set.reps, 10) : null;
+      const durationSeconds = set.duration ? parseDuration(set.duration) : null;
+      const distanceMeters = set.distance ? parseFloat(set.distance) * 1000 : null;
 
       const { data, error } = await supabase
         .from("sets")
@@ -300,6 +335,8 @@ export function WorkoutSession({
           set_number: set.setNumber,
           weight,
           reps,
+          duration_seconds: durationSeconds,
+          distance_meters: distanceMeters,
           is_warmup: set.isWarmup,
         })
         .select("id")
@@ -319,22 +356,33 @@ export function WorkoutSession({
           isCompleted: true,
         };
 
+        const tt = exCopy.trackingType;
         const nextEmptyIdx = exCopy.sets.findIndex(
-          (s, i) => i > setIdx && !s.isCompleted && !s.weight && !s.reps
+          (s, i) => i > setIdx && !s.isCompleted && !s.weight && !s.reps && !s.duration && !s.distance
         );
-        if (nextEmptyIdx !== -1 && weight != null) {
-          exCopy.sets[nextEmptyIdx] = {
-            ...exCopy.sets[nextEmptyIdx],
-            weight: weight.toString(),
-            reps: reps?.toString() ?? "",
-          };
+        if (nextEmptyIdx !== -1) {
+          if (tt === "time" || tt === "distance_time") {
+            exCopy.sets[nextEmptyIdx] = {
+              ...exCopy.sets[nextEmptyIdx],
+              duration: set.duration,
+              distance: set.distance,
+            };
+          } else if (weight != null) {
+            exCopy.sets[nextEmptyIdx] = {
+              ...exCopy.sets[nextEmptyIdx],
+              weight: weight.toString(),
+              reps: reps?.toString() ?? "",
+            };
+          }
         }
 
         next[exIdx] = exCopy;
         return next;
       });
 
-      if (!set.isWarmup) {
+      const isCardio = ex.trackingType === "time" || ex.trackingType === "distance_time";
+
+      if (!set.isWarmup && !isCardio) {
         setRestTimer({ duration: restDuration(ex.repTier) });
 
         const prRecord = currentPRs[ex.exerciseId] ?? {
@@ -381,6 +429,8 @@ export function WorkoutSession({
         setNumber: ex.sets.length + 1,
         weight: lastSet?.weight ?? "",
         reps: lastSet?.reps ?? "",
+        duration: lastSet?.duration ?? "",
+        distance: lastSet?.distance ?? "",
         isWarmup: false,
         isCompleted: false,
       });
@@ -487,10 +537,22 @@ export function WorkoutSession({
               <div className="mb-2">
                 <p className="font-semibold">{ex.name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs text-muted-foreground">
-                    Target: {ex.targetRepMin}–{ex.targetRepMax} reps
-                  </span>
-                  {ex.previousSets.length > 0 && (
+                  {(ex.trackingType === "weight_reps" || ex.trackingType === "bodyweight_reps" || ex.trackingType === "reps_only") && (
+                    <span className="text-xs text-muted-foreground">
+                      Target: {ex.targetRepMin}–{ex.targetRepMax} reps
+                    </span>
+                  )}
+                  {ex.trackingType === "time" && (
+                    <span className="text-xs text-muted-foreground">
+                      Log duration
+                    </span>
+                  )}
+                  {ex.trackingType === "distance_time" && (
+                    <span className="text-xs text-muted-foreground">
+                      Log distance and time
+                    </span>
+                  )}
+                  {ex.previousSets.length > 0 && (ex.trackingType === "weight_reps" || ex.trackingType === "bodyweight_reps") && (
                     <span className="text-xs text-muted-foreground">
                       Last: {formatPrevious(ex.previousSets)}
                     </span>
@@ -498,7 +560,7 @@ export function WorkoutSession({
                 </div>
               </div>
 
-              {ex.progressionPrompt && (
+              {ex.progressionPrompt && ex.trackingType === "weight_reps" && (
                 <div className="mb-3 rounded-md bg-blue-500/10 border border-blue-500/20 px-3 py-2">
                   <p className="text-sm font-medium text-blue-400">
                     Add weight? You hit {ex.progressionPrompt.summary}
@@ -525,17 +587,53 @@ export function WorkoutSession({
               )}
 
               <div className="space-y-1.5">
-                <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
-                  <span>Set</span>
-                  <span>kg</span>
-                  <span>Reps</span>
-                  <span />
-                </div>
+                {ex.trackingType === "weight_reps" && (
+                  <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                    <span>Set</span>
+                    <span>kg</span>
+                    <span>Reps</span>
+                    <span />
+                  </div>
+                )}
+                {ex.trackingType === "bodyweight_reps" && (
+                  <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                    <span>Set</span>
+                    <span>+kg</span>
+                    <span>Reps</span>
+                    <span />
+                  </div>
+                )}
+                {ex.trackingType === "reps_only" && (
+                  <div className="grid grid-cols-[2rem_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                    <span>Set</span>
+                    <span>Reps</span>
+                    <span />
+                  </div>
+                )}
+                {ex.trackingType === "time" && (
+                  <div className="grid grid-cols-[2rem_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                    <span>#</span>
+                    <span>Minutes</span>
+                    <span />
+                  </div>
+                )}
+                {ex.trackingType === "distance_time" && (
+                  <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                    <span>#</span>
+                    <span>km</span>
+                    <span>Minutes</span>
+                    <span />
+                  </div>
+                )}
 
                 {ex.sets.map((set, setIdx) => (
                   <div
                     key={setIdx}
-                    className={`grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 items-center px-1 py-1 rounded ${
+                    className={`grid ${
+                      ex.trackingType === "reps_only" || ex.trackingType === "time"
+                        ? "grid-cols-[2rem_1fr_2.5rem]"
+                        : "grid-cols-[2rem_1fr_1fr_2.5rem]"
+                    } gap-2 items-center px-1 py-1 rounded ${
                       set.isCompleted
                         ? "bg-green-500/10"
                         : set.isWarmup
@@ -543,49 +641,124 @@ export function WorkoutSession({
                           : ""
                     }`}
                   >
-                    <button
-                      onClick={() => toggleWarmup(exIdx, setIdx)}
-                      disabled={set.isCompleted}
-                      className="text-sm font-medium text-center"
-                      title={set.isWarmup ? "Warmup set" : "Working set"}
-                    >
-                      {set.isWarmup ? (
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] px-1 py-0 text-yellow-500 border-yellow-500/50"
-                        >
-                          W
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground">
-                          {set.setNumber}
-                        </span>
-                      )}
-                    </button>
+                    {(ex.trackingType === "weight_reps" || ex.trackingType === "bodyweight_reps" || ex.trackingType === "reps_only") ? (
+                      <button
+                        onClick={() => toggleWarmup(exIdx, setIdx)}
+                        disabled={set.isCompleted}
+                        className="text-sm font-medium text-center"
+                        title={set.isWarmup ? "Warmup set" : "Working set"}
+                      >
+                        {set.isWarmup ? (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] px-1 py-0 text-yellow-500 border-yellow-500/50"
+                          >
+                            W
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground">
+                            {set.setNumber}
+                          </span>
+                        )}
+                      </button>
+                    ) : (
+                      <span className="text-sm text-muted-foreground text-center">
+                        {set.setNumber}
+                      </span>
+                    )}
 
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      placeholder="0"
-                      value={set.weight}
-                      onChange={(e) =>
-                        updateSet(exIdx, setIdx, "weight", e.target.value)
-                      }
-                      disabled={set.isCompleted}
-                      className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
-                    />
+                    {ex.trackingType === "weight_reps" && (
+                      <>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          placeholder="0"
+                          value={set.weight}
+                          onChange={(e) => updateSet(exIdx, setIdx, "weight", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="0"
+                          value={set.reps}
+                          onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        />
+                      </>
+                    )}
 
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="0"
-                      value={set.reps}
-                      onChange={(e) =>
-                        updateSet(exIdx, setIdx, "reps", e.target.value)
-                      }
-                      disabled={set.isCompleted}
-                      className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
-                    />
+                    {ex.trackingType === "bodyweight_reps" && (
+                      <>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          placeholder="0"
+                          value={set.weight}
+                          onChange={(e) => updateSet(exIdx, setIdx, "weight", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="0"
+                          value={set.reps}
+                          onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        />
+                      </>
+                    )}
+
+                    {ex.trackingType === "reps_only" && (
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="0"
+                        value={set.reps}
+                        onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
+                        disabled={set.isCompleted}
+                        className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                      />
+                    )}
+
+                    {ex.trackingType === "time" && (
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="30 or 1:30"
+                        value={set.duration}
+                        onChange={(e) => updateSet(exIdx, setIdx, "duration", e.target.value)}
+                        disabled={set.isCompleted}
+                        className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                      />
+                    )}
+
+                    {ex.trackingType === "distance_time" && (
+                      <>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          placeholder="0"
+                          value={set.distance}
+                          onChange={(e) => updateSet(exIdx, setIdx, "distance", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        />
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          placeholder="30 or 1:30"
+                          value={set.duration}
+                          onChange={(e) => updateSet(exIdx, setIdx, "duration", e.target.value)}
+                          disabled={set.isCompleted}
+                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        />
+                      </>
+                    )}
 
                     <button
                       onClick={() => completeSet(exIdx, setIdx)}

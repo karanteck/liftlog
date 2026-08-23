@@ -12,6 +12,7 @@ type Exercise = {
   aliases: string[];
   muscle_group: string;
   default_rep_tier: string;
+  tracking_type: string;
 };
 
 const MUSCLE_GROUP_ORDER = [
@@ -40,6 +41,7 @@ export function ExerciseSearch({
     id: string;
     name: string;
     repTier: string;
+    trackingType: string;
   }) => void;
   onClose: () => void;
 }) {
@@ -54,7 +56,7 @@ export function ExerciseSearch({
       const [{ data: allExercises }, { data: recentSets }] = await Promise.all([
         supabase
           .from("exercises")
-          .select("id, name, aliases, muscle_group, default_rep_tier")
+          .select("id, name, aliases, muscle_group, default_rep_tier, tracking_type")
           .order("name"),
         supabase
           .from("sets")
@@ -170,6 +172,7 @@ export function ExerciseSearch({
                     id: e.id,
                     name: e.name,
                     repTier: e.default_rep_tier,
+                    trackingType: e.tracking_type,
                   })
                 }
               />
@@ -191,6 +194,7 @@ export function ExerciseSearch({
                     id: e.id,
                     name: e.name,
                     repTier: e.default_rep_tier,
+                    trackingType: e.tracking_type,
                   })
                 }
               />

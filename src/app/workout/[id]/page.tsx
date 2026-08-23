@@ -40,6 +40,7 @@ export default async function WorkoutPage({
     exerciseId: string;
     name: string;
     repTier: string;
+    trackingType: string;
     targetSets: number;
     targetRepMin: number;
     targetRepMax: number;
@@ -58,7 +59,8 @@ export default async function WorkoutPage({
         exercises (
           id,
           name,
-          default_rep_tier
+          default_rep_tier,
+          tracking_type
         )
       `
       )
@@ -71,11 +73,13 @@ export default async function WorkoutPage({
           id: string;
           name: string;
           default_rep_tier: string;
+          tracking_type: string;
         };
         return {
           exerciseId: ex.id,
           name: ex.name,
           repTier: ex.default_rep_tier,
+          trackingType: ex.tracking_type,
           targetSets: re.target_sets,
           targetRepMin: re.target_rep_min,
           targetRepMax: re.target_rep_max,
