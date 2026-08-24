@@ -1,8 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { BackButton } from "@/components/back-button";
 import { Badge } from "@/components/ui/badge";
 import { computeE1rm } from "@/lib/pr";
 import { E1rmChart } from "@/components/e1rm-chart";
@@ -202,11 +202,7 @@ export default async function ExerciseHistoryPage({
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex items-center gap-3 px-4 py-3 border-b">
-        <Link href="/history">
-          <Button variant="ghost" size="sm">
-            Back
-          </Button>
-        </Link>
+        <BackButton />
         <h1 className="text-lg font-bold">{exercise.name}</h1>
       </header>
 

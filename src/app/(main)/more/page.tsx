@@ -5,7 +5,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  BarChart3,
   ListChecks,
   Scale,
   Calculator,
@@ -13,7 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-export default async function ProfilePage() {
+export default async function MorePage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -28,7 +27,6 @@ export default async function ProfilePage() {
     .single();
 
   const links = [
-    { href: "/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/routines", label: "Routines", icon: ListChecks },
     { href: "/bodyweight", label: "Bodyweight", icon: Scale },
     { href: "/plates", label: "Plate Calculator", icon: Calculator },

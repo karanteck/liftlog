@@ -836,7 +836,9 @@ export function WorkoutSession({
           <Card key={ex.exerciseId}>
             <CardContent className="py-3 px-4">
               <div className="mb-2">
-                <p className="font-semibold">{ex.name}</p>
+                <Link href={`/exercises/${ex.exerciseId}`} className="font-semibold text-primary hover:underline">
+                  {ex.name}
+                </Link>
                 <div className="flex items-center gap-2 mt-0.5">
                   {(ex.trackingType === "weight_reps" || ex.trackingType === "bodyweight_reps" || ex.trackingType === "reps_only") && (
                     <span className="text-xs text-muted-foreground">

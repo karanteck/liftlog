@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Dumbbell, Clock, User } from "lucide-react";
+import { Home, Dumbbell, Clock, BarChart3, Menu } from "lucide-react";
 
 const tabs = [
   { href: "/", label: "Home", icon: Home },
   { href: "/workout/new", label: "Workout", icon: Dumbbell },
   { href: "/history", label: "History", icon: Clock },
-  { href: "/profile", label: "Profile", icon: User },
+  { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/more", label: "More", icon: Menu },
 ] as const;
 
 export function BottomNav() {
@@ -27,7 +28,7 @@ export function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center gap-0.5 w-20 h-full transition-colors ${
+              className={`flex flex-col items-center justify-center gap-0.5 w-16 h-full transition-colors ${
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground"
