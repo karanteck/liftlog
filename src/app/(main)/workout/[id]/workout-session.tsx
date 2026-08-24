@@ -653,7 +653,7 @@ export function WorkoutSession({
       });
 
     return (
-      <div className="flex min-h-screen flex-col px-4 py-8 pb-20">
+      <div className="flex min-h-screen flex-col px-4 py-8 pb-24">
         <div className="max-w-lg mx-auto w-full space-y-6">
           <div className="text-center space-y-2 pt-4">
             <CircleCheckBig className="h-12 w-12 text-primary mx-auto" />
@@ -813,7 +813,7 @@ export function WorkoutSession({
                   placeholder="e.g. 75.0"
                   value={bodyweight}
                   onChange={(e) => setBodyweight(e.target.value)}
-                  className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums"
+                  className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums"
                 />
               </div>
               <div>
@@ -984,7 +984,7 @@ export function WorkoutSession({
                           value={set.weight}
                           onChange={(e) => updateSet(exIdx, setIdx, "weight", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
                         <input
                           type="text"
@@ -993,13 +993,13 @@ export function WorkoutSession({
                           value={set.reps}
                           onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
                         <select
                           value={set.rpe}
                           onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
                         >
                           <option value="">—</option>
                           {[1,2,3,4,5,6,7,8,9,10].map(v => (
@@ -1018,7 +1018,7 @@ export function WorkoutSession({
                           value={set.weight}
                           onChange={(e) => updateSet(exIdx, setIdx, "weight", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
                         <input
                           type="text"
@@ -1027,13 +1027,13 @@ export function WorkoutSession({
                           value={set.reps}
                           onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
                         <select
                           value={set.rpe}
                           onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
                         >
                           <option value="">—</option>
                           {[1,2,3,4,5,6,7,8,9,10].map(v => (
@@ -1052,13 +1052,13 @@ export function WorkoutSession({
                           value={set.reps}
                           onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
                         <select
                           value={set.rpe}
                           onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
                         >
                           <option value="">—</option>
                           {[1,2,3,4,5,6,7,8,9,10].map(v => (
@@ -1076,7 +1076,7 @@ export function WorkoutSession({
                         value={set.duration}
                         onChange={(e) => updateSet(exIdx, setIdx, "duration", e.target.value)}
                         disabled={set.isCompleted}
-                        className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                        className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                       />
                     )}
 
@@ -1089,7 +1089,7 @@ export function WorkoutSession({
                           value={set.distance}
                           onChange={(e) => updateSet(exIdx, setIdx, "distance", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
                         <input
                           type="text"
@@ -1098,7 +1098,7 @@ export function WorkoutSession({
                           value={set.duration}
                           onChange={(e) => updateSet(exIdx, setIdx, "duration", e.target.value)}
                           disabled={set.isCompleted}
-                          className="h-9 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
+                          className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
                       </>
                     )}
@@ -1109,7 +1109,7 @@ export function WorkoutSession({
                           ? uncompleteSet(exIdx, setIdx)
                           : completeSet(exIdx, setIdx)
                       }
-                      className={`h-11 w-11 rounded-md flex items-center justify-center text-lg transition-colors ${
+                      className={`h-12 w-12 rounded-md flex items-center justify-center text-lg transition-colors ${
                         set.isCompleted
                           ? "bg-green-500 text-white active:bg-green-600"
                           : "border hover:bg-accent"
@@ -1123,7 +1123,7 @@ export function WorkoutSession({
 
               <button
                 onClick={() => addSet(exIdx)}
-                className="mt-2 w-full text-xs text-muted-foreground hover:text-foreground py-1"
+                className="mt-2 w-full text-sm text-muted-foreground hover:text-foreground py-3"
               >
                 + Add set
               </button>

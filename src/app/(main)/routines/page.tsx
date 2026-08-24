@@ -38,7 +38,7 @@ export default async function RoutinesPage() {
     })) ?? [];
 
   return (
-    <div className="flex flex-col min-h-screen pb-20">
+    <div className="flex flex-col min-h-screen pb-24">
       <header className="flex items-center justify-between px-4 py-3 border-b">
         <h1 className="text-lg font-bold">Routines</h1>
         <Link href="/routines/new">

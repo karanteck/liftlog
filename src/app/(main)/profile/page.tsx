@@ -35,7 +35,7 @@ export default async function ProfilePage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen pb-20">
+    <div className="flex flex-col min-h-screen pb-24">
       <header className="px-4 py-4 border-b">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div>

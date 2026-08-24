@@ -46,7 +46,7 @@ export default function PlateCalculatorPage() {
   const valid = target > bar && remainder < 0.01;
 
   return (
-    <div className="flex flex-col min-h-screen pb-20">
+    <div className="flex flex-col min-h-screen pb-24">
       <header className="px-4 py-3 border-b">
         <h1 className="text-lg font-bold">Plate Calculator</h1>
       </header>

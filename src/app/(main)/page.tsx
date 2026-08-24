@@ -170,7 +170,7 @@ export default async function Home() {
   const firstName = profile.name.split(" ")[0];
 
   return (
-    <div className="flex flex-col min-h-screen pb-20">
+    <div className="flex flex-col min-h-screen pb-24">
       <header className="px-4 pt-4 pb-2 max-w-lg mx-auto w-full">
         <p className="text-2xl font-bold">Hey {firstName}</p>
         <p className="text-sm text-muted-foreground mt-0.5">
@@ -197,7 +197,7 @@ export default async function Home() {
                 <span>
                   Quick start: <span className="font-medium text-foreground">{lastRoutine.name}</span>
                 </span>
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-6 w-6" />
               </Link>
             )}
           </CardContent>
@@ -206,7 +206,7 @@ export default async function Home() {
         <div className="grid grid-cols-3 gap-3">
           <Card>
             <CardContent className="py-3 px-2 text-center">
-              <Scale className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
+              <Scale className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
               <p className="text-lg font-bold tabular-nums">
                 {latestBodyweight ? `${latestBodyweight}` : "—"}
               </p>
@@ -215,7 +215,7 @@ export default async function Home() {
           </Card>
           <Card>
             <CardContent className="py-3 px-2 text-center">
-              <TrendingUp className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
+              <TrendingUp className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
               <p className="text-lg font-bold tabular-nums">
                 {weekWorkoutCount}
               </p>
@@ -224,7 +224,7 @@ export default async function Home() {
           </Card>
           <Card>
             <CardContent className="py-3 px-2 text-center">
-              <Flame className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
+              <Flame className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
               <p className="text-lg font-bold tabular-nums">{streak}</p>
               <p className="text-[10px] text-muted-foreground">
                 week{streak !== 1 ? "s" : ""} streak
@@ -255,7 +255,7 @@ export default async function Home() {
                       )}
                     </p>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
+                  <ChevronRight className="h-6 w-6 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>

@@ -1,4 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="64" fill="#09090b"/>
-  <text x="256" y="300" font-family="system-ui, sans-serif" font-size="200" font-weight="bold" fill="#fafafa" text-anchor="middle">S</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="StrongBoi">
+  <rect width="1024" height="1024" rx="235" fill="#0B0E0E"></rect>
+  <rect x="144" y="332" width="90" height="360" rx="28" fill="#4ECDC4"></rect>
+  <rect x="269" y="242" width="90" height="540" rx="28" fill="#4ECDC4"></rect>
+  <rect x="394" y="464" width="236" height="96" fill="#F2F5F4"></rect>
+  <rect x="665" y="242" width="90" height="540" rx="28" fill="#4ECDC4"></rect>
+  <rect x="790" y="332" width="90" height="360" rx="28" fill="#4ECDC4"></rect>
 </svg>
