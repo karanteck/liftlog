@@ -160,7 +160,6 @@ pg_cron job `weekly-digest` is scheduled in Supabase (Sunday 8am UTC).
 Resend is on free tier — currently can only send to Karan's email. To
 send to Kriti, verify a domain in Resend dashboard.
 
-Remaining housekeeping (not blocking):
-- Next.js middleware deprecation warning (middleware → proxy convention)
-- Route `src/app/api/weekly-digest/route.ts` has a top-level try-catch
-  that was added for debugging — can be kept or cleaned up
+Housekeeping (all done):
+- Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
+- Weekly digest route try-catch kept as safety net, indentation fixed

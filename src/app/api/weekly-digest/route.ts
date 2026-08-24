@@ -17,72 +17,70 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  const supabase = createAdminClient();
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const supabase = createAdminClient();
 
-  // Get all approved profiles
-  const { data: profiles, error: profilesError } = await supabase
-    .from("profiles")
-    .select("id, name")
-    .eq("is_approved", true);
+    const { data: profiles, error: profilesError } = await supabase
+      .from("profiles")
+      .select("id, name")
+      .eq("is_approved", true);
 
-  if (profilesError || !profiles?.length) {
-    return NextResponse.json(
-      { error: "Failed to fetch profiles", details: profilesError },
-      { status: 500 }
-    );
-  }
-
-  // Get emails from Supabase Auth
-  const { data: authData, error: authError } =
-    await supabase.auth.admin.listUsers();
-
-  if (authError) {
-    return NextResponse.json(
-      { error: "Failed to fetch auth users", details: authError },
-      { status: 500 }
-    );
-  }
-
-  const emailMap = new Map(
-    authData.users.map((u) => [u.id, u.email])
-  );
-
-  const results: { user: string; status: string; error?: string }[] = [];
-
-  for (const profile of profiles) {
-    const email = emailMap.get(profile.id);
-    if (!email) {
-      results.push({ user: profile.name, status: "skipped", error: "no email" });
-      continue;
+    if (profilesError || !profiles?.length) {
+      return NextResponse.json(
+        { error: "Failed to fetch profiles", details: profilesError },
+        { status: 500 }
+      );
     }
 
-    try {
-      const digestData = await buildDigestData(supabase, profile.id, profile.name);
-      const digestHtml = buildDigestHtml(digestData);
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.listUsers();
 
-      const { error: sendError } = await resend.emails.send({
-        from: "LiftLog <onboarding@resend.dev>",
-        to: email,
-        subject: "Your week in training",
-        html: digestHtml,
-      });
+    if (authError) {
+      return NextResponse.json(
+        { error: "Failed to fetch auth users", details: authError },
+        { status: 500 }
+      );
+    }
 
-      if (sendError) {
-        results.push({ user: profile.name, status: "failed", error: sendError.message });
-      } else {
-        results.push({ user: profile.name, status: "sent" });
+    const emailMap = new Map(
+      authData.users.map((u) => [u.id, u.email])
+    );
+
+    const results: { user: string; status: string; error?: string }[] = [];
+
+    for (const profile of profiles) {
+      const email = emailMap.get(profile.id);
+      if (!email) {
+        results.push({ user: profile.name, status: "skipped", error: "no email" });
+        continue;
       }
-    } catch (err) {
-      results.push({
-        user: profile.name,
-        status: "failed",
-        error: err instanceof Error ? err.message : "Unknown error",
-      });
-    }
-  }
 
-  return NextResponse.json({ results });
+      try {
+        const digestData = await buildDigestData(supabase, profile.id, profile.name);
+        const digestHtml = buildDigestHtml(digestData);
+
+        const { error: sendError } = await resend.emails.send({
+          from: "LiftLog <onboarding@resend.dev>",
+          to: email,
+          subject: "Your week in training",
+          html: digestHtml,
+        });
+
+        if (sendError) {
+          results.push({ user: profile.name, status: "failed", error: sendError.message });
+        } else {
+          results.push({ user: profile.name, status: "sent" });
+        }
+      } catch (err) {
+        results.push({
+          user: profile.name,
+          status: "failed",
+          error: err instanceof Error ? err.message : "Unknown error",
+        });
+      }
+    }
+
+    return NextResponse.json({ results });
   } catch (err) {
     return NextResponse.json(
       { error: "Unexpected error", message: err instanceof Error ? err.message : "Unknown" },
