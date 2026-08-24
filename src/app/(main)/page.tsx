@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlateauAlerts } from "@/components/plateau-alerts";
 import { runPlateauDetection } from "@/lib/plateau-runner";
-import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp } from "lucide-react";
+import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp, ClipboardList } from "lucide-react";
 
 function getMonday(d: Date): string {
   const day = d.getDay();
@@ -231,6 +231,23 @@ export default async function Home() {
               </p>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="flex gap-3">
+          <Link
+            href="/routines"
+            className="flex-1 flex items-center justify-center gap-2 rounded-full border border-border bg-card py-2.5 px-4 text-sm font-medium hover:bg-accent/50 transition-colors"
+          >
+            <ClipboardList className="h-4 w-4 text-primary shrink-0" />
+            Routines
+          </Link>
+          <Link
+            href="/bodyweight"
+            className="flex-1 flex items-center justify-center gap-2 rounded-full border border-border bg-card py-2.5 px-4 text-sm font-medium hover:bg-accent/50 transition-colors"
+          >
+            <Scale className="h-4 w-4 text-primary shrink-0" />
+            Bodyweight
+          </Link>
         </div>
 
         {lastWorkout && (

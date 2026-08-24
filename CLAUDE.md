@@ -207,7 +207,7 @@ StrongBoi rebrand & UI polish (all done):
   `h-12 w-12`, "+ Add set" button padding increased
 - All pages updated to `pb-24` for taller bottom nav
 
-UI/UX overhaul v2 (in progress — plan at `~/.claude/plans/should-i-use-claude-serene-naur.md`):
+UI/UX overhaul v2 (complete — plan at `~/.claude/plans/should-i-use-claude-serene-naur.md`):
 4 tiers, 16 steps. Two approved spec overrides: RPE tap-to-reveal (Step 10),
 previous performance as ghost placeholders (Step 11).
 
@@ -242,6 +242,13 @@ previous performance as ghost placeholders (Step 11).
   14. Rest timer enlarged — CIRCLE_SIZE 80→120, STROKE_WIDTH 5→6, time
       text-lg→text-2xl, dismiss button h-8→h-11 text-sm, padding py-3→py-5,
       `rest-done-pulse` animation on timer expiry
+- Tier 4 done (Steps 15–16: Stretch Polish):
+  15. Home page quick links — pill-shaped Routines and Bodyweight shortcut
+      buttons between stat cards and last workout card; teal icons,
+      rounded-full styling distinct from surrounding cards
+  16. Exercise history links in workout detail — already done as part of
+      Step 8 (exercise names in history/[id] were already Link components
+      to /exercises/[id])
 
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
