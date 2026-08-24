@@ -87,13 +87,13 @@ export function FrequencyChart({ dates }: { dates: string[] }) {
             />
             <ReferenceLine
               y={avg}
-              stroke="hsl(var(--muted-foreground))"
+              stroke="var(--muted-foreground)"
               strokeDasharray="3 3"
               strokeOpacity={0.5}
             />
             <Bar
               dataKey="workouts"
-              fill="hsl(var(--primary))"
+              fill="var(--primary)"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

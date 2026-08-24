@@ -58,7 +58,7 @@ export function E1rmChart({ data }: { data: DataPoint[] }) {
             <Line
               type="monotone"
               dataKey="e1rm"
-              stroke="hsl(var(--primary))"
+              stroke="var(--primary)"
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 5 }}
