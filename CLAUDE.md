@@ -149,8 +149,7 @@ Spec gaps acknowledged and intentionally skipped:
 
 Offline-first was removed from the spec (not pursuing).
 
-11 database migrations exist (00001–00011). Migrations 00009–00011 need
-to be pushed to Supabase.
+11 database migrations exist (00001–00011). All applied to Supabase.
 
 Vercel environment variables set: `SUPABASE_SECRET_KEY`, `RESEND_API_KEY`,
 `CRON_SECRET` (all marked sensitive, production + preview).
