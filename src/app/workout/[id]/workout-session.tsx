@@ -210,6 +210,8 @@ export function WorkoutSession({
   const [elapsed, setElapsed] = useState(0);
   const [restTimer, setRestTimer] = useState<{
     duration: number;
+    setDbId: string;
+    startedAt: number;
   } | null>(null);
   const [finishing, setFinishing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -392,7 +394,7 @@ export function WorkoutSession({
       const isCardio = ex.trackingType === "time" || ex.trackingType === "distance_time";
 
       if (!set.isWarmup && !isCardio) {
-        setRestTimer({ duration: restDuration(ex.repTier) });
+        setRestTimer({ duration: restDuration(ex.repTier), setDbId: data.id, startedAt: Date.now() });
 
         const prRecord = currentPRs[ex.exerciseId] ?? {
           maxWeight: null,
@@ -925,9 +927,17 @@ export function WorkoutSession({
 
       {restTimer && (
         <RestTimer
-          key={Date.now()}
+          key={restTimer.startedAt}
           duration={restTimer.duration}
-          onDismiss={() => setRestTimer(null)}
+          onDismiss={() => {
+            const restSeconds = Math.round((Date.now() - restTimer.startedAt) / 1000);
+            supabase
+              .from("sets")
+              .update({ rest_seconds: restSeconds })
+              .eq("id", restTimer.setDbId)
+              .then();
+            setRestTimer(null);
+          }}
         />
       )}
     </div>
