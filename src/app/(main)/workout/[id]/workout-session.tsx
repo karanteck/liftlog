@@ -11,6 +11,17 @@ import { RestTimer } from "@/components/rest-timer";
 import { ExerciseSearch } from "@/components/exercise-search";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronUp, ChevronDown, Check, Trophy, CircleCheckBig } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { checkNewPRs, computePRs, PR_LABELS, type PRRecord, type PRType } from "@/lib/pr";
 
 type ExerciseInfo = {
@@ -226,7 +237,8 @@ export function WorkoutSession({
   const [showDetails, setShowDetails] = useState(false);
 
   const addExercise = useCallback(
-    async (exercise: { id: string; name: string; repTier: string; trackingType: string }) => {
+    async (exercise: { id: string; name: string; muscleGroup: string; repTier: string; trackingType: string }) => {
+      setShowSearch(false);
       const repRanges: Record<string, [number, number]> = {
         heavy_compound: [5, 8],
         compound: [8, 12],
@@ -305,7 +317,6 @@ export function WorkoutSession({
           progressionPrompt,
         },
       ]);
-      setShowSearch(false);
     },
     [supabase, userId]
   );
@@ -479,6 +490,52 @@ export function WorkoutSession({
     [exerciseStates, supabase, workout.id, currentPRs, previousPerformance]
   );
 
+  const uncompleteSet = useCallback(
+    async (exIdx: number, setIdx: number) => {
+      const ex = exerciseStates[exIdx];
+      const set = ex.sets[setIdx];
+      if (!set.isCompleted || !set.dbId) return;
+
+      const { error } = await supabase
+        .from("sets")
+        .delete()
+        .eq("id", set.dbId);
+
+      if (error) {
+        toast.error("Failed to undo set: " + error.message);
+        return;
+      }
+
+      setExerciseStates((prev) => {
+        const next = [...prev];
+        const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
+        exCopy.sets[setIdx] = {
+          ...exCopy.sets[setIdx],
+          dbId: null,
+          isCompleted: false,
+        };
+        next[exIdx] = exCopy;
+        return next;
+      });
+
+      const allRemaining = exerciseStates[exIdx].sets
+        .filter((s, i) => i !== setIdx && s.isCompleted && !s.isWarmup)
+        .map((s) => ({
+          weight: s.weight ? parseFloat(s.weight) : null,
+          reps: s.reps ? parseInt(s.reps, 10) : null,
+          isWarmup: false,
+        }));
+      const previousSets = (previousPerformance[ex.exerciseId] ?? []).map(
+        (s) => ({ weight: s.weight, reps: s.reps, isWarmup: false })
+      );
+      setCurrentPRs((prev) => ({
+        ...prev,
+        [ex.exerciseId]: computePRs([...previousSets, ...allRemaining]),
+      }));
+    },
+    [exerciseStates, supabase, previousPerformance]
+  );
+
   const addSet = useCallback((exIdx: number) => {
     setExerciseStates((prev) => {
       const next = [...prev];
@@ -550,6 +607,9 @@ export function WorkoutSession({
     (acc, ex) => acc + ex.sets.filter((s) => s.isCompleted && !s.isWarmup).length,
     0
   );
+  const exercisesWithSets = exerciseStates.filter(
+    (ex) => ex.sets.some((s) => s.isCompleted)
+  ).length;
 
   if (workout.isFinished && !showSummary) {
     return (
@@ -704,14 +764,28 @@ export function WorkoutSession({
               </div>
             </div>
           </div>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={finishWorkout}
-            disabled={finishing}
-          >
-            {finishing ? "Saving..." : "Finish"}
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={<Button size="sm" variant="destructive" disabled={finishing} />}
+            >
+              {finishing ? "Saving..." : "Finish"}
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Finish this workout?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You logged {totalCompleted} set{totalCompleted !== 1 ? "s" : ""} across{" "}
+                  {exercisesWithSets} exercise{exercisesWithSets !== 1 ? "s" : ""}.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Keep going</AlertDialogCancel>
+                <AlertDialogAction onClick={finishWorkout}>
+                  Finish workout
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </header>
 
@@ -815,7 +889,7 @@ export function WorkoutSession({
 
               <div className="space-y-1.5">
                 {ex.trackingType === "weight_reps" && (
-                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>kg</span>
                     <span>Reps</span>
@@ -824,7 +898,7 @@ export function WorkoutSession({
                   </div>
                 )}
                 {ex.trackingType === "bodyweight_reps" && (
-                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>+kg</span>
                     <span>Reps</span>
@@ -833,7 +907,7 @@ export function WorkoutSession({
                   </div>
                 )}
                 {ex.trackingType === "reps_only" && (
-                  <div className="grid grid-cols-[2rem_1fr_3rem_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_3rem_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>Reps</span>
                     <span>RPE</span>
@@ -841,14 +915,14 @@ export function WorkoutSession({
                   </div>
                 )}
                 {ex.trackingType === "time" && (
-                  <div className="grid grid-cols-[2rem_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>#</span>
                     <span>Minutes</span>
                     <span />
                   </div>
                 )}
                 {ex.trackingType === "distance_time" && (
-                  <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_1fr_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>#</span>
                     <span>km</span>
                     <span>Minutes</span>
@@ -1030,15 +1104,18 @@ export function WorkoutSession({
                     )}
 
                     <button
-                      onClick={() => completeSet(exIdx, setIdx)}
-                      disabled={set.isCompleted}
-                      className={`h-9 w-9 rounded-md flex items-center justify-center text-lg transition-colors ${
+                      onClick={() =>
                         set.isCompleted
-                          ? "bg-green-500 text-white"
+                          ? uncompleteSet(exIdx, setIdx)
+                          : completeSet(exIdx, setIdx)
+                      }
+                      className={`h-11 w-11 rounded-md flex items-center justify-center text-lg transition-colors ${
+                        set.isCompleted
+                          ? "bg-green-500 text-white active:bg-green-600"
                           : "border hover:bg-accent"
                       }`}
                     >
-                      <Check className="h-4 w-4" />
+                      <Check className="h-5 w-5" />
                     </button>
                   </div>
                 ))}
@@ -1063,14 +1140,13 @@ export function WorkoutSession({
         </Button>
       </main>
 
-      {showSearch && (
-        <ExerciseSearch
-          excludeIds={exerciseStates.map((e) => e.exerciseId)}
-          userId={userId}
-          onSelect={addExercise}
-          onClose={() => setShowSearch(false)}
-        />
-      )}
+      <ExerciseSearch
+        open={showSearch}
+        excludeIds={exerciseStates.map((e) => e.exerciseId)}
+        userId={userId}
+        onSelect={addExercise}
+        onClose={() => setShowSearch(false)}
+      />
 
       {prFlash && (
         <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-bounce">

@@ -170,8 +170,18 @@ UI/UX overhaul (in progress — see `UI_UX_OVERHAUL.md` for full plan):
      quick-start card, plateau alerts)
   6. Workout completion summary (duration, sets, volume, PRs,
      per-exercise breakdown)
-- Steps 7–13 remaining (Tier 2: Polish + Tier 3: Refinement)
-- New packages: `sonner` (toast notifications)
+- Steps 7–10 done (Tier 2: Experience Polish):
+  7. Animated transitions — exercise search/picker now uses bottom-sheet
+     Drawer (`@base-ui/react`) with drag-to-dismiss
+  8. Unified exercise search — merged `exercise-picker.tsx` and
+     `exercise-search.tsx` into one component with recently-used,
+     filter chips, grouped listing, and custom exercise creation
+  9. Finish confirmation — AlertDialog before ending workout, bigger
+     touch targets (44px) on set checkmarks and routine editor buttons
+  10. Skeleton loading screens for History, Analytics, Bodyweight pages;
+      set undo (tap green checkmark to uncomplete and delete from DB)
+- Steps 11–13 remaining (Tier 3: Refinement)
+- New packages: `sonner`, `@base-ui/react` (Drawer, AlertDialog, Skeleton)
 - Route structure: authenticated pages now live under `src/app/(main)/`,
   login/signup stay at `src/app/`. URLs unchanged.
 

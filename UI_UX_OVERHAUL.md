@@ -21,10 +21,10 @@ LiftLog is feature-complete but visually utilitarian — a functional gray butto
 - [x] Step 4: Bottom Navigation Bar
 - [x] Step 5: Home Page Redesign
 - [x] Step 6: Workout Completion Summary
-- [ ] Step 7: Animated Transitions (Drawer)
-- [ ] Step 8: Unified Exercise Search
-- [ ] Step 9: Finish Confirmation + Touch Targets
-- [ ] Step 10: Skeleton Loading + Set Undo
+- [x] Step 7: Animated Transitions (Drawer)
+- [x] Step 8: Unified Exercise Search
+- [x] Step 9: Finish Confirmation + Touch Targets
+- [x] Step 10: Skeleton Loading + Set Undo
 - [ ] Step 11: Theme-Aware Charts
 - [ ] Step 12: Circular Rest Timer
 - [ ] Step 13: History Cards + Theme Color

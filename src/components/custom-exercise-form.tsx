@@ -64,6 +64,7 @@ type Exercise = {
   muscle_group: string;
   equipment: string;
   default_rep_tier: string;
+  tracking_type: string;
 };
 
 export function CustomExerciseForm({
@@ -106,7 +107,7 @@ export function CustomExerciseForm({
         is_custom: true,
         owner_id: userId,
       })
-      .select("id, name, aliases, muscle_group, equipment, default_rep_tier")
+      .select("id, name, aliases, muscle_group, equipment, default_rep_tier, tracking_type")
       .single();
 
     if (error || !data) {
@@ -119,15 +120,15 @@ export function CustomExerciseForm({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      <header className="flex items-center gap-3 px-4 py-3 border-b">
+    <>
+      <header className="flex items-center gap-3 px-4 py-3 border-b shrink-0">
         <Button variant="ghost" size="sm" onClick={onClose}>
           Cancel
         </Button>
         <h1 className="text-lg font-bold">New Exercise</h1>
       </header>
 
-      <main className="flex-1 overflow-y-auto px-4 py-4 space-y-4 max-w-lg mx-auto w-full">
+      <div className="flex-1 overflow-y-auto min-h-0 px-4 py-4 space-y-4 max-w-lg mx-auto w-full">
         <div>
           <label className="text-sm font-medium block mb-1">Name</label>
           <input
@@ -226,7 +227,7 @@ export function CustomExerciseForm({
         >
           {saving ? "Creating..." : "Create exercise"}
         </Button>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }

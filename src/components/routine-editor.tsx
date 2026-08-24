@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { ChevronUp, ChevronDown, X } from "lucide-react";
-import { ExercisePicker } from "@/components/exercise-picker";
+import { ExerciseSearch } from "@/components/exercise-search";
 
 type RoutineExercise = {
   routineExerciseId: string | null;
@@ -79,7 +79,7 @@ export function RoutineEditor({
   }, []);
 
   const addExercise = useCallback(
-    (exercise: { id: string; name: string; muscleGroup: string; repTier: string }) => {
+    (exercise: { id: string; name: string; muscleGroup: string; repTier: string; trackingType: string }) => {
       const [repMin, repMax] = REP_RANGES[exercise.repTier] ?? [8, 12];
       setExercises((prev) => [
         ...prev,
@@ -212,22 +212,22 @@ export function RoutineEditor({
                   <button
                     onClick={() => moveUp(idx)}
                     disabled={idx === 0}
-                    className="w-7 h-7 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
+                    className="w-11 h-11 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
                   >
-                    <ChevronUp className="h-4 w-4" />
+                    <ChevronUp className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => moveDown(idx)}
                     disabled={idx === exercises.length - 1}
-                    className="w-7 h-7 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
+                    className="w-11 h-11 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
                   >
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => removeExercise(idx)}
-                    className="w-7 h-7 rounded border flex items-center justify-center text-destructive hover:bg-destructive/10"
+                    className="w-11 h-11 rounded border flex items-center justify-center text-destructive hover:bg-destructive/10"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-5 w-5" />
                   </button>
                 </div>
               </div>
@@ -307,13 +307,12 @@ export function RoutineEditor({
         {saving ? "Saving..." : "Save routine"}
       </Button>
 
-      {showPicker && (
-        <ExercisePicker
-          excludeIds={exercises.map((e) => e.exerciseId)}
-          onSelect={addExercise}
-          onClose={() => setShowPicker(false)}
-        />
-      )}
+      <ExerciseSearch
+        open={showPicker}
+        excludeIds={exercises.map((e) => e.exerciseId)}
+        onSelect={addExercise}
+        onClose={() => setShowPicker(false)}
+      />
     </div>
   );
 }
