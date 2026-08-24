@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         const digestHtml = buildDigestHtml(digestData);
 
         const { error: sendError } = await resend.emails.send({
-          from: "LiftLog <onboarding@resend.dev>",
+          from: "StrongBoi <onboarding@resend.dev>",
           to: email,
           subject: "Your week in training",
           html: digestHtml,

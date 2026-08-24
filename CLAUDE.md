@@ -191,6 +191,17 @@ UI/UX overhaul (complete — see `UI_UX_OVERHAUL.md` for full plan):
 - Route structure: authenticated pages now live under `src/app/(main)/`,
   login/signup stay at `src/app/`. URLs unchanged.
 
+StrongBoi rebrand & UI polish (all done):
+- App renamed from LiftLog to StrongBoi (metadata, manifest, login,
+  email digest, PWA icons)
+- Font changed from Geist to Inter via `next/font/google`; fixed CSS
+  variable wiring (`--font-sans` instead of `--font-geist`)
+- Icon sizes bumped one tier: `h-4 w-4` → `h-5 w-5`, `h-5 w-5` →
+  `h-6 w-6`, `h-3 w-3` → `h-4 w-4` across all components
+- Bottom nav raised with `pb-1` extra padding
+- Button touch targets increased: default 32→40px, sm 28→36px,
+  lg 36→44px, icon 32→40px, icon-sm 28→36px, icon-lg 36→44px
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed

@@ -691,7 +691,7 @@ export function WorkoutSession({
             <Card className="border-amber-500/30 bg-amber-500/5">
               <CardContent className="py-3 px-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Trophy className="h-4 w-4 text-amber-500" />
+                  <Trophy className="h-5 w-5 text-amber-500" />
                   <p className="font-semibold text-sm">Personal Records</p>
                 </div>
                 <div className="space-y-1">
@@ -741,7 +741,7 @@ export function WorkoutSession({
               href="/"
               className="text-muted-foreground hover:text-foreground p-1"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-6 w-6" />
             </Link>
             <div>
               <h1 className="font-bold">
@@ -796,7 +796,7 @@ export function WorkoutSession({
         >
           <span className="inline-flex items-center gap-1">
             {showDetails ? "Hide" : "Add"} bodyweight &amp; notes
-            {showDetails ? <ChevronUp className="h-3 w-3 inline" /> : <ChevronDown className="h-3 w-3 inline" />}
+            {showDetails ? <ChevronUp className="h-4 w-4 inline" /> : <ChevronDown className="h-4 w-4 inline" />}
           </span>
         </button>
 
@@ -1115,7 +1115,7 @@ export function WorkoutSession({
                           : "border hover:bg-accent"
                       }`}
                     >
-                      <Check className="h-5 w-5" />
+                      <Check className="h-6 w-6" />
                     </button>
                   </div>
                 ))}

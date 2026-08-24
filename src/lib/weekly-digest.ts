@@ -238,7 +238,7 @@ export function buildDigestHtml(data: DigestData): string {
       }
 
       <p style="font-size:12px;color:#999;margin:20px 0 0;border-top:1px solid #eee;padding-top:12px;">
-        LiftLog weekly digest
+        StrongBoi weekly digest
       </p>
     </div>
   `;

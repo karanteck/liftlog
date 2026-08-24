@@ -214,20 +214,20 @@ export function RoutineEditor({
                     disabled={idx === 0}
                     className="w-11 h-11 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
                   >
-                    <ChevronUp className="h-5 w-5" />
+                    <ChevronUp className="h-6 w-6" />
                   </button>
                   <button
                     onClick={() => moveDown(idx)}
                     disabled={idx === exercises.length - 1}
                     className="w-11 h-11 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
                   >
-                    <ChevronDown className="h-5 w-5" />
+                    <ChevronDown className="h-6 w-6" />
                   </button>
                   <button
                     onClick={() => removeExercise(idx)}
                     className="w-11 h-11 rounded border flex items-center justify-center text-destructive hover:bg-destructive/10"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-6 w-6" />
                   </button>
                 </div>
               </div>
