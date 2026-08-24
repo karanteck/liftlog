@@ -107,18 +107,6 @@ function restDuration(repTier: string): number {
   return 60;
 }
 
-function formatPrevious(sets: PrevSet[]): string {
-  if (sets.length === 0) return "";
-  const allSameWeight =
-    sets.every((s) => s.weight === sets[0].weight) && sets[0].weight != null;
-  if (allSameWeight) {
-    return `${sets[0].weight}kg × ${sets.map((s) => s.reps ?? "?").join(", ")}`;
-  }
-  return sets
-    .map((s) => `${s.weight ?? "?"}×${s.reps ?? "?"}`)
-    .join(", ");
-}
-
 function buildInitialState(
   exercises: ExerciseInfo[],
   previousPerformance: Record<string, PrevSet[]>,
@@ -235,6 +223,7 @@ export function WorkoutSession({
   const [bodyweight, setBodyweight] = useState("");
   const [notes, setNotes] = useState("");
   const [showDetails, setShowDetails] = useState(false);
+  const [rpeOpenFor, setRpeOpenFor] = useState<{ exIdx: number; setIdx: number } | null>(null);
 
   const addExercise = useCallback(
     async (exercise: { id: string; name: string; muscleGroup: string; repTier: string; trackingType: string }) => {
@@ -417,6 +406,10 @@ export function WorkoutSession({
         return;
       }
 
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate(50);
+      }
+
       setExerciseStates((prev) => {
         const next = [...prev];
         const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
@@ -462,8 +455,11 @@ export function WorkoutSession({
         };
         const newPRs = checkNewPRs(prRecord, weight, reps);
         if (newPRs.length > 0) {
+          if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+            navigator.vibrate([100, 50, 100]);
+          }
           setPrFlash({ exerciseName: ex.name, types: newPRs });
-          setTimeout(() => setPrFlash(null), 4000);
+          setTimeout(() => setPrFlash(null), 5000);
           setSessionPRs((prev) => [...prev, { exerciseName: ex.name, types: newPRs }]);
 
           const allSetsForExercise = exerciseStates[exIdx].sets
@@ -556,6 +552,34 @@ export function WorkoutSession({
       return next;
     });
   }, []);
+
+  const updateRpe = useCallback(
+    async (exIdx: number, setIdx: number, value: number) => {
+      const set = exerciseStates[exIdx]?.sets[setIdx];
+      if (!set?.dbId) return;
+
+      const { error } = await supabase
+        .from("sets")
+        .update({ rpe: value })
+        .eq("id", set.dbId);
+
+      if (error) {
+        toast.error("Failed to save RPE");
+        return;
+      }
+
+      setExerciseStates((prev) => {
+        const next = [...prev];
+        const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
+        exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], rpe: value.toString() };
+        next[exIdx] = exCopy;
+        return next;
+      });
+
+      setRpeOpenFor(null);
+    },
+    [exerciseStates, supabase]
+  );
 
   const finishWorkout = useCallback(async () => {
     setFinishing(true);
@@ -855,11 +879,6 @@ export function WorkoutSession({
                       Log distance and time
                     </span>
                   )}
-                  {ex.previousSets.length > 0 && (ex.trackingType === "weight_reps" || ex.trackingType === "bodyweight_reps") && (
-                    <span className="text-xs text-muted-foreground">
-                      Last: {formatPrevious(ex.previousSets)}
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -891,28 +910,25 @@ export function WorkoutSession({
 
               <div className="space-y-1.5">
                 {ex.trackingType === "weight_reps" && (
-                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_1fr_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>kg</span>
                     <span>Reps</span>
-                    <span>RPE</span>
                     <span />
                   </div>
                 )}
                 {ex.trackingType === "bodyweight_reps" && (
-                  <div className="grid grid-cols-[2rem_1fr_1fr_3rem_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_1fr_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>+kg</span>
                     <span>Reps</span>
-                    <span>RPE</span>
                     <span />
                   </div>
                 )}
                 {ex.trackingType === "reps_only" && (
-                  <div className="grid grid-cols-[2rem_1fr_3rem_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                  <div className="grid grid-cols-[2rem_1fr_2.75rem] gap-2 text-xs text-muted-foreground font-medium px-1">
                     <span>Set</span>
                     <span>Reps</span>
-                    <span>RPE</span>
                     <span />
                   </div>
                 )}
@@ -939,10 +955,10 @@ export function WorkoutSession({
                       ex.trackingType === "time"
                         ? "grid-cols-[2rem_1fr_2.5rem]"
                         : ex.trackingType === "reps_only"
-                          ? "grid-cols-[2rem_1fr_3rem_2.5rem]"
+                          ? "grid-cols-[2rem_1fr_2.5rem]"
                           : ex.trackingType === "distance_time"
                             ? "grid-cols-[2rem_1fr_1fr_2.5rem]"
-                            : "grid-cols-[2rem_1fr_1fr_3rem_2.5rem]"
+                            : "grid-cols-[2rem_1fr_1fr_2.5rem]"
                     } gap-2 items-center px-1 py-1 rounded ${
                       set.isCompleted
                         ? "bg-green-500/10"
@@ -982,7 +998,7 @@ export function WorkoutSession({
                         <input
                           type="text"
                           inputMode="decimal"
-                          placeholder="0"
+                          placeholder={ex.previousSets[setIdx]?.weight?.toString() ?? "0"}
                           value={set.weight}
                           onChange={(e) => updateSet(exIdx, setIdx, "weight", e.target.value)}
                           disabled={set.isCompleted}
@@ -991,23 +1007,12 @@ export function WorkoutSession({
                         <input
                           type="text"
                           inputMode="numeric"
-                          placeholder="0"
+                          placeholder={ex.previousSets[setIdx]?.reps?.toString() ?? "0"}
                           value={set.reps}
                           onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
                           disabled={set.isCompleted}
                           className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
-                        <select
-                          value={set.rpe}
-                          onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
-                          disabled={set.isCompleted}
-                          className="h-11 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
-                        >
-                          <option value="">—</option>
-                          {[1,2,3,4,5,6,7,8,9,10].map(v => (
-                            <option key={v} value={v.toString()}>{v}</option>
-                          ))}
-                        </select>
                       </>
                     )}
 
@@ -1016,7 +1021,7 @@ export function WorkoutSession({
                         <input
                           type="text"
                           inputMode="decimal"
-                          placeholder="0"
+                          placeholder={ex.previousSets[setIdx]?.weight?.toString() ?? "0"}
                           value={set.weight}
                           onChange={(e) => updateSet(exIdx, setIdx, "weight", e.target.value)}
                           disabled={set.isCompleted}
@@ -1025,23 +1030,12 @@ export function WorkoutSession({
                         <input
                           type="text"
                           inputMode="numeric"
-                          placeholder="0"
+                          placeholder={ex.previousSets[setIdx]?.reps?.toString() ?? "0"}
                           value={set.reps}
                           onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
                           disabled={set.isCompleted}
                           className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
-                        <select
-                          value={set.rpe}
-                          onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
-                          disabled={set.isCompleted}
-                          className="h-11 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
-                        >
-                          <option value="">—</option>
-                          {[1,2,3,4,5,6,7,8,9,10].map(v => (
-                            <option key={v} value={v.toString()}>{v}</option>
-                          ))}
-                        </select>
                       </>
                     )}
 
@@ -1050,23 +1044,12 @@ export function WorkoutSession({
                         <input
                           type="text"
                           inputMode="numeric"
-                          placeholder="0"
+                          placeholder={ex.previousSets[setIdx]?.reps?.toString() ?? "0"}
                           value={set.reps}
                           onChange={(e) => updateSet(exIdx, setIdx, "reps", e.target.value)}
                           disabled={set.isCompleted}
                           className="h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60"
                         />
-                        <select
-                          value={set.rpe}
-                          onChange={(e) => updateSet(exIdx, setIdx, "rpe", e.target.value)}
-                          disabled={set.isCompleted}
-                          className="h-11 w-full rounded-md border bg-transparent text-xs tabular-nums text-center disabled:opacity-60"
-                        >
-                          <option value="">—</option>
-                          {[1,2,3,4,5,6,7,8,9,10].map(v => (
-                            <option key={v} value={v.toString()}>{v}</option>
-                          ))}
-                        </select>
                       </>
                     )}
 
@@ -1113,12 +1096,51 @@ export function WorkoutSession({
                       }
                       className={`h-12 w-12 rounded-md flex items-center justify-center text-lg transition-colors ${
                         set.isCompleted
-                          ? "bg-green-500 text-white active:bg-green-600"
+                          ? "bg-green-500 text-white active:bg-green-600 animate-[set-complete_300ms_ease-out]"
                           : "border hover:bg-accent"
                       }`}
                     >
                       <Check className="h-6 w-6" />
                     </button>
+
+                    {set.isCompleted && !set.isWarmup && (ex.trackingType === "weight_reps" || ex.trackingType === "bodyweight_reps" || ex.trackingType === "reps_only") && (
+                      <div className="col-span-full flex justify-end">
+                        {rpeOpenFor?.exIdx === exIdx && rpeOpenFor?.setIdx === setIdx ? (
+                          <div className="flex items-center gap-1.5">
+                            {[6, 7, 8, 9, 10].map((v) => (
+                              <button
+                                key={v}
+                                onClick={() => updateRpe(exIdx, setIdx, v)}
+                                className={`h-7 w-7 rounded-full text-xs font-medium transition-colors ${
+                                  set.rpe === v.toString()
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-accent hover:bg-accent/80 text-foreground"
+                                }`}
+                              >
+                                {v}
+                              </button>
+                            ))}
+                            <button
+                              onClick={() => setRpeOpenFor(null)}
+                              className="h-7 w-7 rounded-full text-xs text-muted-foreground hover:text-foreground bg-accent/50"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setRpeOpenFor({ exIdx, setIdx })}
+                            className="text-xs text-muted-foreground hover:text-foreground px-1.5 py-0.5 rounded"
+                          >
+                            {set.rpe ? (
+                              <span className="bg-accent px-1.5 py-0.5 rounded tabular-nums">RPE {set.rpe}</span>
+                            ) : (
+                              "RPE"
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1151,7 +1173,7 @@ export function WorkoutSession({
       />
 
       {prFlash && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-bounce">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-[pr-celebrate_600ms_ease-out]">
           <div className="rounded-lg bg-amber-500 text-white px-4 py-2 shadow-lg text-center">
             <p className="font-bold text-sm">New PR!</p>
             <p className="text-xs">

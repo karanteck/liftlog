@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
-const CIRCLE_SIZE = 80;
-const STROKE_WIDTH = 5;
+const CIRCLE_SIZE = 120;
+const STROKE_WIDTH = 6;
 const RADIUS = (CIRCLE_SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
@@ -38,11 +38,11 @@ export function RestTimer({
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card safe-bottom">
-      <div className="max-w-lg mx-auto flex flex-col items-center py-3 gap-2">
+      <div className="max-w-lg mx-auto flex flex-col items-center py-5 gap-2">
         <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
           {done ? "Rest complete" : "Rest"}
         </span>
-        <div className="relative" style={{ width: CIRCLE_SIZE, height: CIRCLE_SIZE }}>
+        <div className={`relative ${done ? "animate-[rest-done-pulse_1s_ease-in-out_infinite]" : ""}`} style={{ width: CIRCLE_SIZE, height: CIRCLE_SIZE }}>
           <svg
             width={CIRCLE_SIZE}
             height={CIRCLE_SIZE}
@@ -72,7 +72,7 @@ export function RestTimer({
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
             <span
-              className={`text-lg font-mono font-bold tabular-nums ${done ? "text-green-500" : "text-foreground"}`}
+              className={`text-2xl font-mono font-bold tabular-nums ${done ? "text-green-500" : "text-foreground"}`}
             >
               {display}
             </span>
@@ -81,7 +81,7 @@ export function RestTimer({
         <Button
           size="sm"
           variant="ghost"
-          className="text-xs h-8 px-4"
+          className="text-sm h-11 px-6"
           onClick={onDismiss}
         >
           {done ? "Dismiss" : "Skip"}

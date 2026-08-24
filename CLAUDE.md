@@ -224,6 +224,24 @@ previous performance as ghost placeholders (Step 11).
      BackButton component uses router.back() for context-aware navigation
   9. History page List/Calendar toggle; calendar-heatmap.tsx month grid with
      teal dots on workout days, prev/next month nav, tap-to-navigate
+- Tier 3 done (Steps 10–14: Workout Logging Experience):
+  10. RPE tap-to-reveal — removed RPE `<select>` and 3rem column from
+      all set grids; completed working sets show tappable "RPE" label
+      with circular buttons 6–10; saves via DB update; `updateRpe`
+      callback and `rpeOpenFor` state added
+  11. Ghost placeholders — "Last: 80kg × 10, 10, 8" text removed;
+      previous performance now shows as placeholder values in weight/reps
+      inputs (visible when field is cleared); pre-fill kept for one-tap
+      logging; dead `formatPrevious` function removed
+  12. Set completion micro-interaction — checkmark gets `set-complete`
+      keyframe animation (300ms scale bounce); `navigator.vibrate(50)`
+      haptic on successful set save
+  13. PR celebration upgrade — `animate-bounce` → `pr-celebrate` keyframe
+      (600ms slide-down + gold glow); timeout 4s→5s; double-buzz haptic
+      `navigator.vibrate([100, 50, 100])` distinguishes from set buzz
+  14. Rest timer enlarged — CIRCLE_SIZE 80→120, STROKE_WIDTH 5→6, time
+      text-lg→text-2xl, dismiss button h-8→h-11 text-sm, padding py-3→py-5,
+      `rest-done-pulse` animation on timer expiry
 
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
