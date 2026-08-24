@@ -159,6 +159,22 @@ pg_cron job `weekly-digest` is scheduled in Supabase (Sunday 8am UTC).
 Resend is on free tier — currently can only send to Karan's email. To
 send to Kriti, verify a domain in Resend dashboard.
 
+UI/UX overhaul (in progress — see `UI_UX_OVERHAUL.md` for full plan):
+- Steps 1–6 done (Tier 1: Foundation):
+  1. Teal accent color, safe-area fix, chart hsl/oklch bug fix
+  2. Toast notifications (Sonner replaces all alert() calls)
+  3. Lucide icons throughout (replaces Unicode symbols)
+  4. Bottom navigation bar (4 tabs: Home, Workout, History, Profile),
+     `(main)` route group, Profile page, redundant back buttons removed
+  5. Home page redesign (data-rich dashboard with stats, last workout,
+     quick-start card, plateau alerts)
+  6. Workout completion summary (duration, sets, volume, PRs,
+     per-exercise breakdown)
+- Steps 7–13 remaining (Tier 2: Polish + Tier 3: Refinement)
+- New packages: `sonner` (toast notifications)
+- Route structure: authenticated pages now live under `src/app/(main)/`,
+  login/signup stay at `src/app/`. URLs unchanged.
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed
