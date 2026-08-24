@@ -36,11 +36,18 @@ const themeScript = `
 })();
 `;
 
+const swScript = `
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`dark ${geist.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: swScript }} />
       </head>
       <body className="min-h-full bg-background text-foreground font-sans">
         <ThemeProvider>{children}</ThemeProvider>
