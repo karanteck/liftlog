@@ -359,11 +359,11 @@ function ExerciseRow({
     >
       <div className="min-w-0">
         <span className="text-sm font-medium block">{exercise.name}</span>
-        <span className="text-[11px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           {exercise.equipment}
         </span>
       </div>
-      <Badge variant="outline" className="text-[10px] shrink-0 ml-2">
+      <Badge variant="outline" className="text-xs shrink-0 ml-2">
         {exercise.muscle_group}
       </Badge>
     </button>

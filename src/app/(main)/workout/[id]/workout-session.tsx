@@ -666,13 +666,13 @@ export function WorkoutSession({
                 <p className="text-lg font-bold tabular-nums">
                   {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
                 </p>
-                <p className="text-[10px] text-muted-foreground">Duration</p>
+                <p className="text-xs text-muted-foreground">Duration</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="py-3 px-2">
                 <p className="text-lg font-bold tabular-nums">{totalCompleted}</p>
-                <p className="text-[10px] text-muted-foreground">Working sets</p>
+                <p className="text-xs text-muted-foreground">Working sets</p>
               </CardContent>
             </Card>
             <Card>
@@ -682,7 +682,7 @@ export function WorkoutSession({
                     ? `${(totalVolume / 1000).toFixed(1)}t`
                     : `${Math.round(totalVolume)}kg`}
                 </p>
-                <p className="text-[10px] text-muted-foreground">Volume</p>
+                <p className="text-xs text-muted-foreground">Volume</p>
               </CardContent>
             </Card>
           </div>
@@ -959,7 +959,7 @@ export function WorkoutSession({
                         {set.isWarmup ? (
                           <Badge
                             variant="outline"
-                            className="text-[10px] px-1 py-0 text-yellow-500 border-yellow-500/50"
+                            className="text-xs px-1 py-0 text-yellow-500 border-yellow-500/50"
                           >
                             W
                           </Badge>

@@ -34,7 +34,7 @@ export function BottomNav() {
               }`}
             >
               <tab.icon className="h-7 w-7" />
-              <span className="text-[10px] font-medium">{tab.label}</span>
+              <span className="text-xs font-medium">{tab.label}</span>
             </Link>
           );
         })}

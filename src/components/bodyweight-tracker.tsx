@@ -171,7 +171,7 @@ export function BodyweightTracker({
               <p className="text-lg font-bold tabular-nums">
                 {stats.current}kg
               </p>
-              <p className="text-[11px] text-muted-foreground">Latest</p>
+              <p className="text-xs text-muted-foreground">Latest</p>
             </CardContent>
           </Card>
           <Card>
@@ -179,7 +179,7 @@ export function BodyweightTracker({
               <p className="text-lg font-bold tabular-nums">
                 {stats.min}–{stats.max}
               </p>
-              <p className="text-[11px] text-muted-foreground">Range (kg)</p>
+              <p className="text-xs text-muted-foreground">Range (kg)</p>
             </CardContent>
           </Card>
           <Card>
@@ -189,7 +189,7 @@ export function BodyweightTracker({
                   ? `${stats.change > 0 ? "+" : ""}${stats.change.toFixed(1)}`
                   : "—"}
               </p>
-              <p className="text-[11px] text-muted-foreground">7-day (kg)</p>
+              <p className="text-xs text-muted-foreground">7-day (kg)</p>
             </CardContent>
           </Card>
         </div>

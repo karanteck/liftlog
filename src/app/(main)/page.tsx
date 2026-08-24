@@ -210,7 +210,7 @@ export default async function Home() {
               <p className="text-lg font-bold tabular-nums">
                 {latestBodyweight ? `${latestBodyweight}` : "—"}
               </p>
-              <p className="text-[10px] text-muted-foreground">kg</p>
+              <p className="text-xs text-muted-foreground">kg</p>
             </CardContent>
           </Card>
           <Card>
@@ -219,14 +219,14 @@ export default async function Home() {
               <p className="text-lg font-bold tabular-nums">
                 {weekWorkoutCount}
               </p>
-              <p className="text-[10px] text-muted-foreground">this week</p>
+              <p className="text-xs text-muted-foreground">this week</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="py-3 px-2 text-center">
               <Flame className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
               <p className="text-lg font-bold tabular-nums">{streak}</p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 week{streak !== 1 ? "s" : ""} streak
               </p>
             </CardContent>

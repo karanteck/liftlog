@@ -204,7 +204,7 @@ export function RoutineEditor({
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm">{ex.name}</p>
-                  <Badge variant="outline" className="text-[10px] mt-0.5">
+                  <Badge variant="outline" className="text-xs mt-0.5">
                     {ex.muscleGroup}
                   </Badge>
                 </div>
@@ -235,7 +235,7 @@ export function RoutineEditor({
               {editingIdx === idx ? (
                 <div className="grid grid-cols-3 gap-2 mt-2">
                   <div>
-                    <label className="text-[10px] text-muted-foreground block">
+                    <label className="text-xs text-muted-foreground block">
                       Sets
                     </label>
                     <input
@@ -249,7 +249,7 @@ export function RoutineEditor({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-muted-foreground block">
+                    <label className="text-xs text-muted-foreground block">
                       Min reps
                     </label>
                     <input
@@ -263,7 +263,7 @@ export function RoutineEditor({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-muted-foreground block">
+                    <label className="text-xs text-muted-foreground block">
                       Max reps
                     </label>
                     <input

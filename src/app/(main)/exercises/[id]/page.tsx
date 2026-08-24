@@ -231,7 +231,7 @@ export default async function ExerciseHistoryPage({
                     <p className="text-lg font-bold tabular-nums">
                       {prMaxWeight.value}kg
                     </p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       Max weight
                     </p>
                   </div>
@@ -241,7 +241,7 @@ export default async function ExerciseHistoryPage({
                     <p className="text-lg font-bold tabular-nums">
                       {Math.round(prBestE1rm.value)}kg
                     </p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       Est. 1RM
                     </p>
                   </div>
@@ -251,7 +251,7 @@ export default async function ExerciseHistoryPage({
                     <p className="text-lg font-bold tabular-nums">
                       {Math.round(prBestVolume.value)}kg
                     </p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       Best set vol.
                     </p>
                   </div>
@@ -326,7 +326,7 @@ export default async function ExerciseHistoryPage({
                             {s.isWarmup ? (
                               <Badge
                                 variant="outline"
-                                className="text-[10px] px-1 py-0 text-yellow-500 border-yellow-500/50"
+                                className="text-xs px-1 py-0 text-yellow-500 border-yellow-500/50"
                               >
                                 W
                               </Badge>

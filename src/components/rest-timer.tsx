@@ -39,7 +39,7 @@ export function RestTimer({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card safe-bottom">
       <div className="max-w-lg mx-auto flex flex-col items-center py-3 gap-2">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+        <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
           {done ? "Rest complete" : "Rest"}
         </span>
         <div className="relative" style={{ width: CIRCLE_SIZE, height: CIRCLE_SIZE }}>
