@@ -217,6 +217,13 @@ previous performance as ghost placeholders (Step 11).
   3. Login branding — barbell logo (64px) + tagline on login and signup pages
   4. Color tokens — --success (green) and --warning (amber) in globals.css
   5. Keyframe animations — set-complete, pr-celebrate, rest-done-pulse defined
+- Tier 2 done (Steps 6–9: Information Architecture):
+  6. Bottom nav 4→5 tabs (Home, Workout, History, Analytics, More), w-20→w-16
+  7. More page at /more replaces Profile; Analytics link removed (has own tab)
+  8. Exercise names in workout session are tappable links to /exercises/[id];
+     BackButton component uses router.back() for context-aware navigation
+  9. History page List/Calendar toggle; calendar-heatmap.tsx month grid with
+     teal dots on workout days, prev/next month nav, tap-to-navigate
 
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
