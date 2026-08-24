@@ -85,7 +85,7 @@ empty app is far cheaper than debugging it later on a half-built one.
 
 ## Current phase
 
-**Phase 5: Notifications.**
+**All 5 phases complete.** App is feature-complete per SPEC.md.
 
 Phase 1 (logging) is complete — all 12 build steps done.
 
@@ -105,6 +105,13 @@ Phase 4 (plateau engine) is complete — all 5 tasks done:
 3. Server runner (`src/lib/plateau-runner.ts`) — data fetching, variation
    map from exercises table, deduplication, alert storage
 4. Home page insight cards with dismiss and 14-day cooldown
+
+Phase 5 (notifications) is complete — 2 of 3 tiers done:
+1. In-app insight cards — done (plateau cards from Phase 4)
+2. Weekly email digest — done (`/api/weekly-digest` route, Resend,
+   pg_cron fires every Sunday 8am UTC). Digest builder at
+   `src/lib/weekly-digest.ts`.
+3. Web push — skipped per spec (low priority, iOS restrictions)
 
 Pre-Phase 3 fixes (all done):
 - Household toggle, bodyweight & notes inputs, 250 exercises, equipment filter
@@ -126,10 +133,18 @@ Kriti feedback items (all done):
 
 Offline-first was removed from the spec (not pursuing).
 
-10 database migrations exist (00001–00010). Migrations 00009–00010 need
+11 database migrations exist (00001–00011). Migrations 00009–00011 need
 to be pushed to Supabase.
 
-Phase 5 tasks (notifications) are next. See SPEC.md section 8.
+Vercel environment variables set: `SUPABASE_SECRET_KEY`, `RESEND_API_KEY`,
+`CRON_SECRET` (all marked sensitive, production + preview).
 
-There is a Next.js middleware deprecation warning (middleware → proxy
-convention) that is not blocking but should be addressed eventually.
+pg_cron job `weekly-digest` is scheduled in Supabase (Sunday 8am UTC).
+
+Resend is on free tier — currently can only send to Karan's email. To
+send to Kriti, verify a domain in Resend dashboard.
+
+Remaining housekeeping (not blocking):
+- Next.js middleware deprecation warning (middleware → proxy convention)
+- Route `src/app/api/weekly-digest/route.ts` has a top-level try-catch
+  that was added for debugging — can be kept or cleaned up
