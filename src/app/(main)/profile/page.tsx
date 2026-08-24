@@ -23,7 +23,7 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("name, email, is_admin")
+    .select("name, is_admin")
     .eq("id", user.id)
     .single();
 
@@ -41,7 +41,7 @@ export default async function ProfilePage() {
           <div>
             <h1 className="text-lg font-bold">{profile?.name ?? "Profile"}</h1>
             <p className="text-sm text-muted-foreground">
-              {profile?.email ?? user.email}
+              {user.email}
             </p>
           </div>
           <ThemeToggle />
