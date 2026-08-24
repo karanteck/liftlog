@@ -12,25 +12,11 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { useMuscleColors } from "@/lib/chart-colors";
 
 type SetRecord = {
   date: string;
   muscleGroup: string;
-};
-
-const MUSCLE_COLORS: Record<string, string> = {
-  chest: "#e74c3c",
-  back: "#3498db",
-  shoulders: "#f39c12",
-  quads: "#2ecc71",
-  hamstrings: "#1abc9c",
-  glutes: "#9b59b6",
-  biceps: "#e67e22",
-  triceps: "#34495e",
-  abs: "#16a085",
-  calves: "#d35400",
-  forearms: "#7f8c8d",
-  core: "#27ae60",
 };
 
 function getMonday(dateStr: string): string {
@@ -48,6 +34,7 @@ function formatWeek(mondayStr: string): string {
 }
 
 export function HardSetsChart({ sets }: { sets: SetRecord[] }) {
+  const { colors, fallback } = useMuscleColors();
   const { chartData, muscleGroups } = useMemo(() => {
     const weekMap = new Map<string, Record<string, number>>();
 
@@ -108,7 +95,7 @@ export function HardSetsChart({ sets }: { sets: SetRecord[] }) {
                 key={g}
                 dataKey={g}
                 stackId="sets"
-                fill={MUSCLE_COLORS[g] ?? "#95a5a6"}
+                fill={colors[g] ?? fallback}
                 name={g.charAt(0).toUpperCase() + g.slice(1)}
               />
             ))}

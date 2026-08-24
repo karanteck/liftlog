@@ -159,7 +159,7 @@ pg_cron job `weekly-digest` is scheduled in Supabase (Sunday 8am UTC).
 Resend is on free tier — currently can only send to Karan's email. To
 send to Kriti, verify a domain in Resend dashboard.
 
-UI/UX overhaul (in progress — see `UI_UX_OVERHAUL.md` for full plan):
+UI/UX overhaul (complete — see `UI_UX_OVERHAUL.md` for full plan):
 - Steps 1–6 done (Tier 1: Foundation):
   1. Teal accent color, safe-area fix, chart hsl/oklch bug fix
   2. Toast notifications (Sonner replaces all alert() calls)
@@ -180,7 +180,13 @@ UI/UX overhaul (in progress — see `UI_UX_OVERHAUL.md` for full plan):
      touch targets (44px) on set checkmarks and routine editor buttons
   10. Skeleton loading screens for History, Analytics, Bodyweight pages;
       set undo (tap green checkmark to uncomplete and delete from DB)
-- Steps 11–13 remaining (Tier 3: Refinement)
+- Steps 11–13 done (Tier 3: Refinement):
+  11. Theme-aware charts — `src/lib/chart-colors.ts` with light/dark
+      muscle color palettes, all chart components use `useMuscleColors()`
+  12. Circular rest timer — SVG circle countdown with stroke-dashoffset
+      animation, time inside circle, skip/dismiss button
+  13. History cards enriched (volume, exercise names, teal left border),
+      dynamic `<meta name="theme-color">` in ThemeProvider
 - New packages: `sonner`, `@base-ui/react` (Drawer, AlertDialog, Skeleton)
 - Route structure: authenticated pages now live under `src/app/(main)/`,
   login/signup stay at `src/app/`. URLs unchanged.

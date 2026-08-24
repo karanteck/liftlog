@@ -83,16 +83,30 @@ export default async function HistoryPage({
   const workoutIds = workouts?.map((w) => w.id) ?? [];
 
   let setCounts: Record<string, number> = {};
+  let volumeMap: Record<string, number> = {};
+  let exerciseNamesMap: Record<string, string[]> = {};
+
   if (workoutIds.length > 0) {
     const { data: sets } = await supabase
       .from("sets")
-      .select("workout_id, is_warmup")
+      .select("workout_id, is_warmup, weight, reps, exercises(name)")
       .in("workout_id", workoutIds)
       .eq("is_warmup", false);
 
     if (sets) {
       for (const s of sets) {
         setCounts[s.workout_id] = (setCounts[s.workout_id] ?? 0) + 1;
+        const w = (s.weight as number) ?? 0;
+        const r = (s.reps as number) ?? 0;
+        volumeMap[s.workout_id] = (volumeMap[s.workout_id] ?? 0) + w * r;
+
+        const exName = (s.exercises as unknown as { name: string } | null)?.name;
+        if (exName) {
+          if (!exerciseNamesMap[s.workout_id]) exerciseNamesMap[s.workout_id] = [];
+          if (!exerciseNamesMap[s.workout_id].includes(exName)) {
+            exerciseNamesMap[s.workout_id].push(exName);
+          }
+        }
       }
     }
   }
@@ -144,13 +158,17 @@ export default async function HistoryPage({
             (w.profiles as unknown as { name: string } | null)?.name ?? "";
           const isOwn = w.user_id === user.id;
           const sets = setCounts[w.id] ?? 0;
+          const volume = volumeMap[w.id] ?? 0;
+          const exNames = exerciseNamesMap[w.id] ?? [];
+          const shown = exNames.slice(0, 3);
+          const extra = exNames.length - shown.length;
 
           return (
             <Link key={w.id} href={`/history/${w.id}`}>
-              <Card className="cursor-pointer active:scale-[0.98] transition-transform">
+              <Card className="cursor-pointer active:scale-[0.98] transition-transform border-l-2 border-l-primary">
                 <CardContent className="py-3 px-4">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <p className="font-semibold">
                         {routineName}
                         {showAll && !isOwn && (
@@ -163,9 +181,18 @@ export default async function HistoryPage({
                         {formatDate(w.date)} &middot;{" "}
                         {formatDuration(w.started_at, w.ended_at)} &middot;{" "}
                         {sets} sets
+                        {volume > 0 && (
+                          <> &middot; {volume >= 1000 ? `${(volume / 1000).toFixed(1)}t` : `${Math.round(volume)} kg`}</>
+                        )}
                       </p>
+                      {shown.length > 0 && (
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                          {shown.join(", ")}
+                          {extra > 0 && `, +${extra} more`}
+                        </p>
+                      )}
                     </div>
-                    <span className="text-muted-foreground text-sm">&rsaquo;</span>
+                    <span className="text-muted-foreground text-sm ml-2">&rsaquo;</span>
                   </div>
                 </CardContent>
               </Card>

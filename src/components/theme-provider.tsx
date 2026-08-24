@@ -30,6 +30,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (!mounted) return;
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
+
+    const themeColor = theme === "dark" ? "#171717" : "#ffffff";
+    let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "theme-color";
+      document.head.appendChild(meta);
+    }
+    meta.content = themeColor;
   }, [theme, mounted]);
 
   function toggleTheme() {

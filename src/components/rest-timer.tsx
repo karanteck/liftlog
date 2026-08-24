@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+
+const CIRCLE_SIZE = 80;
+const STROKE_WIDTH = 5;
+const RADIUS = (CIRCLE_SIZE - STROKE_WIDTH) / 2;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export function RestTimer({
   duration,
@@ -17,44 +22,70 @@ export function RestTimer({
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         navigator.vibrate([200, 100, 200]);
       }
-      return;
     }
     const t = setInterval(() => setRemaining((r) => r - 1), 1000);
     return () => clearInterval(t);
   }, [remaining]);
 
-  const mins = Math.floor(Math.abs(remaining) / 60);
-  const secs = Math.abs(remaining) % 60;
-  const display = `${remaining < 0 ? "+" : ""}${mins}:${secs.toString().padStart(2, "0")}`;
-  const progress = Math.max(0, remaining / duration);
   const done = remaining <= 0;
+  const progress = done ? 0 : remaining / duration;
+  const dashOffset = CIRCUMFERENCE * (1 - progress);
+
+  const absRemaining = Math.abs(remaining);
+  const mins = Math.floor(absRemaining / 60);
+  const secs = absRemaining % 60;
+  const display = `${done ? "+" : ""}${mins}:${secs.toString().padStart(2, "0")}`;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card px-4 py-3 safe-bottom">
-      <div className="max-w-lg mx-auto">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs text-muted-foreground font-medium">
-                {done ? "Rest complete" : "Rest timer"}
-              </span>
-              <span
-                className={`text-lg font-mono font-bold tabular-nums ${done ? "text-green-500" : ""}`}
-              >
-                {display}
-              </span>
-            </div>
-            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-1000 ease-linear ${done ? "bg-green-500" : "bg-primary"}`}
-                style={{ width: `${(1 - progress) * 100}%` }}
-              />
-            </div>
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card safe-bottom">
+      <div className="max-w-lg mx-auto flex flex-col items-center py-3 gap-2">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+          {done ? "Rest complete" : "Rest"}
+        </span>
+        <div className="relative" style={{ width: CIRCLE_SIZE, height: CIRCLE_SIZE }}>
+          <svg
+            width={CIRCLE_SIZE}
+            height={CIRCLE_SIZE}
+            viewBox={`0 0 ${CIRCLE_SIZE} ${CIRCLE_SIZE}`}
+            className="-rotate-90"
+          >
+            <circle
+              cx={CIRCLE_SIZE / 2}
+              cy={CIRCLE_SIZE / 2}
+              r={RADIUS}
+              fill="none"
+              className="stroke-muted"
+              strokeWidth={STROKE_WIDTH}
+            />
+            <circle
+              cx={CIRCLE_SIZE / 2}
+              cy={CIRCLE_SIZE / 2}
+              r={RADIUS}
+              fill="none"
+              className={done ? "stroke-green-500" : "stroke-primary"}
+              strokeWidth={STROKE_WIDTH}
+              strokeLinecap="round"
+              strokeDasharray={CIRCUMFERENCE}
+              strokeDashoffset={dashOffset}
+              style={{ transition: "stroke-dashoffset 1s linear" }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span
+              className={`text-lg font-mono font-bold tabular-nums ${done ? "text-green-500" : "text-foreground"}`}
+            >
+              {display}
+            </span>
           </div>
-          <Button size="sm" variant="ghost" onClick={onDismiss}>
-            Skip
-          </Button>
         </div>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="text-xs h-8 px-4"
+          onClick={onDismiss}
+        >
+          {done ? "Dismiss" : "Skip"}
+        </Button>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import {
   Legend,
   ReferenceLine,
 } from "recharts";
+import { useImbalanceColors } from "@/lib/chart-colors";
 
 type SetRecord = {
   date: string;
@@ -60,6 +61,7 @@ function ratio(a: number, b: number): string {
 }
 
 export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
+  const imbalanceColors = useImbalanceColors();
   const { pushPullData, quadHamData, overallPushPull, overallQuadHam } =
     useMemo(() => {
       const weeks = new Map<
@@ -149,8 +151,8 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
               />
               <Tooltip />
               <Legend wrapperStyle={{ fontSize: 11 }} iconSize={10} />
-              <Bar dataKey="Push" fill="#e74c3c" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="Pull" fill="#3498db" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Push" fill={imbalanceColors.push} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Pull" fill={imbalanceColors.pull} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
@@ -180,8 +182,8 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
               />
               <Tooltip />
               <Legend wrapperStyle={{ fontSize: 11 }} iconSize={10} />
-              <Bar dataKey="Quads" fill="#2ecc71" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="Hamstrings" fill="#1abc9c" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Quads" fill={imbalanceColors.quads} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Hamstrings" fill={imbalanceColors.hamstrings} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

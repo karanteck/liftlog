@@ -25,9 +25,9 @@ LiftLog is feature-complete but visually utilitarian — a functional gray butto
 - [x] Step 8: Unified Exercise Search
 - [x] Step 9: Finish Confirmation + Touch Targets
 - [x] Step 10: Skeleton Loading + Set Undo
-- [ ] Step 11: Theme-Aware Charts
-- [ ] Step 12: Circular Rest Timer
-- [ ] Step 13: History Cards + Theme Color
+- [x] Step 11: Theme-Aware Charts
+- [x] Step 12: Circular Rest Timer
+- [x] Step 13: History Cards + Theme Color
 
 ---
 
