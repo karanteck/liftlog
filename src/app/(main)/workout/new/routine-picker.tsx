@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -53,7 +54,7 @@ export function RoutinePicker({ routines }: { routines: Routine[] }) {
 
     if (error || !data) {
       setStarting(null);
-      alert("Failed to create workout: " + (error?.message ?? "unknown error"));
+      toast.error("Failed to create workout: " + (error?.message ?? "unknown error"));
       return;
     }
 

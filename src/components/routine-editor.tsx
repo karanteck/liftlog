@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { ChevronUp, ChevronDown, X } from "lucide-react";
 import { ExercisePicker } from "@/components/exercise-picker";
 
 type RoutineExercise = {
@@ -113,7 +115,7 @@ export function RoutineEditor({
 
   async function handleSave() {
     if (!name.trim()) {
-      alert("Routine name is required.");
+      toast.error("Routine name is required.");
       return;
     }
 
@@ -126,7 +128,7 @@ export function RoutineEditor({
         .eq("id", routineId);
 
       if (error) {
-        alert("Failed to save name: " + error.message);
+        toast.error("Failed to save name: " + error.message);
         setSaving(false);
         return;
       }
@@ -138,7 +140,7 @@ export function RoutineEditor({
       .eq("routine_id", routineId);
 
     if (deleteError) {
-      alert("Failed to update exercises: " + deleteError.message);
+      toast.error("Failed to update exercises: " + deleteError.message);
       setSaving(false);
       return;
     }
@@ -158,7 +160,7 @@ export function RoutineEditor({
         .insert(rows);
 
       if (insertError) {
-        alert("Failed to save exercises: " + insertError.message);
+        toast.error("Failed to save exercises: " + insertError.message);
         setSaving(false);
         return;
       }
@@ -210,22 +212,22 @@ export function RoutineEditor({
                   <button
                     onClick={() => moveUp(idx)}
                     disabled={idx === 0}
-                    className="w-7 h-7 rounded border text-xs flex items-center justify-center disabled:opacity-30 hover:bg-accent"
+                    className="w-7 h-7 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
                   >
-                    &uarr;
+                    <ChevronUp className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => moveDown(idx)}
                     disabled={idx === exercises.length - 1}
-                    className="w-7 h-7 rounded border text-xs flex items-center justify-center disabled:opacity-30 hover:bg-accent"
+                    className="w-7 h-7 rounded border flex items-center justify-center disabled:opacity-30 hover:bg-accent"
                   >
-                    &darr;
+                    <ChevronDown className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => removeExercise(idx)}
-                    className="w-7 h-7 rounded border text-xs flex items-center justify-center text-destructive hover:bg-destructive/10"
+                    className="w-7 h-7 rounded border flex items-center justify-center text-destructive hover:bg-destructive/10"
                   >
-                    &times;
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               </div>

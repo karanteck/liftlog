@@ -9,6 +9,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RestTimer } from "@/components/rest-timer";
 import { ExerciseSearch } from "@/components/exercise-search";
+import { toast } from "sonner";
+import { ChevronLeft, ChevronUp, ChevronDown, Check, Trophy, CircleCheckBig } from "lucide-react";
 import { checkNewPRs, computePRs, PR_LABELS, type PRRecord, type PRType } from "@/lib/pr";
 
 type ExerciseInfo = {
@@ -217,6 +219,8 @@ export function WorkoutSession({
   const [showSearch, setShowSearch] = useState(false);
   const [currentPRs, setCurrentPRs] = useState<Record<string, PRRecord>>(initialPRs);
   const [prFlash, setPrFlash] = useState<{ exerciseName: string; types: PRType[] } | null>(null);
+  const [sessionPRs, setSessionPRs] = useState<{ exerciseName: string; types: PRType[] }[]>([]);
+  const [showSummary, setShowSummary] = useState(false);
   const [bodyweight, setBodyweight] = useState("");
   const [notes, setNotes] = useState("");
   const [showDetails, setShowDetails] = useState(false);
@@ -398,7 +402,7 @@ export function WorkoutSession({
         .single();
 
       if (error) {
-        alert("Failed to save set: " + error.message);
+        toast.error("Failed to save set: " + error.message);
         return;
       }
 
@@ -449,6 +453,7 @@ export function WorkoutSession({
         if (newPRs.length > 0) {
           setPrFlash({ exerciseName: ex.name, types: newPRs });
           setTimeout(() => setPrFlash(null), 4000);
+          setSessionPRs((prev) => [...prev, { exerciseName: ex.name, types: newPRs }]);
 
           const allSetsForExercise = exerciseStates[exIdx].sets
             .filter((s) => s.isCompleted && !s.isWarmup)
@@ -536,8 +541,8 @@ export function WorkoutSession({
       }
     }
 
-    router.push("/");
-  }, [supabase, workout.id, exercises, router, bodyweight, notes, userId]);
+    setShowSummary(true);
+  }, [supabase, workout.id, exercises, bodyweight, notes, userId]);
 
   const elapsedMin = Math.floor(elapsed / 60);
   const elapsedSec = elapsed % 60;
@@ -546,7 +551,7 @@ export function WorkoutSession({
     0
   );
 
-  if (workout.isFinished) {
+  if (workout.isFinished && !showSummary) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <h1 className="text-2xl font-bold">Workout complete</h1>
@@ -560,6 +565,113 @@ export function WorkoutSession({
     );
   }
 
+  if (showSummary) {
+    const totalVolume = exerciseStates.reduce((sum, ex) => {
+      return sum + ex.sets
+        .filter((s) => s.isCompleted && !s.isWarmup)
+        .reduce((setSum, s) => {
+          const w = s.weight ? parseFloat(s.weight) : 0;
+          const r = s.reps ? parseInt(s.reps, 10) : 0;
+          return setSum + w * r;
+        }, 0);
+    }, 0);
+
+    const exerciseSummaries = exerciseStates
+      .filter((ex) => ex.sets.some((s) => s.isCompleted))
+      .map((ex) => {
+        const completedSets = ex.sets.filter((s) => s.isCompleted && !s.isWarmup);
+        const topWeight = Math.max(
+          0,
+          ...completedSets.map((s) => (s.weight ? parseFloat(s.weight) : 0))
+        );
+        return {
+          name: ex.name,
+          setsCount: completedSets.length,
+          topWeight,
+          trackingType: ex.trackingType,
+        };
+      });
+
+    return (
+      <div className="flex min-h-screen flex-col px-4 py-8 pb-20">
+        <div className="max-w-lg mx-auto w-full space-y-6">
+          <div className="text-center space-y-2 pt-4">
+            <CircleCheckBig className="h-12 w-12 text-primary mx-auto" />
+            <h1 className="text-2xl font-bold">Workout Complete</h1>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <Card>
+              <CardContent className="py-3 px-2">
+                <p className="text-lg font-bold tabular-nums">
+                  {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
+                </p>
+                <p className="text-[10px] text-muted-foreground">Duration</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="py-3 px-2">
+                <p className="text-lg font-bold tabular-nums">{totalCompleted}</p>
+                <p className="text-[10px] text-muted-foreground">Working sets</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="py-3 px-2">
+                <p className="text-lg font-bold tabular-nums">
+                  {totalVolume >= 1000
+                    ? `${(totalVolume / 1000).toFixed(1)}t`
+                    : `${Math.round(totalVolume)}kg`}
+                </p>
+                <p className="text-[10px] text-muted-foreground">Volume</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {sessionPRs.length > 0 && (
+            <Card className="border-amber-500/30 bg-amber-500/5">
+              <CardContent className="py-3 px-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Trophy className="h-4 w-4 text-amber-500" />
+                  <p className="font-semibold text-sm">Personal Records</p>
+                </div>
+                <div className="space-y-1">
+                  {sessionPRs.map((pr, i) => (
+                    <p key={i} className="text-sm text-muted-foreground">
+                      {pr.exerciseName} — {pr.types.map((t) => PR_LABELS[t]).join(", ")}
+                    </p>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Exercises</p>
+            {exerciseSummaries.map((ex, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between py-2 px-1 text-sm"
+              >
+                <span className="font-medium">{ex.name}</span>
+                <span className="text-muted-foreground tabular-nums">
+                  {ex.setsCount} set{ex.setsCount !== 1 ? "s" : ""}
+                  {ex.topWeight > 0 && ` · ${ex.topWeight}kg`}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <Button
+            className="w-full h-12 text-base"
+            onClick={() => router.push("/")}
+          >
+            Done
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen pb-24">
       <header className="sticky top-0 z-40 bg-background border-b px-4 py-2">
@@ -567,9 +679,9 @@ export function WorkoutSession({
           <div className="flex items-center gap-2">
             <Link
               href="/"
-              className="text-sm text-muted-foreground hover:text-foreground px-1 py-1"
+              className="text-muted-foreground hover:text-foreground p-1"
             >
-              &larr;
+              <ChevronLeft className="h-5 w-5" />
             </Link>
             <div>
               <h1 className="font-bold">
@@ -608,7 +720,10 @@ export function WorkoutSession({
           onClick={() => setShowDetails((v) => !v)}
           className="text-xs text-muted-foreground hover:text-foreground w-full text-left"
         >
-          {showDetails ? "Hide" : "Add"} bodyweight &amp; notes {showDetails ? "▲" : "▼"}
+          <span className="inline-flex items-center gap-1">
+            {showDetails ? "Hide" : "Add"} bodyweight &amp; notes
+            {showDetails ? <ChevronUp className="h-3 w-3 inline" /> : <ChevronDown className="h-3 w-3 inline" />}
+          </span>
         </button>
 
         {showDetails && (
@@ -923,7 +1038,7 @@ export function WorkoutSession({
                           : "border hover:bg-accent"
                       }`}
                     >
-                      {set.isCompleted ? "✓" : "✓"}
+                      <Check className="h-4 w-4" />
                     </button>
                   </div>
                 ))}

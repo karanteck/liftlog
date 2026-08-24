@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 const MUSCLE_GROUPS = [
@@ -83,7 +84,7 @@ export function CustomExerciseForm({
 
   async function handleCreate() {
     if (!name.trim()) {
-      alert("Exercise name is required.");
+      toast.error("Exercise name is required.");
       return;
     }
 
@@ -109,7 +110,7 @@ export function CustomExerciseForm({
       .single();
 
     if (error || !data) {
-      alert("Failed to create: " + (error?.message ?? "unknown error"));
+      toast.error("Failed to create: " + (error?.message ?? "unknown error"));
       setSaving(false);
       return;
     }

@@ -38,16 +38,9 @@ export default async function RoutinesPage() {
     })) ?? [];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pb-20">
       <header className="flex items-center justify-between px-4 py-3 border-b">
-        <div className="flex items-center gap-3">
-          <Link href="/">
-            <Button variant="ghost" size="sm">
-              Back
-            </Button>
-          </Link>
-          <h1 className="text-lg font-bold">Routines</h1>
-        </div>
+        <h1 className="text-lg font-bold">Routines</h1>
         <Link href="/routines/new">
           <Button size="sm">New routine</Button>
         </Link>

@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Button } from "@/components/ui/button";
 import { BodyweightTracker } from "@/components/bodyweight-tracker";
 
 export default async function BodyweightPage() {
@@ -21,13 +19,8 @@ export default async function BodyweightPage() {
     .limit(90);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="flex items-center gap-3 px-4 py-3 border-b">
-        <Link href="/">
-          <Button variant="ghost" size="sm">
-            Back
-          </Button>
-        </Link>
+    <div className="flex flex-col min-h-screen pb-20">
+      <header className="px-4 py-3 border-b">
         <h1 className="text-lg font-bold">Bodyweight</h1>
       </header>
 

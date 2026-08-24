@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -93,7 +95,7 @@ export function BodyweightTracker({
         .eq("id", todayEntry.id);
 
       if (error) {
-        alert("Failed to update: " + error.message);
+        toast.error("Failed to update: " + error.message);
         setSaving(false);
         return;
       }
@@ -109,7 +111,7 @@ export function BodyweightTracker({
         .single();
 
       if (error) {
-        alert("Failed to save: " + error.message);
+        toast.error("Failed to save: " + error.message);
         setSaving(false);
         return;
       }
@@ -131,7 +133,7 @@ export function BodyweightTracker({
       .eq("id", id);
 
     if (error) {
-      alert("Failed to delete: " + error.message);
+      toast.error("Failed to delete: " + error.message);
       return;
     }
 
@@ -248,9 +250,9 @@ export function BodyweightTracker({
               <span className="font-medium tabular-nums">{e.weight} kg</span>
               <button
                 onClick={() => handleDelete(e.id)}
-                className="text-xs text-muted-foreground hover:text-destructive"
+                className="text-muted-foreground hover:text-destructive p-0.5"
               >
-                &times;
+                <X className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>

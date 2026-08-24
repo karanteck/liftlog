@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const AVAILABLE_PLATES = [25, 20, 15, 10, 5, 2.5, 1.25];
@@ -48,13 +46,8 @@ export default function PlateCalculatorPage() {
   const valid = target > bar && remainder < 0.01;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="flex items-center gap-3 px-4 py-3 border-b">
-        <Link href="/">
-          <Button variant="ghost" size="sm">
-            Back
-          </Button>
-        </Link>
+    <div className="flex flex-col min-h-screen pb-20">
+      <header className="px-4 py-3 border-b">
         <h1 className="text-lg font-bold">Plate Calculator</h1>
       </header>
 

@@ -16,11 +16,11 @@ LiftLog is feature-complete but visually utilitarian — a functional gray butto
 ## Progress
 
 - [x] Step 1: Brand Accent Color + Bug Fixes (teal primary, safe-area, hsl/oklch fix)
-- [ ] Step 2: Toast Notifications
-- [ ] Step 3: Lucide Icons Throughout
-- [ ] Step 4: Bottom Navigation Bar
-- [ ] Step 5: Home Page Redesign
-- [ ] Step 6: Workout Completion Summary
+- [x] Step 2: Toast Notifications
+- [x] Step 3: Lucide Icons Throughout
+- [x] Step 4: Bottom Navigation Bar
+- [x] Step 5: Home Page Redesign
+- [x] Step 6: Workout Completion Summary
 - [ ] Step 7: Animated Transitions (Drawer)
 - [ ] Step 8: Unified Exercise Search
 - [ ] Step 9: Finish Confirmation + Touch Targets

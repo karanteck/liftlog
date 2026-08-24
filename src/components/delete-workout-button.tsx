@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export function DeleteWorkoutButton({ workoutId }: { workoutId: string }) {
@@ -19,7 +20,7 @@ export function DeleteWorkoutButton({ workoutId }: { workoutId: string }) {
       .eq("id", workoutId);
 
     if (error) {
-      alert("Failed to delete: " + error.message);
+      toast.error("Failed to delete: " + error.message);
       setDeleting(false);
       setConfirming(false);
       return;

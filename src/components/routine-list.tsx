@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -43,7 +44,7 @@ export function RoutineList({ routines: initial }: { routines: Routine[] }) {
       .single();
 
     if (routineError || !newRoutine) {
-      alert("Failed to duplicate: " + (routineError?.message ?? "unknown"));
+      toast.error("Failed to duplicate: " + (routineError?.message ?? "unknown"));
       setBusy(null);
       return;
     }
@@ -69,7 +70,7 @@ export function RoutineList({ routines: initial }: { routines: Routine[] }) {
         .insert(rows);
 
       if (insertError) {
-        alert("Routine created but exercises failed to copy: " + insertError.message);
+        toast.error("Routine created but exercises failed to copy: " + insertError.message);
       }
     }
 
@@ -91,7 +92,7 @@ export function RoutineList({ routines: initial }: { routines: Routine[] }) {
     const { error } = await supabase.from("routines").delete().eq("id", id);
 
     if (error) {
-      alert("Failed to delete: " + error.message);
+      toast.error("Failed to delete: " + error.message);
       setBusy(null);
       setConfirmDelete(null);
       return;
