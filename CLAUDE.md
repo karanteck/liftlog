@@ -131,6 +131,22 @@ Kriti feedback items (all done):
 - Delete workout, back buttons, retroactive logging, sports/cardio tracking
 - Core routine — Kriti builds herself using routine builder
 
+Post-spec audit fixes (all done):
+- Previous performance query now filters by current user only (was
+  showing household member's data as "Last time" during workout logging)
+- Minimal service worker added (`public/sw.js`) + registration in
+  `layout.tsx` — app is now installable as a PWA
+- Rest timer now saves actual rest duration to `sets.rest_seconds` on
+  dismiss (column existed but was never written to)
+- Exercises added mid-workout via "+ Add Exercise" now fetch previous
+  performance, pre-fill sets, and show the "Add weight?" progression
+  prompt (previously only routine-template exercises got this)
+
+Spec gaps acknowledged and intentionally skipped:
+- Favourites in exercise search — "recently used" covers the need
+- Drag-to-reorder in routine editor — up/down buttons work better
+  on mobile touch screens
+
 Offline-first was removed from the spec (not pursuing).
 
 11 database migrations exist (00001–00011). Migrations 00009–00011 need
