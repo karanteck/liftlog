@@ -178,7 +178,9 @@ UI/UX overhaul (complete — see `UI_UX_OVERHAUL.md` for full plan):
      filter chips, grouped listing, and custom exercise creation
   9. Finish confirmation — AlertDialog before ending workout, bigger
      touch targets (44px) on set checkmarks and routine editor buttons
-  10. Skeleton loading screens for History, Analytics, Bodyweight pages;
+  10. Skeleton loading screens for all routes (History, Analytics,
+      Bodyweight had them from v1; Home, More, Workout/new, Workout/[id],
+      Routines, Routines/[id], Exercises/[id] added later);
       set undo (tap green checkmark to uncomplete and delete from DB)
 - Steps 11–13 done (Tier 3: Refinement):
   11. Theme-aware charts — `src/lib/chart-colors.ts` with light/dark
@@ -249,6 +251,11 @@ previous performance as ghost placeholders (Step 11).
   16. Exercise history links in workout detail — already done as part of
       Step 8 (exercise names in history/[id] were already Link components
       to /exercises/[id])
+
+Performance (all done):
+- Skeleton loading screens added to all main routes — navigation shows
+  instant skeleton feedback instead of frozen screen while server
+  components fetch data from Supabase
 
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
