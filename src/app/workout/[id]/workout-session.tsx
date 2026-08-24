@@ -222,7 +222,7 @@ export function WorkoutSession({
   const [showDetails, setShowDetails] = useState(false);
 
   const addExercise = useCallback(
-    (exercise: { id: string; name: string; repTier: string; trackingType: string }) => {
+    async (exercise: { id: string; name: string; repTier: string; trackingType: string }) => {
       const repRanges: Record<string, [number, number]> = {
         heavy_compound: [5, 8],
         compound: [8, 12],
@@ -233,8 +233,52 @@ export function WorkoutSession({
       const tt = exercise.trackingType ?? "weight_reps";
       const numSets = tt === "time" || tt === "distance_time" ? 1 : 3;
 
-      setExerciseStates((prev) => [
-        ...prev,
+      let prev: PrevSet[] = [];
+      let progressionPrompt: ProgressionPrompt | null = null;
+
+      const { data: prevSets } = await supabase
+        .from("sets")
+        .select("weight, reps, rpe, set_number, is_warmup, workouts!inner ( date, user_id )")
+        .eq("exercise_id", exercise.id)
+        .eq("is_warmup", false)
+        .eq("workouts.user_id", userId)
+        .order("set_number");
+
+      if (prevSets && prevSets.length > 0) {
+        const byDate: Record<string, { weight: number | null; reps: number | null; rpe: number | null; setNumber: number }[]> = {};
+        for (const s of prevSets) {
+          const wo = s.workouts as unknown as { date: string };
+          if (!byDate[wo.date]) byDate[wo.date] = [];
+          byDate[wo.date].push({ weight: s.weight, reps: s.reps, rpe: s.rpe, setNumber: s.set_number });
+        }
+        const dates = Object.keys(byDate).sort().reverse();
+        const mostRecent = byDate[dates[0]]
+          .sort((a, b) => a.setNumber - b.setNumber)
+          .map((s) => ({ weight: s.weight, reps: s.reps, rpe: s.rpe }));
+        prev = mostRecent;
+
+        if (
+          prev.length > 0 &&
+          prev.every((s) => s.reps != null && s.weight != null && s.reps >= repMax)
+        ) {
+          const prevWeight = prev[0].weight!;
+          progressionPrompt = {
+            previousWeight: prevWeight,
+            suggestedWeight: prevWeight + 2.5,
+            summary: `${prev.length}×${repMax} at ${prevWeight}kg`,
+          };
+        }
+
+        const prSets = prevSets.map((s) => ({
+          weight: s.weight,
+          reps: s.reps,
+          isWarmup: s.is_warmup,
+        }));
+        setCurrentPRs((p) => ({ ...p, [exercise.id]: computePRs(prSets) }));
+      }
+
+      setExerciseStates((states) => [
+        ...states,
         {
           exerciseId: exercise.id,
           name: exercise.name,
@@ -242,24 +286,24 @@ export function WorkoutSession({
           trackingType: tt,
           targetRepMin: repMin,
           targetRepMax: repMax,
-          sets: Array.from({ length: numSets }, (_, i) => ({
+          sets: Array.from({ length: Math.max(numSets, prev.length) }, (_, i) => ({
             dbId: null,
             setNumber: i + 1,
-            weight: "",
-            reps: "",
+            weight: prev[i]?.weight?.toString() ?? "",
+            reps: prev[i]?.reps?.toString() ?? "",
             rpe: "",
             duration: "",
             distance: "",
             isWarmup: false,
             isCompleted: false,
           })),
-          previousSets: [],
-          progressionPrompt: null,
+          previousSets: prev,
+          progressionPrompt,
         },
       ]);
       setShowSearch(false);
     },
-    []
+    [supabase, userId]
   );
 
   const acceptProgression = useCallback((exIdx: number) => {
