@@ -194,13 +194,18 @@ UI/UX overhaul (complete — see `UI_UX_OVERHAUL.md` for full plan):
 StrongBoi rebrand & UI polish (all done):
 - App renamed from LiftLog to StrongBoi (metadata, manifest, login,
   email digest, PWA icons)
+- Barbell mark logo from design handoff (teal plates on dark tile,
+  `icon-1b.svg`). PNGs generated at 192px and 512px.
 - Font changed from Geist to Inter via `next/font/google`; fixed CSS
   variable wiring (`--font-sans` instead of `--font-geist`)
-- Icon sizes bumped one tier: `h-4 w-4` → `h-5 w-5`, `h-5 w-5` →
-  `h-6 w-6`, `h-3 w-3` → `h-4 w-4` across all components
-- Bottom nav raised with `pb-1` extra padding
+- Icon sizes bumped two tiers: stat cards and inline icons to `h-6 w-6`,
+  bottom nav icons to `h-7 w-7`, primary action icons to `h-6 w-6`
+- Bottom nav raised with `pb-3`, container `h-16`, tab width `w-20`
 - Button touch targets increased: default 32→40px, sm 28→36px,
   lg 36→44px, icon 32→40px, icon-sm 28→36px, icon-lg 36→44px
+- Workout inputs bumped from `h-9` to `h-11` (44px), set checkmark
+  `h-12 w-12`, "+ Add set" button padding increased
+- All pages updated to `pb-24` for taller bottom nav
 
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
