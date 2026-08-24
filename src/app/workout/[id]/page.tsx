@@ -115,6 +115,7 @@ export default async function WorkoutPage({
       `
       )
       .eq("is_warmup", false)
+      .eq("workouts.user_id", user.id)
       .in("exercise_id", exerciseIds)
       .neq("workouts.id", workout.id)
       .order("set_number");
