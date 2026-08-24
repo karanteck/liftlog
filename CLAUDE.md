@@ -207,6 +207,17 @@ StrongBoi rebrand & UI polish (all done):
   `h-12 w-12`, "+ Add set" button padding increased
 - All pages updated to `pb-24` for taller bottom nav
 
+UI/UX overhaul v2 (in progress — plan at `~/.claude/plans/should-i-use-claude-serene-naur.md`):
+4 tiers, 16 steps. Two approved spec overrides: RPE tap-to-reveal (Step 10),
+previous performance as ghost placeholders (Step 11).
+
+- Tier 1 done (Steps 1–5: Visual Foundation):
+  1. Card elevation — dark card oklch 0.205→0.22, shadow-sm/shadow-md on Card
+  2. Micro-label cleanup — all text-[10px]/text-[11px] → text-xs (23 instances, 9 files)
+  3. Login branding — barbell logo (64px) + tagline on login and signup pages
+  4. Color tokens — --success (green) and --warning (amber) in globals.css
+  5. Keyframe animations — set-complete, pr-celebrate, rest-done-pulse defined
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed
