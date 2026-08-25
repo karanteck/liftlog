@@ -48,18 +48,20 @@ export function AdminPanel() {
   }, [loadData]);
 
   async function approveUser(userId: string) {
-    await supabase
+    const { error } = await supabase
       .from("profiles")
       .update({ is_approved: true })
       .eq("id", userId);
+    if (error) return;
     loadData();
   }
 
   async function assignHousehold(userId: string, householdId: string) {
-    await supabase
+    const { error } = await supabase
       .from("profiles")
       .update({ household_id: householdId })
       .eq("id", userId);
+    if (error) return;
     loadData();
   }
 
@@ -67,7 +69,8 @@ export function AdminPanel() {
     e.preventDefault();
     if (!newHouseholdName.trim()) return;
 
-    await supabase.from("households").insert({ name: newHouseholdName.trim() });
+    const { error } = await supabase.from("households").insert({ name: newHouseholdName.trim() });
+    if (error) return;
     setNewHouseholdName("");
     loadData();
   }

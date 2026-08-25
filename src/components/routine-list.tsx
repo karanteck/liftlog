@@ -35,11 +35,12 @@ export function RoutineList({ routines: initial }: { routines: Routine[] }) {
   async function handleDuplicate(routine: Routine) {
     setBusy(routine.id);
 
-    const userId = (await supabase.auth.getUser()).data.user!.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setBusy(null); return; }
 
     const { data: newRoutine, error: routineError } = await supabase
       .from("routines")
-      .insert({ user_id: userId, name: `${routine.name} (Copy)` })
+      .insert({ user_id: user.id, name: `${routine.name} (Copy)` })
       .select("id")
       .single();
 

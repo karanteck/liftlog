@@ -7,7 +7,12 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      const url = new URL("/login", origin);
+      url.searchParams.set("error", "confirm_failed");
+      return NextResponse.redirect(url);
+    }
   }
 
   return NextResponse.redirect(origin);

@@ -95,7 +95,8 @@ export function CustomExerciseForm({
 
     setSaving(true);
 
-    const userId = (await supabase.auth.getUser()).data.user!.id;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSaving(false); return; }
 
     const { data, error } = await supabase
       .from("exercises")
@@ -109,7 +110,7 @@ export function CustomExerciseForm({
         tracking_type: trackingType,
         default_rep_tier: repTier,
         is_custom: true,
-        owner_id: userId,
+        owner_id: user.id,
       })
       .select("id, name, aliases, muscle_group, equipment, default_rep_tier, tracking_type")
       .single();
