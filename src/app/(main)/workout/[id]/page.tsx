@@ -26,6 +26,8 @@ export default async function WorkoutPage({
       date,
       started_at,
       ended_at,
+      bodyweight,
+      notes,
       routines (
         name
       )
@@ -133,6 +135,44 @@ export default async function WorkoutPage({
     existingSetsPromise,
   ]);
 
+  const routineExerciseIds = new Set(exercises.map((e) => e.exerciseId));
+  const extraExerciseIds = [
+    ...new Set(
+      (existingSets ?? [])
+        .map((s) => s.exercise_id)
+        .filter((id) => !routineExerciseIds.has(id))
+    ),
+  ];
+
+  if (extraExerciseIds.length > 0) {
+    const { data: extraExercises } = await supabase
+      .from("exercises")
+      .select("id, name, default_rep_tier, tracking_type")
+      .in("id", extraExerciseIds);
+
+    if (extraExercises) {
+      const repRanges: Record<string, [number, number]> = {
+        heavy_compound: [5, 8],
+        compound: [8, 12],
+        isolation: [10, 15],
+        small_isolation: [12, 20],
+      };
+      for (const ex of extraExercises) {
+        const [repMin, repMax] = repRanges[ex.default_rep_tier] ?? [8, 12];
+        exercises.push({
+          exerciseId: ex.id,
+          name: ex.name,
+          repTier: ex.default_rep_tier,
+          trackingType: ex.tracking_type,
+          targetSets: 3,
+          targetRepMin: repMin,
+          targetRepMax: repMax,
+          position: exercises.length + 1,
+        });
+      }
+    }
+  }
+
   if (prevSets && prevSets.length > 0) {
     const byExercise: Record<
       string,
@@ -201,6 +241,8 @@ export default async function WorkoutPage({
         date: workout.date,
         startedAt: workout.started_at,
         isFinished: !!workout.ended_at,
+        bodyweight: workout.bodyweight ? Number(workout.bodyweight) : null,
+        notes: workout.notes,
       }}
       exercises={exercises}
       previousPerformance={previousPerformance}

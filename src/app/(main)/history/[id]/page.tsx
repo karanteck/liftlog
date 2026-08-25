@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DeleteWorkoutButton } from "@/components/delete-workout-button";
+import { Pencil } from "lucide-react";
 import { formatDateLong, formatDuration } from "@/lib/format";
 
 export default async function WorkoutDetailPage({
@@ -109,7 +110,15 @@ export default async function WorkoutDetailPage({
           <h1 className="text-lg font-bold">{routineName}</h1>
         </div>
         {workout.user_id === user.id && (
-          <DeleteWorkoutButton workoutId={workout.id} />
+          <div className="flex items-center gap-1">
+            <Link href={`/workout/${workout.id}`}>
+              <Button variant="ghost" size="sm">
+                <Pencil className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
+            </Link>
+            <DeleteWorkoutButton workoutId={workout.id} />
+          </div>
         )}
       </header>
 

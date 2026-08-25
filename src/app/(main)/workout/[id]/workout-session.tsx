@@ -129,6 +129,8 @@ export function WorkoutSession({
     date: string;
     startedAt: string;
     isFinished: boolean;
+    bodyweight: number | null;
+    notes: string | null;
   };
   exercises: ExerciseInfo[];
   previousPerformance: Record<string, PrevSet[]>;
@@ -138,10 +140,15 @@ export function WorkoutSession({
 }) {
   const router = useRouter();
   const supabase = createClient();
+  const isEditing = workout.isFinished;
 
-  const [exerciseStates, setExerciseStates] = useState<ExerciseState[]>(() =>
-    buildInitialState(exercises, previousPerformance, existingSets)
-  );
+  const [exerciseStates, setExerciseStates] = useState<ExerciseState[]>(() => {
+    const states = buildInitialState(exercises, previousPerformance, existingSets);
+    if (isEditing) {
+      return states.map((s) => ({ ...s, progressionPrompt: null }));
+    }
+    return states;
+  });
   const [elapsed, setElapsed] = useState(0);
   const [restTimer, setRestTimer] = useState<{
     duration: number;
@@ -154,9 +161,9 @@ export function WorkoutSession({
   const [prFlash, setPrFlash] = useState<{ exerciseName: string; types: PRType[] } | null>(null);
   const [sessionPRs, setSessionPRs] = useState<{ exerciseName: string; types: PRType[] }[]>([]);
   const [showSummary, setShowSummary] = useState(false);
-  const [bodyweight, setBodyweight] = useState("");
-  const [notes, setNotes] = useState("");
-  const [showDetails, setShowDetails] = useState(false);
+  const [bodyweight, setBodyweight] = useState(workout.bodyweight?.toString() ?? "");
+  const [notes, setNotes] = useState(workout.notes ?? "");
+  const [showDetails, setShowDetails] = useState(isEditing);
   const [rpeOpenFor, setRpeOpenFor] = useState<{ exIdx: number; setIdx: number } | null>(null);
   const [collapsedExercises, setCollapsedExercises] = useState<Set<string>>(new Set());
   const [lastSetAt, setLastSetAt] = useState<number | null>(null);
@@ -286,6 +293,7 @@ export function WorkoutSession({
   }, [workout.startedAt, workout.isFinished, isBackdated]);
 
   useEffect(() => {
+    if (isEditing) return;
     setCollapsedExercises((prev) => {
       const next = new Set(prev);
       let changed = false;
@@ -299,7 +307,7 @@ export function WorkoutSession({
       }
       return changed ? next : prev;
     });
-  }, [exerciseStates]);
+  }, [exerciseStates, isEditing]);
 
   const updateSet = useCallback(
     (exIdx: number, setIdx: number, field: "weight" | "reps" | "rpe" | "duration" | "distance", value: string) => {
@@ -383,7 +391,7 @@ export function WorkoutSession({
         return;
       }
 
-      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      if (!isEditing && typeof navigator !== "undefined" && "vibrate" in navigator) {
         navigator.vibrate(50);
       }
 
@@ -410,7 +418,7 @@ export function WorkoutSession({
 
       const isCardio = ex.trackingType === "time" || ex.trackingType === "distance_time";
 
-      if (!set.isWarmup && !isCardio) {
+      if (!isEditing && !set.isWarmup && !isCardio) {
         setLastSetAt(Date.now());
         setRestTimer({ duration: restDuration(ex.repTier), setDbId: data.id, startedAt: Date.now() });
 
@@ -566,6 +574,37 @@ export function WorkoutSession({
     setShowSummary(true);
   }, [supabase, workout.id, workout.date, exercises, bodyweight, notes, userId]);
 
+  const saveEdits = useCallback(async () => {
+    setFinishing(true);
+
+    const bw = bodyweight ? parseFloat(bodyweight) : null;
+    const { error } = await supabase
+      .from("workouts")
+      .update({
+        bodyweight: bw && bw > 0 ? bw : null,
+        notes: notes.trim() || null,
+      })
+      .eq("id", workout.id);
+
+    if (error) {
+      toast.error("Failed to save changes");
+      setFinishing(false);
+      return;
+    }
+
+    if (bw && bw > 0) {
+      await supabase
+        .from("bodyweight_log")
+        .upsert(
+          { user_id: userId, date: workout.date, weight: bw },
+          { onConflict: "user_id,date" }
+        );
+    }
+
+    toast.success("Changes saved");
+    router.push(`/history/${workout.id}`);
+  }, [supabase, workout.id, workout.date, bodyweight, notes, userId, router]);
+
   const elapsedMin = Math.floor(elapsed / 60);
   const elapsedSec = elapsed % 60;
   const totalCompleted = exerciseStates.reduce(
@@ -580,16 +619,6 @@ export function WorkoutSession({
   const exercisesWithSets = exerciseStates.filter(
     (ex) => ex.sets.some((s) => s.isCompleted)
   ).length;
-
-  if (workout.isFinished && !showSummary) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
-        <h1 className="text-2xl font-bold">Workout complete</h1>
-        <p className="mt-2 text-muted-foreground">This workout has already been finished.</p>
-        <Button className="mt-4" onClick={() => router.push("/")}>Back to home</Button>
-      </div>
-    );
-  }
 
   if (showSummary) {
     return (
@@ -606,13 +635,15 @@ export function WorkoutSession({
       <header className="sticky top-0 z-40 bg-background border-b px-4 py-2">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div className="flex items-center gap-2">
-            <Link href="/" className="text-muted-foreground hover:text-foreground p-1">
+            <Link href={isEditing ? `/history/${workout.id}` : "/"} className="text-muted-foreground hover:text-foreground p-1">
               <ChevronLeft className="h-6 w-6" />
             </Link>
             <div>
               <h1 className="font-bold">{workout.routineName ?? "Empty Workout"}</h1>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                {isBackdated ? (
+                {isEditing ? (
+                  <span>Editing</span>
+                ) : isBackdated ? (
                   <span>
                     {new Date(workout.date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                   </span>
@@ -625,26 +656,32 @@ export function WorkoutSession({
               </div>
             </div>
           </div>
-          <AlertDialog>
-            <AlertDialogTrigger
-              render={<Button size="sm" disabled={finishing} />}
-            >
-              {finishing ? "Saving..." : "Finish"}
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Finish this workout?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  You logged {totalCompleted} set{totalCompleted !== 1 ? "s" : ""} across{" "}
-                  {exercisesWithSets} exercise{exercisesWithSets !== 1 ? "s" : ""}.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Keep going</AlertDialogCancel>
-                <AlertDialogAction onClick={finishWorkout}>Finish workout</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          {isEditing ? (
+            <Button size="sm" disabled={finishing} onClick={saveEdits}>
+              {finishing ? "Saving..." : "Save"}
+            </Button>
+          ) : (
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={<Button size="sm" disabled={finishing} />}
+              >
+                {finishing ? "Saving..." : "Finish"}
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Finish this workout?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You logged {totalCompleted} set{totalCompleted !== 1 ? "s" : ""} across{" "}
+                    {exercisesWithSets} exercise{exercisesWithSets !== 1 ? "s" : ""}.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Keep going</AlertDialogCancel>
+                  <AlertDialogAction onClick={finishWorkout}>Finish workout</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
         <div className="h-1 bg-muted mt-2 -mx-4">
           <div

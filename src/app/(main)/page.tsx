@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PlateauAlerts } from "@/components/plateau-alerts";
 import { getActiveAlerts } from "@/lib/plateau-runner";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp } from "lucide-react";
+import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp, Play } from "lucide-react";
 import { formatDateRelative, formatDuration, getMonday } from "@/lib/format";
 
 function computeStreak(dates: string[]): number {
@@ -65,7 +65,7 @@ export default async function Home() {
 
   const mondayStr = getMonday(new Date().toISOString().split("T")[0]);
 
-  const [alertsResult, bodyweightResult, weekWorkoutsResult, lastWorkoutResult, streakResult, lastRoutineResult] =
+  const [alertsResult, bodyweightResult, weekWorkoutsResult, lastWorkoutResult, streakResult, lastRoutineResult, activeWorkoutResult] =
     await Promise.all([
       getActiveAlerts(supabase, user.id),
       supabase
@@ -105,6 +105,14 @@ export default async function Home() {
         .order("date", { ascending: false })
         .limit(1)
         .single(),
+      supabase
+        .from("workouts")
+        .select("id, started_at, routines ( name )")
+        .eq("user_id", user.id)
+        .is("ended_at", null)
+        .order("started_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ]);
 
   const alerts = alertsResult;
@@ -140,6 +148,22 @@ export default async function Home() {
     ? (lastRoutineRaw[0] as { id: string; name: string } | undefined) ?? null
     : (lastRoutineRaw as { id: string; name: string } | null);
 
+  const activeWorkout = activeWorkoutResult.data;
+  let activeWorkoutSetCount = 0;
+  let activeWorkoutRoutineName = "Empty Workout";
+  if (activeWorkout) {
+    const r = activeWorkout.routines as unknown;
+    const obj = Array.isArray(r) ? r[0] : r;
+    activeWorkoutRoutineName = (obj as { name: string } | null)?.name ?? "Empty Workout";
+
+    const { count } = await supabase
+      .from("sets")
+      .select("*", { count: "exact", head: true })
+      .eq("workout_id", activeWorkout.id)
+      .eq("is_warmup", false);
+    activeWorkoutSetCount = count ?? 0;
+  }
+
   const firstName = profile.name.split(" ")[0];
 
   return (
@@ -154,25 +178,48 @@ export default async function Home() {
       </header>
 
       <main className="flex-1 px-4 py-3 max-w-lg mx-auto w-full space-y-4">
-        <div>
-          <Link href="/workout/new">
-            <Button className="w-full h-16 text-xl font-bold" size="lg">
-              <Dumbbell className="h-6 w-6 mr-2" />
-              Start Workout
-            </Button>
-          </Link>
-          {lastRoutine && (
+        {activeWorkout ? (
+          <div>
+            <Link href={`/workout/${activeWorkout.id}`}>
+              <Button className="w-full h-16 text-xl font-bold" size="lg">
+                <Play className="h-6 w-6 mr-2 fill-current" />
+                Resume Workout
+              </Button>
+            </Link>
+            <p className="text-xs text-muted-foreground text-center mt-1.5">
+              {activeWorkoutRoutineName}
+              {activeWorkoutSetCount > 0 && (
+                <> &middot; {activeWorkoutSetCount} set{activeWorkoutSetCount !== 1 ? "s" : ""} done</>
+              )}
+            </p>
             <Link
               href="/workout/new"
-              className="flex items-center justify-between mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="block text-center mt-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              <span>
-                Quick start: <span className="font-medium text-foreground">{lastRoutine.name}</span>
-              </span>
-              <ChevronRight className="h-6 w-6" />
+              or start a new workout
             </Link>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div>
+            <Link href="/workout/new">
+              <Button className="w-full h-16 text-xl font-bold" size="lg">
+                <Dumbbell className="h-6 w-6 mr-2" />
+                Start Workout
+              </Button>
+            </Link>
+            {lastRoutine && (
+              <Link
+                href="/workout/new"
+                className="flex items-center justify-between mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span>
+                  Quick start: <span className="font-medium text-foreground">{lastRoutine.name}</span>
+                </span>
+                <ChevronRight className="h-6 w-6" />
+              </Link>
+            )}
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <Card>
