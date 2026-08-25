@@ -16,33 +16,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { formatDateShort, formatDateRelative } from "@/lib/format";
+
 type Entry = {
   id: string;
   date: string;
   weight: number;
 };
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
-}
-
-function formatDateLong(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.floor((today.getTime() - d.getTime()) / 86400000);
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  return d.toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-}
 
 export function BodyweightTracker({
   userId,
@@ -63,7 +43,7 @@ export function BodyweightTracker({
     return [...entries]
       .sort((a, b) => a.date.localeCompare(b.date))
       .map((e) => ({
-        date: formatDate(e.date),
+        date: formatDateShort(e.date),
         weight: e.weight,
       }));
   }, [entries]);
@@ -244,7 +224,7 @@ export function BodyweightTracker({
             className="flex items-center justify-between py-2 px-1 text-sm"
           >
             <span className="text-muted-foreground">
-              {formatDateLong(e.date)}
+              {formatDateRelative(e.date)}
             </span>
             <div className="flex items-center gap-3">
               <span className="font-medium tabular-nums">{e.weight} kg</span>

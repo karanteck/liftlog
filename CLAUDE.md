@@ -257,6 +257,47 @@ Performance (all done):
   instant skeleton feedback instead of frozen screen while server
   components fetch data from Supabase
 
+Code audit fixes (all done — 4 major, 3 moderate, 6 marginal):
+
+Major:
+- Error boundaries: route-level `src/app/(main)/error.tsx` + reusable
+  `src/components/error-boundary.tsx` for individual sections (charts,
+  alerts). Prevents full page crashes.
+- Generated Supabase types (`src/lib/supabase/database.types.ts`) —
+  `createBrowserClient<Database>` and `createServerClient<Database>`
+  for type-safe DB queries. Custom exercise form uses DB enum types.
+- Workout session split: 1,204-line god component → 4 files:
+  `workout-session.tsx` (679 lines), `exercise-card.tsx` (337 lines),
+  `workout-summary.tsx` (133 lines), `types.ts` (shared type defs)
+- Analytics date-range filter: default 12 weeks, options for 6mo/1yr/all.
+  Prevents unbounded queries on growing data.
+
+Moderate:
+- Plateau detection moved from every home page load to post-workout
+  fire-and-forget. Home page reads cached alerts only.
+- Rest timer useEffect split: interval runs once (empty deps), vibration
+  effect watches `remaining` with ref guard. Was tearing down/recreating
+  interval 180 times per rest period.
+- Unit tests: vitest + 36 tests covering `computeE1rm`, `computePRs`,
+  `checkNewPRs` (pr.test.ts) and all 6 plateau detection signals
+  (plateau.test.ts). Run with `npm test`.
+
+Marginal:
+- Service worker offline fallback: `public/offline.html` cached on
+  install, served when navigation requests fail (no network)
+- Shared format utilities: `src/lib/format.ts` with `parseLocalDate`,
+  `formatDateShort`, `formatDateLong`, `formatDateRelative`,
+  `formatDuration`. Replaced 6 duplicate definitions across 7 files.
+- "Finish" button changed from red destructive to primary (teal) variant
+- Workout page parallelized: `prevSets` + `existingSets` queries run
+  via `Promise.all` instead of sequentially
+- Exercise search caching: exercise list (~250 items) fetched once and
+  cached in ref; subsequent drawer opens only re-fetch recent IDs
+
+New dev dependencies: `vitest` (test runner)
+New files: `vitest.config.ts`, `src/lib/pr.test.ts`,
+`src/lib/plateau.test.ts`, `src/lib/format.ts`
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed

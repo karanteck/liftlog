@@ -96,96 +96,102 @@ export default async function WorkoutPage({
   > = {};
   const exercisePRs: Record<string, PRRecord> = {};
 
-  if (exerciseIds.length > 0) {
-    const { data: prevSets } = await supabase
-      .from("sets")
-      .select(
-        `
-        exercise_id,
-        set_number,
-        weight,
-        reps,
-        rpe,
-        is_warmup,
-        workouts!inner (
-          id,
-          user_id,
-          date
-        )
-      `
-      )
-      .eq("is_warmup", false)
-      .eq("workouts.user_id", user.id)
-      .in("exercise_id", exerciseIds)
-      .neq("workouts.id", workout.id)
-      .order("set_number");
+  const prevSetsPromise =
+    exerciseIds.length > 0
+      ? supabase
+          .from("sets")
+          .select(
+            `
+            exercise_id,
+            set_number,
+            weight,
+            reps,
+            rpe,
+            is_warmup,
+            workouts!inner (
+              id,
+              user_id,
+              date
+            )
+          `
+          )
+          .eq("is_warmup", false)
+          .eq("workouts.user_id", user.id)
+          .in("exercise_id", exerciseIds)
+          .neq("workouts.id", workout.id)
+          .order("set_number")
+      : Promise.resolve({ data: null });
 
-    if (prevSets && prevSets.length > 0) {
-      const byExercise: Record<
-        string,
-        {
-          workoutDate: string;
-          sets: {
-            weight: number | null;
-            reps: number | null;
-            rpe: number | null;
-            setNumber: number;
-          }[];
-        }[]
-      > = {};
-
-      for (const s of prevSets) {
-        const w = s.workouts as unknown as { id: string; date: string };
-        if (!byExercise[s.exercise_id]) byExercise[s.exercise_id] = [];
-        let workoutGroup = byExercise[s.exercise_id].find(
-          (g) => g.workoutDate === w.date
-        );
-        if (!workoutGroup) {
-          workoutGroup = { workoutDate: w.date, sets: [] };
-          byExercise[s.exercise_id].push(workoutGroup);
-        }
-        workoutGroup.sets.push({
-          weight: s.weight,
-          reps: s.reps,
-          rpe: s.rpe,
-          setNumber: s.set_number,
-        });
-      }
-
-      for (const [exId, workouts] of Object.entries(byExercise)) {
-        workouts.sort(
-          (a, b) =>
-            new Date(b.workoutDate).getTime() -
-            new Date(a.workoutDate).getTime()
-        );
-        const mostRecent = workouts[0];
-        previousPerformance[exId] = mostRecent.sets
-          .sort((a, b) => a.setNumber - b.setNumber)
-          .map((s) => ({ weight: s.weight, reps: s.reps, rpe: s.rpe }));
-      }
-      const prByExercise: Record<
-        string,
-        { weight: number | null; reps: number | null; isWarmup: boolean }[]
-      > = {};
-      for (const s of prevSets) {
-        if (!prByExercise[s.exercise_id]) prByExercise[s.exercise_id] = [];
-        prByExercise[s.exercise_id].push({
-          weight: s.weight,
-          reps: s.reps,
-          isWarmup: s.is_warmup,
-        });
-      }
-      for (const [exId, exSets] of Object.entries(prByExercise)) {
-        exercisePRs[exId] = computePRs(exSets);
-      }
-    }
-  }
-
-  const { data: existingSets } = await supabase
+  const existingSetsPromise = supabase
     .from("sets")
     .select("id, exercise_id, set_number, weight, reps, rpe, is_warmup")
     .eq("workout_id", workout.id)
     .order("set_number");
+
+  const [{ data: prevSets }, { data: existingSets }] = await Promise.all([
+    prevSetsPromise,
+    existingSetsPromise,
+  ]);
+
+  if (prevSets && prevSets.length > 0) {
+    const byExercise: Record<
+      string,
+      {
+        workoutDate: string;
+        sets: {
+          weight: number | null;
+          reps: number | null;
+          rpe: number | null;
+          setNumber: number;
+        }[];
+      }[]
+    > = {};
+
+    for (const s of prevSets) {
+      const w = s.workouts as unknown as { id: string; date: string };
+      if (!byExercise[s.exercise_id]) byExercise[s.exercise_id] = [];
+      let workoutGroup = byExercise[s.exercise_id].find(
+        (g) => g.workoutDate === w.date
+      );
+      if (!workoutGroup) {
+        workoutGroup = { workoutDate: w.date, sets: [] };
+        byExercise[s.exercise_id].push(workoutGroup);
+      }
+      workoutGroup.sets.push({
+        weight: s.weight,
+        reps: s.reps,
+        rpe: s.rpe,
+        setNumber: s.set_number,
+      });
+    }
+
+    for (const [exId, workouts] of Object.entries(byExercise)) {
+      workouts.sort(
+        (a, b) =>
+          new Date(b.workoutDate).getTime() -
+          new Date(a.workoutDate).getTime()
+      );
+      const mostRecent = workouts[0];
+      previousPerformance[exId] = mostRecent.sets
+        .sort((a, b) => a.setNumber - b.setNumber)
+        .map((s) => ({ weight: s.weight, reps: s.reps, rpe: s.rpe }));
+    }
+    const prByExercise: Record<
+      string,
+      { weight: number | null; reps: number | null; isWarmup: boolean }[]
+    > = {};
+    for (const s of prevSets) {
+      if (!prByExercise[s.exercise_id]) prByExercise[s.exercise_id] = [];
+      prByExercise[s.exercise_id].push({
+        weight: s.weight,
+        reps: s.reps,
+        isWarmup: s.is_warmup,
+      });
+    }
+    for (const [exId, exSets] of Object.entries(prByExercise)) {
+      exercisePRs[exId] = computePRs(exSets);
+    }
+  }
 
   return (
     <WorkoutSession

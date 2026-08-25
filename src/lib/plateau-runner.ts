@@ -66,6 +66,13 @@ export async function runPlateauDetection(
   return fetchActiveAlerts(supabase, userId);
 }
 
+export async function getActiveAlerts(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<ActiveAlert[]> {
+  return fetchActiveAlerts(supabase, userId);
+}
+
 export async function dismissAlert(
   supabase: SupabaseClient,
   alertId: string

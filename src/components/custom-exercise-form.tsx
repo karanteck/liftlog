@@ -4,6 +4,10 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import type { Database } from "@/lib/supabase/database.types";
+
+type TrackingType = Database["public"]["Enums"]["tracking_type"];
+type RepTier = Database["public"]["Enums"]["rep_tier"];
 
 const MUSCLE_GROUPS = [
   "chest", "back", "shoulders", "biceps", "triceps",
@@ -79,8 +83,8 @@ export function CustomExerciseForm({
   const [muscleGroup, setMuscleGroup] = useState("chest");
   const [equipment, setEquipment] = useState("machine");
   const [movementPattern, setMovementPattern] = useState("horizontal_press");
-  const [trackingType, setTrackingType] = useState("weight_reps");
-  const [repTier, setRepTier] = useState("compound");
+  const [trackingType, setTrackingType] = useState<TrackingType>("weight_reps");
+  const [repTier, setRepTier] = useState<RepTier>("compound");
   const [saving, setSaving] = useState(false);
 
   async function handleCreate() {
@@ -194,7 +198,7 @@ export function CustomExerciseForm({
           </label>
           <select
             value={trackingType}
-            onChange={(e) => setTrackingType(e.target.value)}
+            onChange={(e) => setTrackingType(e.target.value as TrackingType)}
             className="h-10 w-full rounded-md border bg-transparent px-3 text-sm"
           >
             {TRACKING_TYPES.map((tt) => (
@@ -209,7 +213,7 @@ export function CustomExerciseForm({
           <label className="text-sm font-medium block mb-1">Rep range tier</label>
           <select
             value={repTier}
-            onChange={(e) => setRepTier(e.target.value)}
+            onChange={(e) => setRepTier(e.target.value as RepTier)}
             className="h-10 w-full rounded-md border bg-transparent px-3 text-sm"
           >
             {REP_TIERS.map((rt) => (

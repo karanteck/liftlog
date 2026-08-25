@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,6 +75,7 @@ export function ExerciseSearch({
   const [equipmentFilter, setEquipmentFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [showCustomForm, setShowCustomForm] = useState(false);
+  const exercisesCached = useRef(false);
 
   useEffect(() => {
     if (!open) return;
@@ -82,47 +83,51 @@ export function ExerciseSearch({
     setMuscleFilter("all");
     setEquipmentFilter("all");
     setShowCustomForm(false);
-    setLoading(true);
+
+    const needExercises = !exercisesCached.current;
+    if (needExercises) setLoading(true);
 
     async function load() {
-      const exerciseQuery = supabase
-        .from("exercises")
-        .select("id, name, aliases, muscle_group, equipment, default_rep_tier, tracking_type")
-        .order("name");
+      const exercisePromise = needExercises
+        ? supabase
+            .from("exercises")
+            .select("id, name, aliases, muscle_group, equipment, default_rep_tier, tracking_type")
+            .order("name")
+        : Promise.resolve(null);
 
-      if (userId) {
-        const recentQuery = supabase
-          .from("sets")
-          .select(`exercise_id, workouts!inner (user_id, date)`)
-          .order("created_at", { ascending: false })
-          .limit(200);
+      const recentPromise = userId
+        ? supabase
+            .from("sets")
+            .select(`exercise_id, workouts!inner (user_id, date)`)
+            .order("created_at", { ascending: false })
+            .limit(200)
+        : Promise.resolve(null);
 
-        const [{ data: allExercises }, { data: recentSets }] = await Promise.all([
-          exerciseQuery,
-          recentQuery,
-        ]);
+      const [exerciseResult, recentResult] = await Promise.all([
+        exercisePromise,
+        recentPromise,
+      ]);
 
-        setExercises(allExercises ?? []);
+      if (exerciseResult?.data) {
+        setExercises(exerciseResult.data);
+        exercisesCached.current = true;
+      }
 
-        if (recentSets) {
-          const userSets = recentSets.filter((s) => {
-            const w = s.workouts as unknown as { user_id: string };
-            return w.user_id === userId;
-          });
-          const seen = new Set<string>();
-          const recent: string[] = [];
-          for (const s of userSets) {
-            if (!seen.has(s.exercise_id)) {
-              seen.add(s.exercise_id);
-              recent.push(s.exercise_id);
-            }
-            if (recent.length >= 10) break;
+      if (recentResult?.data) {
+        const userSets = recentResult.data.filter((s) => {
+          const w = s.workouts as unknown as { user_id: string };
+          return w.user_id === userId;
+        });
+        const seen = new Set<string>();
+        const recent: string[] = [];
+        for (const s of userSets) {
+          if (!seen.has(s.exercise_id)) {
+            seen.add(s.exercise_id);
+            recent.push(s.exercise_id);
           }
-          setRecentIds(recent);
+          if (recent.length >= 10) break;
         }
-      } else {
-        const { data: allExercises } = await exerciseQuery;
-        setExercises(allExercises ?? []);
+        setRecentIds(recent);
       }
 
       setLoading(false);

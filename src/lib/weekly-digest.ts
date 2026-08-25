@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { formatDateRelative } from "@/lib/format";
 
 export type DigestData = {
   userName: string;
@@ -122,14 +123,6 @@ export async function buildDigestData(
   };
 }
 
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-}
 
 function alertTypeLabel(type: string): string {
   const labels: Record<string, string> = {
@@ -152,7 +145,7 @@ export function buildDigestHtml(data: DigestData): string {
     .map(
       (w) =>
         `<tr>
-          <td style="padding:6px 12px;border-bottom:1px solid #eee;">${formatDate(w.date)}</td>
+          <td style="padding:6px 12px;border-bottom:1px solid #eee;">${formatDateRelative(w.date)}</td>
           <td style="padding:6px 12px;border-bottom:1px solid #eee;">${w.routineName ?? "Empty workout"}</td>
           <td style="padding:6px 12px;border-bottom:1px solid #eee;text-align:right;">${w.hardSets} sets</td>
         </tr>`
@@ -186,7 +179,7 @@ export function buildDigestHtml(data: DigestData): string {
     <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:500px;margin:0 auto;padding:20px;color:#1a1a1a;">
       <h1 style="font-size:20px;margin:0 0 4px;">Hey ${userName} 👋</h1>
       <p style="color:#666;font-size:14px;margin:0 0 20px;">
-        ${formatDate(weekStart)} – ${formatDate(weekEnd)}
+        ${formatDateRelative(weekStart)} – ${formatDateRelative(weekEnd)}
       </p>
 
       ${

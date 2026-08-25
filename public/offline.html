@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StrongBoi — Offline</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    background: #0a0a0a;
+    color: #e5e5e5;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .container { max-width: 320px; }
+  .icon { font-size: 3rem; margin-bottom: 1rem; }
+  h1 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+  p { font-size: 0.875rem; color: #a3a3a3; line-height: 1.5; margin-bottom: 1.5rem; }
+  button {
+    background: #0d9488;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    min-height: 44px;
+  }
+  button:active { opacity: 0.8; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="icon">📡</div>
+  <h1>You're offline</h1>
+  <p>StrongBoi needs an internet connection to load your workouts. Check your connection and try again.</p>
+  <button onclick="location.reload()">Retry</button>
+</div>
+</body>
+</html>

@@ -5,8 +5,10 @@ import { SignOutButton } from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlateauAlerts } from "@/components/plateau-alerts";
-import { runPlateauDetection } from "@/lib/plateau-runner";
+import { getActiveAlerts } from "@/lib/plateau-runner";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp, ClipboardList } from "lucide-react";
+import { formatDateRelative, formatDuration } from "@/lib/format";
 
 function getMonday(d: Date): string {
   const day = d.getDay();
@@ -14,27 +16,6 @@ function getMonday(d: Date): string {
   const monday = new Date(d);
   monday.setDate(diff);
   return monday.toISOString().split("T")[0];
-}
-
-function formatDuration(startedAt: string, endedAt: string | null): string {
-  if (!endedAt) return "In progress";
-  const ms = new Date(endedAt).getTime() - new Date(startedAt).getTime();
-  const mins = Math.floor(ms / 60000);
-  if (mins < 60) return `${mins}m`;
-  const hrs = Math.floor(mins / 60);
-  const rem = mins % 60;
-  return `${hrs}h ${rem}m`;
-}
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.floor((today.getTime() - d.getTime()) / 86400000);
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  if (diff < 7) return d.toLocaleDateString("en-GB", { weekday: "long" });
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
 function computeStreak(dates: string[]): number {
@@ -94,7 +75,7 @@ export default async function Home() {
 
   const [alertsResult, bodyweightResult, weekWorkoutsResult, lastWorkoutResult, streakResult, lastRoutineResult] =
     await Promise.all([
-      runPlateauDetection(supabase, user.id),
+      getActiveAlerts(supabase, user.id),
       supabase
         .from("bodyweight_log")
         .select("weight")
@@ -264,7 +245,7 @@ export default async function Home() {
                       })()}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {formatDate(lastWorkout.date)} &middot;{" "}
+                      {formatDateRelative(lastWorkout.date)} &middot;{" "}
                       {formatDuration(lastWorkout.started_at, lastWorkout.ended_at)} &middot;{" "}
                       {lastWorkoutSets} sets
                       {lastWorkoutVolume > 0 && (
@@ -279,7 +260,9 @@ export default async function Home() {
           </Link>
         )}
 
-        <PlateauAlerts alerts={alerts} />
+        <ErrorBoundary>
+          <PlateauAlerts alerts={alerts} />
+        </ErrorBoundary>
       </main>
     </div>
   );

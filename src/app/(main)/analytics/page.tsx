@@ -1,11 +1,29 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { HardSetsChart } from "@/components/hard-sets-chart";
 import { VolumeTrendChart } from "@/components/volume-trend-chart";
 import { FrequencyChart } from "@/components/frequency-chart";
 import { ImbalanceChart } from "@/components/imbalance-chart";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { Button } from "@/components/ui/button";
 
-export default async function AnalyticsPage() {
+const RANGE_OPTIONS = [
+  { value: "12w", label: "12 weeks", days: 84 },
+  { value: "26w", label: "6 months", days: 182 },
+  { value: "52w", label: "1 year", days: 365 },
+  { value: "all", label: "All time", days: null },
+];
+
+export default async function AnalyticsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string }>;
+}) {
+  const { range } = await searchParams;
+  const activeRange = range ?? "12w";
+  const rangeOption = RANGE_OPTIONS.find((r) => r.value === activeRange) ?? RANGE_OPTIONS[0];
+
   const supabase = await createClient();
 
   const {
@@ -14,7 +32,7 @@ export default async function AnalyticsPage() {
 
   if (!user) redirect("/login");
 
-  const { data: rawSets } = await supabase
+  let setsQuery = supabase
     .from("sets")
     .select(
       `
@@ -28,6 +46,14 @@ export default async function AnalyticsPage() {
     )
     .eq("is_warmup", false)
     .eq("workouts.user_id", user.id);
+
+  if (rangeOption.days) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - rangeOption.days);
+    setsQuery = setsQuery.gte("workouts.date", cutoff.toISOString().split("T")[0]);
+  }
+
+  const { data: rawSets } = await setsQuery;
 
   type ParsedSet = {
     date: string;
@@ -60,11 +86,19 @@ export default async function AnalyticsPage() {
     muscleGroup: s.muscleGroup,
   }));
 
-  const { data: workouts } = await supabase
+  let workoutsQuery = supabase
     .from("workouts")
     .select("date")
     .eq("user_id", user.id)
     .not("ended_at", "is", null);
+
+  if (rangeOption.days) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - rangeOption.days);
+    workoutsQuery = workoutsQuery.gte("date", cutoff.toISOString().split("T")[0]);
+  }
+
+  const { data: workouts } = await workoutsQuery;
 
   const workoutDates = (workouts ?? []).map((w) => w.date as string);
 
@@ -85,21 +119,44 @@ export default async function AnalyticsPage() {
   return (
     <div className="flex flex-col min-h-screen pb-24">
       <header className="px-4 py-3 border-b">
-        <h1 className="text-lg font-bold">Analytics</h1>
+        <div className="max-w-lg mx-auto flex items-center justify-between">
+          <h1 className="text-lg font-bold">Analytics</h1>
+          <div className="flex gap-1 bg-muted rounded-lg p-0.5">
+            {RANGE_OPTIONS.map((opt) => (
+              <Link
+                key={opt.value}
+                href={`/analytics?range=${opt.value}`}
+                replace
+              >
+                <Button
+                  variant={activeRange === opt.value ? "secondary" : "ghost"}
+                  size="sm"
+                  className="h-7 text-xs px-2"
+                >
+                  {opt.label}
+                </Button>
+              </Link>
+            ))}
+          </div>
+        </div>
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Charts and trends from your training data.
-        </p>
+        <ErrorBoundary>
+          <HardSetsChart sets={hardSetsData} />
+        </ErrorBoundary>
 
-        <HardSetsChart sets={hardSetsData} />
+        <ErrorBoundary>
+          <VolumeTrendChart sets={volumeData} />
+        </ErrorBoundary>
 
-        <VolumeTrendChart sets={volumeData} />
+        <ErrorBoundary>
+          <FrequencyChart dates={workoutDates} />
+        </ErrorBoundary>
 
-        <FrequencyChart dates={workoutDates} />
-
-        <ImbalanceChart sets={imbalanceData} />
+        <ErrorBoundary>
+          <ImbalanceChart sets={imbalanceData} />
+        </ErrorBoundary>
       </main>
     </div>
   );

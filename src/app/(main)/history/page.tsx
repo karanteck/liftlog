@@ -5,32 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CalendarHeatmap } from "@/components/calendar-heatmap";
 import { List, CalendarDays } from "lucide-react";
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.floor(
-    (today.getTime() - d.getTime()) / 86400000
-  );
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  return d.toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-}
-
-function formatDuration(startedAt: string, endedAt: string | null): string {
-  if (!endedAt) return "In progress";
-  const ms = new Date(endedAt).getTime() - new Date(startedAt).getTime();
-  const mins = Math.floor(ms / 60000);
-  if (mins < 60) return `${mins} min`;
-  const hrs = Math.floor(mins / 60);
-  const rem = mins % 60;
-  return `${hrs}h ${rem}m`;
-}
+import { formatDateRelative, formatDuration } from "@/lib/format";
 
 export default async function HistoryPage({
   searchParams,
@@ -215,7 +190,7 @@ export default async function HistoryPage({
                         )}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {formatDate(w.date)} &middot;{" "}
+                        {formatDateRelative(w.date)} &middot;{" "}
                         {formatDuration(w.started_at, w.ended_at)} &middot;{" "}
                         {sets} sets
                         {volume > 0 && (

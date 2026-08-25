@@ -5,26 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DeleteWorkoutButton } from "@/components/delete-workout-button";
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-function formatDuration(startedAt: string, endedAt: string | null): string {
-  if (!endedAt) return "In progress";
-  const ms = new Date(endedAt).getTime() - new Date(startedAt).getTime();
-  const mins = Math.floor(ms / 60000);
-  if (mins < 60) return `${mins} min`;
-  const hrs = Math.floor(mins / 60);
-  const rem = mins % 60;
-  return `${hrs}h ${rem}m`;
-}
+import { formatDateLong, formatDuration } from "@/lib/format";
 
 export default async function WorkoutDetailPage({
   params,
@@ -134,7 +115,7 @@ export default async function WorkoutDetailPage({
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
         <div className="text-sm text-muted-foreground space-y-0.5">
-          <p>{formatDate(workout.date)}</p>
+          <p>{formatDateLong(workout.date)}</p>
           <p>
             Duration: {formatDuration(workout.started_at, workout.ended_at)}{" "}
             &middot; {workingSets} working sets &middot;{" "}

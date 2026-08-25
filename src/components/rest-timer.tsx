@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const CIRCLE_SIZE = 120;
@@ -16,15 +16,20 @@ export function RestTimer({
   onDismiss: () => void;
 }) {
   const [remaining, setRemaining] = useState(duration);
+  const vibratedRef = useRef(false);
 
   useEffect(() => {
-    if (remaining <= 0) {
+    const t = setInterval(() => setRemaining((r) => r - 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    if (remaining <= 0 && !vibratedRef.current) {
+      vibratedRef.current = true;
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         navigator.vibrate([200, 100, 200]);
       }
     }
-    const t = setInterval(() => setRemaining((r) => r - 1), 1000);
-    return () => clearInterval(t);
   }, [remaining]);
 
   const done = remaining <= 0;

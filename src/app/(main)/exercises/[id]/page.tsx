@@ -6,22 +6,7 @@ import { BackButton } from "@/components/back-button";
 import { Badge } from "@/components/ui/badge";
 import { computeE1rm } from "@/lib/pr";
 import { E1rmChart } from "@/components/e1rm-chart";
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.floor(
-    (today.getTime() - d.getTime()) / 86400000
-  );
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  return d.toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-}
+import { formatDateRelative } from "@/lib/format";
 
 export default async function ExerciseHistoryPage({
   params,
@@ -286,7 +271,7 @@ export default async function ExerciseHistoryPage({
                   <div className="flex items-center justify-between mb-2">
                     <div>
                       <p className="font-medium text-sm">
-                        {formatDate(session.date)}
+                        {formatDateRelative(session.date)}
                         {!session.isOwnWorkout && (
                           <span className="text-muted-foreground ml-1">
                             (household)

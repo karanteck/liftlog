@@ -10,25 +10,18 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { formatDateShort } from "@/lib/format";
 
 type DataPoint = {
   date: string;
   e1rm: number;
 };
 
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
-}
-
 export function E1rmChart({ data }: { data: DataPoint[] }) {
   if (data.length < 2) return null;
 
   const chartData = data.map((d) => ({
-    date: formatDate(d.date),
+    date: formatDateShort(d.date),
     e1rm: Math.round(d.e1rm * 10) / 10,
   }));
 
