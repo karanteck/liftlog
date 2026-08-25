@@ -322,6 +322,23 @@ UI redesign pass (all done — 3 fixes from independent UX review):
    - Completed exercises auto-collapse to compact one-line card showing
      set count and top weight; tap to expand, ChevronUp to re-collapse
 
+Workout session improvements (all done):
+- Resume in-progress workouts: home page detects active workouts
+  (`ended_at IS NULL`) and shows Resume Workout button with routine
+  name and set count. Bottom nav Workout tab dynamically links to
+  the active session with a teal dot indicator.
+- Edit historical workouts: history detail page has Edit button that
+  reopens the finished workout in the session UI. Edit mode suppresses
+  rest timer, PR detection, vibration, progression prompts, and
+  auto-collapse. Bodyweight and notes pre-populate from existing data.
+  Save button updates workout metadata and navigates back to history.
+  To change a set: tap green checkmark to uncomplete (deletes from DB),
+  edit values, tap again to re-complete (inserts new row).
+- Mid-workout exercise fix: exercises added via "+ Add Exercise" during
+  a workout are now properly restored on resume or edit. Server
+  component detects sets for exercises outside the routine template
+  and includes them.
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed
