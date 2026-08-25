@@ -7,16 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PlateauAlerts } from "@/components/plateau-alerts";
 import { getActiveAlerts } from "@/lib/plateau-runner";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp, ClipboardList } from "lucide-react";
-import { formatDateRelative, formatDuration } from "@/lib/format";
-
-function getMonday(d: Date): string {
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(d);
-  monday.setDate(diff);
-  return monday.toISOString().split("T")[0];
-}
+import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp } from "lucide-react";
+import { formatDateRelative, formatDuration, getMonday } from "@/lib/format";
 
 function computeStreak(dates: string[]): number {
   if (dates.length === 0) return 0;
@@ -25,7 +17,7 @@ function computeStreak(dates: string[]): number {
   let checkDate = new Date(now);
 
   for (let w = 0; w < 52; w++) {
-    const monday = getMonday(checkDate);
+    const monday = getMonday(checkDate.toISOString().split("T")[0]);
     const sunday = new Date(monday + "T00:00:00");
     sunday.setDate(sunday.getDate() + 6);
     const sundayStr = sunday.toISOString().split("T")[0];
@@ -71,7 +63,7 @@ export default async function Home() {
     );
   }
 
-  const mondayStr = getMonday(new Date());
+  const mondayStr = getMonday(new Date().toISOString().split("T")[0]);
 
   const [alertsResult, bodyweightResult, weekWorkoutsResult, lastWorkoutResult, streakResult, lastRoutineResult] =
     await Promise.all([
@@ -162,51 +154,40 @@ export default async function Home() {
       </header>
 
       <main className="flex-1 px-4 py-3 max-w-lg mx-auto w-full space-y-4">
-        <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="py-4 px-4">
-            <Link href="/workout/new">
-              <Button className="w-full h-14 text-lg font-semibold" size="lg">
-                <Dumbbell className="h-6 w-6 mr-2" />
-                Start Workout
-              </Button>
+        <div>
+          <Link href="/workout/new">
+            <Button className="w-full h-16 text-xl font-bold" size="lg">
+              <Dumbbell className="h-6 w-6 mr-2" />
+              Start Workout
+            </Button>
+          </Link>
+          {lastRoutine && (
+            <Link
+              href="/workout/new"
+              className="flex items-center justify-between mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <span>
+                Quick start: <span className="font-medium text-foreground">{lastRoutine.name}</span>
+              </span>
+              <ChevronRight className="h-6 w-6" />
             </Link>
-            {lastRoutine && (
-              <Link
-                href="/workout/new"
-                className="flex items-center justify-between mt-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span>
-                  Quick start: <span className="font-medium text-foreground">{lastRoutine.name}</span>
-                </span>
-                <ChevronRight className="h-6 w-6" />
-              </Link>
-            )}
-          </CardContent>
-        </Card>
+          )}
+        </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <Card>
-            <CardContent className="py-3 px-2 text-center">
-              <Scale className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
-              <p className="text-lg font-bold tabular-nums">
-                {latestBodyweight ? `${latestBodyweight}` : "—"}
-              </p>
-              <p className="text-xs text-muted-foreground">kg</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="py-3 px-2 text-center">
+            <CardContent className="py-3 px-3 text-center">
               <TrendingUp className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
-              <p className="text-lg font-bold tabular-nums">
+              <p className="text-3xl font-bold tabular-nums">
                 {weekWorkoutCount}
               </p>
               <p className="text-xs text-muted-foreground">this week</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="py-3 px-2 text-center">
+            <CardContent className="py-3 px-3 text-center">
               <Flame className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
-              <p className="text-lg font-bold tabular-nums">{streak}</p>
+              <p className="text-3xl font-bold tabular-nums">{streak}</p>
               <p className="text-xs text-muted-foreground">
                 week{streak !== 1 ? "s" : ""} streak
               </p>
@@ -214,22 +195,12 @@ export default async function Home() {
           </Card>
         </div>
 
-        <div className="flex gap-3">
-          <Link
-            href="/routines"
-            className="flex-1 flex items-center justify-center gap-2 rounded-full border border-border bg-card py-2.5 px-4 text-sm font-medium hover:bg-accent/50 transition-colors"
-          >
-            <ClipboardList className="h-4 w-4 text-primary shrink-0" />
-            Routines
-          </Link>
-          <Link
-            href="/bodyweight"
-            className="flex-1 flex items-center justify-center gap-2 rounded-full border border-border bg-card py-2.5 px-4 text-sm font-medium hover:bg-accent/50 transition-colors"
-          >
-            <Scale className="h-4 w-4 text-primary shrink-0" />
-            Bodyweight
-          </Link>
-        </div>
+        {latestBodyweight && (
+          <p className="text-xs text-muted-foreground text-center">
+            <Scale className="h-3.5 w-3.5 inline mr-1 align-text-bottom" />
+            {latestBodyweight} kg
+          </p>
+        )}
 
         {lastWorkout && (
           <Link href={`/history/${lastWorkout.id}`}>

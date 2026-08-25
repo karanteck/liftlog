@@ -13,29 +13,16 @@ import {
   Legend,
 } from "recharts";
 import { useMuscleColors } from "@/lib/chart-colors";
+import { getMonday, formatDateShort } from "@/lib/format";
 
 type SetRecord = {
   date: string;
   muscleGroup: string;
 };
 
-function getMonday(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(d);
-  monday.setDate(diff);
-  return monday.toISOString().split("T")[0];
-}
-
-function formatWeek(mondayStr: string): string {
-  const d = new Date(mondayStr + "T00:00:00");
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-}
-
 export function HardSetsChart({ sets }: { sets: SetRecord[] }) {
   const { colors, fallback } = useMuscleColors();
-  const { chartData, muscleGroups } = useMemo(() => {
+  const { chartData, muscleGroups, insight } = useMemo(() => {
     const weekMap = new Map<string, Record<string, number>>();
 
     for (const s of sets) {
@@ -55,12 +42,37 @@ export function HardSetsChart({ sets }: { sets: SetRecord[] }) {
       .slice(-8);
 
     const data = sorted.map(([week, counts]) => ({
-      week: formatWeek(week),
+      week: formatDateShort(week),
       ...counts,
     }));
 
     const groups = Array.from(allGroups).sort();
-    return { chartData: data, muscleGroups: groups };
+
+    let insightText: string | null = null;
+    if (sorted.length >= 5) {
+      const mid = Math.floor(sorted.length / 2);
+      const priorWeeks = sorted.slice(0, mid);
+      const recentWeeks = sorted.slice(mid);
+      let bestGroup = "";
+      let bestPct = 0;
+      let bestDir = "";
+      for (const g of groups) {
+        const prior = priorWeeks.reduce((s, [, c]) => s + (c[g] ?? 0), 0);
+        const recent = recentWeeks.reduce((s, [, c]) => s + (c[g] ?? 0), 0);
+        if (prior === 0) continue;
+        const pct = Math.round(((recent - prior) / prior) * 100);
+        if (Math.abs(pct) > Math.abs(bestPct)) {
+          bestPct = pct;
+          bestGroup = g.charAt(0).toUpperCase() + g.slice(1);
+          bestDir = pct > 0 ? "up" : "down";
+        }
+      }
+      if (bestGroup && Math.abs(bestPct) >= 10) {
+        insightText = `${bestGroup} sets ${bestDir} ${Math.abs(bestPct)}% vs prior weeks`;
+      }
+    }
+
+    return { chartData: data, muscleGroups: groups, insight: insightText };
   }, [sets]);
 
   if (chartData.length === 0) {
@@ -77,9 +89,12 @@ export function HardSetsChart({ sets }: { sets: SetRecord[] }) {
   return (
     <Card>
       <CardContent className="py-3 px-2">
-        <p className="text-xs font-medium text-muted-foreground mb-2 px-2">
+        <p className="text-xs font-medium text-muted-foreground mb-1 px-2">
           Weekly hard sets by muscle group
         </p>
+        {insight && (
+          <p className="text-sm text-muted-foreground px-2 mb-2">{insight}</p>
+        )}
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -158,6 +158,13 @@ export function WorkoutSession({
   const [notes, setNotes] = useState("");
   const [showDetails, setShowDetails] = useState(false);
   const [rpeOpenFor, setRpeOpenFor] = useState<{ exIdx: number; setIdx: number } | null>(null);
+  const [collapsedExercises, setCollapsedExercises] = useState<Set<string>>(new Set());
+  const [lastSetAt, setLastSetAt] = useState<number | null>(null);
+
+  const exerciseStatesRef = useRef(exerciseStates);
+  exerciseStatesRef.current = exerciseStates;
+  const currentPRsRef = useRef(currentPRs);
+  currentPRsRef.current = currentPRs;
 
   const addExercise = useCallback(
     async (exercise: { id: string; name: string; muscleGroup: string; repTier: string; trackingType: string }) => {
@@ -278,6 +285,22 @@ export function WorkoutSession({
     return () => clearInterval(t);
   }, [workout.startedAt, workout.isFinished, isBackdated]);
 
+  useEffect(() => {
+    setCollapsedExercises((prev) => {
+      const next = new Set(prev);
+      let changed = false;
+      for (const ex of exerciseStates) {
+        const workingSets = ex.sets.filter((s) => !s.isWarmup);
+        const allDone = workingSets.length > 0 && workingSets.every((s) => s.isCompleted);
+        if (allDone && !next.has(ex.exerciseId)) {
+          next.add(ex.exerciseId);
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [exerciseStates]);
+
   const updateSet = useCallback(
     (exIdx: number, setIdx: number, field: "weight" | "reps" | "rpe" | "duration" | "distance", value: string) => {
       setExerciseStates((prev) => {
@@ -303,9 +326,35 @@ export function WorkoutSession({
 
   const completeSet = useCallback(
     async (exIdx: number, setIdx: number) => {
-      const ex = exerciseStates[exIdx];
+      const ex = exerciseStatesRef.current[exIdx];
       const set = ex.sets[setIdx];
       if (set.isCompleted) return;
+
+      const tt = ex.trackingType;
+      if (tt === "weight_reps" || tt === "bodyweight_reps") {
+        if (set.weight && isNaN(parseFloat(set.weight))) {
+          toast.error("Invalid weight — enter a number");
+          return;
+        }
+        if (set.reps && isNaN(parseInt(set.reps, 10))) {
+          toast.error("Invalid reps — enter a whole number");
+          return;
+        }
+      } else if (tt === "reps_only") {
+        if (set.reps && isNaN(parseInt(set.reps, 10))) {
+          toast.error("Invalid reps — enter a whole number");
+          return;
+        }
+      } else if (tt === "time" || tt === "distance_time") {
+        if (set.duration && parseDuration(set.duration) === null) {
+          toast.error("Invalid duration — enter minutes or mm:ss");
+          return;
+        }
+        if (tt === "distance_time" && set.distance && isNaN(parseFloat(set.distance))) {
+          toast.error("Invalid distance — enter a number in km");
+          return;
+        }
+      }
 
       const weight = set.weight ? parseFloat(set.weight) : null;
       const reps = set.reps ? parseInt(set.reps, 10) : null;
@@ -362,9 +411,10 @@ export function WorkoutSession({
       const isCardio = ex.trackingType === "time" || ex.trackingType === "distance_time";
 
       if (!set.isWarmup && !isCardio) {
+        setLastSetAt(Date.now());
         setRestTimer({ duration: restDuration(ex.repTier), setDbId: data.id, startedAt: Date.now() });
 
-        const prRecord = currentPRs[ex.exerciseId] ?? { maxWeight: null, bestE1rm: null, bestVolume: null };
+        const prRecord = currentPRsRef.current[ex.exerciseId] ?? { maxWeight: null, bestE1rm: null, bestVolume: null };
         const newPRs = checkNewPRs(prRecord, weight, reps);
         if (newPRs.length > 0) {
           if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -374,7 +424,7 @@ export function WorkoutSession({
           setTimeout(() => setPrFlash(null), 5000);
           setSessionPRs((prev) => [...prev, { exerciseName: ex.name, types: newPRs }]);
 
-          const allSetsForExercise = exerciseStates[exIdx].sets
+          const allSetsForExercise = exerciseStatesRef.current[exIdx].sets
             .filter((s) => s.isCompleted && !s.isWarmup)
             .map((s) => ({ weight: s.weight ? parseFloat(s.weight) : null, reps: s.reps ? parseInt(s.reps, 10) : null, isWarmup: false }));
           allSetsForExercise.push({ weight, reps, isWarmup: false });
@@ -386,12 +436,12 @@ export function WorkoutSession({
         }
       }
     },
-    [exerciseStates, supabase, workout.id, currentPRs, previousPerformance]
+    [supabase, workout.id, previousPerformance]
   );
 
   const uncompleteSet = useCallback(
     async (exIdx: number, setIdx: number) => {
-      const ex = exerciseStates[exIdx];
+      const ex = exerciseStatesRef.current[exIdx];
       const set = ex.sets[setIdx];
       if (!set.isCompleted || !set.dbId) return;
 
@@ -409,7 +459,7 @@ export function WorkoutSession({
         return next;
       });
 
-      const allRemaining = exerciseStates[exIdx].sets
+      const allRemaining = exerciseStatesRef.current[exIdx].sets
         .filter((s, i) => i !== setIdx && s.isCompleted && !s.isWarmup)
         .map((s) => ({ weight: s.weight ? parseFloat(s.weight) : null, reps: s.reps ? parseInt(s.reps, 10) : null, isWarmup: false }));
       const previousSets = (previousPerformance[ex.exerciseId] ?? []).map(
@@ -417,7 +467,7 @@ export function WorkoutSession({
       );
       setCurrentPRs((prev) => ({ ...prev, [ex.exerciseId]: computePRs([...previousSets, ...allRemaining]) }));
     },
-    [exerciseStates, supabase, previousPerformance]
+    [supabase, previousPerformance]
   );
 
   const addSet = useCallback((exIdx: number) => {
@@ -443,7 +493,7 @@ export function WorkoutSession({
 
   const updateRpe = useCallback(
     async (exIdx: number, setIdx: number, value: number) => {
-      const set = exerciseStates[exIdx]?.sets[setIdx];
+      const set = exerciseStatesRef.current[exIdx]?.sets[setIdx];
       if (!set?.dbId) return;
 
       const { error } = await supabase.from("sets").update({ rpe: value }).eq("id", set.dbId);
@@ -461,7 +511,7 @@ export function WorkoutSession({
       });
       setRpeOpenFor(null);
     },
-    [exerciseStates, supabase]
+    [supabase]
   );
 
   const finishWorkout = useCallback(async () => {
@@ -474,15 +524,25 @@ export function WorkoutSession({
     if (bw && bw > 0) updateData.bodyweight = bw;
     if (notes.trim()) updateData.notes = notes.trim();
 
-    await supabase.from("workouts").update(updateData).eq("id", workout.id);
+    const { error: finishError } = await supabase
+      .from("workouts")
+      .update(updateData)
+      .eq("id", workout.id);
+
+    if (finishError) {
+      toast.error("Failed to save workout. Check your connection and try again.");
+      setFinishing(false);
+      return;
+    }
 
     if (bw && bw > 0) {
-      await supabase
+      const { error: bwError } = await supabase
         .from("bodyweight_log")
         .upsert(
           { user_id: userId, date: workout.date, weight: bw },
           { onConflict: "user_id,date" }
         );
+      if (bwError) toast.error("Bodyweight entry failed to save.");
     }
 
     const routineExercise = exercises[0];
@@ -504,7 +564,7 @@ export function WorkoutSession({
     runPlateauDetection(supabase, userId).catch(() => {});
 
     setShowSummary(true);
-  }, [supabase, workout.id, exercises, bodyweight, notes, userId]);
+  }, [supabase, workout.id, workout.date, exercises, bodyweight, notes, userId]);
 
   const elapsedMin = Math.floor(elapsed / 60);
   const elapsedSec = elapsed % 60;
@@ -512,6 +572,11 @@ export function WorkoutSession({
     (acc, ex) => acc + ex.sets.filter((s) => s.isCompleted && !s.isWarmup).length,
     0
   );
+  const totalSets = exerciseStates.reduce(
+    (acc, ex) => acc + ex.sets.filter((s) => !s.isWarmup).length,
+    0
+  );
+  const progress = totalSets > 0 ? totalCompleted / totalSets : 0;
   const exercisesWithSets = exerciseStates.filter(
     (ex) => ex.sets.some((s) => s.isCompleted)
   ).length;
@@ -581,6 +646,12 @@ export function WorkoutSession({
             </AlertDialogContent>
           </AlertDialog>
         </div>
+        <div className="h-1 bg-muted mt-2 -mx-4">
+          <div
+            className="h-full bg-primary transition-all duration-300"
+            style={{ width: `${Math.round(progress * 100)}%` }}
+          />
+        </div>
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
@@ -625,6 +696,18 @@ export function WorkoutSession({
             key={ex.exerciseId}
             ex={ex}
             exIdx={exIdx}
+            isCollapsed={collapsedExercises.has(ex.exerciseId)}
+            onToggleCollapse={() => {
+              setCollapsedExercises((prev) => {
+                const next = new Set(prev);
+                if (next.has(ex.exerciseId)) {
+                  next.delete(ex.exerciseId);
+                } else {
+                  next.add(ex.exerciseId);
+                }
+                return next;
+              });
+            }}
             rpeOpenFor={rpeOpenFor}
             onUpdateSet={updateSet}
             onToggleWarmup={toggleWarmup}
@@ -647,13 +730,14 @@ export function WorkoutSession({
         open={showSearch}
         excludeIds={exerciseStates.map((e) => e.exerciseId)}
         userId={userId}
+        lastSetCompleted={lastSetAt}
         onSelect={addExercise}
         onClose={() => setShowSearch(false)}
       />
 
       {prFlash && (
         <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-[pr-celebrate_600ms_ease-out]">
-          <div className="rounded-lg bg-amber-500 text-white px-4 py-2 shadow-lg text-center">
+          <div className="rounded-lg bg-warning text-white px-4 py-2 shadow-lg text-center">
             <p className="font-bold text-sm">New PR!</p>
             <p className="text-xs">
               {prFlash.exerciseName} &mdash;{" "}

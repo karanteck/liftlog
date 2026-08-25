@@ -14,6 +14,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import { useImbalanceColors } from "@/lib/chart-colors";
+import { getMonday, formatDateShort } from "@/lib/format";
 
 type SetRecord = {
   date: string;
@@ -40,20 +41,6 @@ const QUAD_PATTERNS = new Set(["squat", "lunge", "leg_extension"]);
 
 const HAMSTRING_PATTERNS = new Set(["hip_hinge", "leg_curl", "hip_extension"]);
 
-function getMonday(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(d);
-  monday.setDate(diff);
-  return monday.toISOString().split("T")[0];
-}
-
-function formatWeek(mondayStr: string): string {
-  const d = new Date(mondayStr + "T00:00:00");
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-}
-
 function ratio(a: number, b: number): string {
   if (b === 0) return a === 0 ? "—" : `${a}:0`;
   const r = a / b;
@@ -62,7 +49,7 @@ function ratio(a: number, b: number): string {
 
 export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
   const imbalanceColors = useImbalanceColors();
-  const { pushPullData, quadHamData, overallPushPull, overallQuadHam } =
+  const { pushPullData, quadHamData, overallPushPull, overallQuadHam, insight } =
     useMemo(() => {
       const weeks = new Map<
         string,
@@ -87,13 +74,13 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
         .slice(-8);
 
       const pp = sorted.map(([week, c]) => ({
-        week: formatWeek(week),
+        week: formatDateShort(week),
         Push: c.push,
         Pull: c.pull,
       }));
 
       const qh = sorted.map(([week, c]) => ({
-        week: formatWeek(week),
+        week: formatDateShort(week),
         Quads: c.quad,
         Hamstrings: c.ham,
       }));
@@ -106,11 +93,21 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
         totals.ham += c.ham;
       }
 
+      let insightText: string | null = null;
+      const ppRatio = totals.pull > 0 ? totals.push / totals.pull : null;
+      const qhRatio = totals.ham > 0 ? totals.quad / totals.ham : null;
+      if (ppRatio !== null && ppRatio > 1.5) {
+        insightText = `Push:pull ratio is ${ppRatio.toFixed(1)}:1 — consider adding more pulling work`;
+      } else if (qhRatio !== null && qhRatio > 2.0) {
+        insightText = `Quad:ham ratio is ${qhRatio.toFixed(1)}:1 — consider adding hamstring work`;
+      }
+
       return {
         pushPullData: pp,
         quadHamData: qh,
         overallPushPull: ratio(totals.push, totals.pull),
         overallQuadHam: ratio(totals.quad, totals.ham),
+        insight: insightText,
       };
     }, [sets]);
 
@@ -129,7 +126,7 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
     <div className="space-y-4">
       <Card>
         <CardContent className="py-3 px-2">
-          <div className="flex items-baseline justify-between px-2 mb-2">
+          <div className="flex items-baseline justify-between px-2 mb-1">
             <p className="text-xs font-medium text-muted-foreground">
               Push vs Pull (sets)
             </p>
@@ -140,6 +137,9 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
               </span>
             </p>
           </div>
+          {insight && (
+            <p className="text-sm text-muted-foreground px-2 mb-2">{insight}</p>
+          )}
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={pushPullData}>
               <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
