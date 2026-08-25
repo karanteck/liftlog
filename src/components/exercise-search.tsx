@@ -52,12 +52,14 @@ export function ExerciseSearch({
   open,
   excludeIds,
   userId,
+  lastSetCompleted,
   onSelect,
   onClose,
 }: {
   open: boolean;
   excludeIds: string[];
   userId?: string;
+  lastSetCompleted?: number | null;
   onSelect: (exercise: {
     id: string;
     name: string;
@@ -76,6 +78,13 @@ export function ExerciseSearch({
   const [loading, setLoading] = useState(true);
   const [showCustomForm, setShowCustomForm] = useState(false);
   const exercisesCached = useRef(false);
+  const recentIdsCached = useRef(false);
+
+  useEffect(() => {
+    if (lastSetCompleted) {
+      recentIdsCached.current = false;
+    }
+  }, [lastSetCompleted]);
 
   useEffect(() => {
     if (!open) return;
@@ -85,6 +94,7 @@ export function ExerciseSearch({
     setShowCustomForm(false);
 
     const needExercises = !exercisesCached.current;
+    const needRecents = !recentIdsCached.current;
     if (needExercises) setLoading(true);
 
     async function load() {
@@ -95,7 +105,7 @@ export function ExerciseSearch({
             .order("name")
         : Promise.resolve(null);
 
-      const recentPromise = userId
+      const recentPromise = (userId && needRecents)
         ? supabase
             .from("sets")
             .select(`exercise_id, workouts!inner (user_id, date)`)
@@ -128,6 +138,7 @@ export function ExerciseSearch({
           if (recent.length >= 10) break;
         }
         setRecentIds(recent);
+        recentIdsCached.current = true;
       }
 
       setLoading(false);

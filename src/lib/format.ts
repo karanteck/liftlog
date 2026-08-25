@@ -32,6 +32,15 @@ export function formatDateRelative(dateStr: string): string {
   });
 }
 
+export function getMonday(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(d);
+  monday.setDate(diff);
+  return monday.toISOString().split("T")[0];
+}
+
 export function formatDuration(
   startedAt: string,
   endedAt: string | null
