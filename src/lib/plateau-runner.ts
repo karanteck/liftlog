@@ -1,5 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import {
+  COOLDOWN_DAYS,
   detectAllAlerts,
   type AlertCandidate,
   type ExerciseHistory,
@@ -352,8 +353,6 @@ async function fetchAllExercises(
 // ============================================================
 // Helpers
 // ============================================================
-
-const COOLDOWN_DAYS = 14;
 
 function getWeekStart(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");

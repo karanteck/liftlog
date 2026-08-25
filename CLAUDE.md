@@ -245,9 +245,9 @@ previous performance as ghost placeholders (Step 11).
       text-lg→text-2xl, dismiss button h-8→h-11 text-sm, padding py-3→py-5,
       `rest-done-pulse` animation on timer expiry
 - Tier 4 done (Steps 15–16: Stretch Polish):
-  15. Home page quick links — pill-shaped Routines and Bodyweight shortcut
-      buttons between stat cards and last workout card; teal icons,
-      rounded-full styling distinct from surrounding cards
+  15. Home page quick links — added then removed in UI redesign pass
+      (both destinations accessible from More page; pills cluttered
+      the home screen focal point)
   16. Exercise history links in workout detail — already done as part of
       Step 8 (exercise names in history/[id] were already Link components
       to /exercises/[id])
@@ -297,6 +297,30 @@ Marginal:
 New dev dependencies: `vitest` (test runner)
 New files: `vitest.config.ts`, `src/lib/pr.test.ts`,
 `src/lib/plateau.test.ts`, `src/lib/format.ts`
+
+UI redesign pass (all done — 3 fixes from independent UX review):
+
+1. Home screen focal point:
+   - Start Workout hero button unwrapped from Card, enlarged to h-16
+   - Stat grid changed from 3-col to 2-col, weekly count and streak
+     promoted to text-3xl font-bold
+   - Bodyweight demoted to inline text-xs below grid (hidden when null)
+   - Quick-link pills (Routines/Bodyweight) removed (both in More page)
+
+2. Analytics chart insights:
+   - All 4 chart components (hard sets, volume trend, frequency,
+     imbalance) now compute and display one-sentence auto-generated
+     insights from existing data inside useMemo — no new queries
+   - Insights compare recent vs prior half of 8-week window
+   - Gracefully hidden when < 5 weeks of data or change is negligible
+
+3. Workout screen progress and input improvements:
+   - Progress bar below header tracks non-warmup set completion
+   - +/- 2.5kg stepper buttons on weight inputs (weight_reps and
+     bodyweight_reps tracking types)
+   - Checkmark enlarged from h-12 w-12 to h-14 w-14
+   - Completed exercises auto-collapse to compact one-line card showing
+     set count and top weight; tap to expand, ChevronUp to re-collapse
 
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning

@@ -160,7 +160,7 @@ export default async function WorkoutDetailPage({
                       {s.isWarmup ? (
                         <Badge
                           variant="outline"
-                          className="text-xs px-1 py-0 text-yellow-500 border-yellow-500/50"
+                          className="text-xs px-1 py-0 text-warning border-warning/50"
                         >
                           W
                         </Badge>

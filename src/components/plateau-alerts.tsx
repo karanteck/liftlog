@@ -61,11 +61,11 @@ export function PlateauAlerts({ alerts }: { alerts: Alert[] }) {
     <div className="w-full max-w-xs space-y-2">
       <p className="text-xs font-medium text-muted-foreground">Insights</p>
       {shown.map((alert) => (
-        <Card key={alert.id} className="border-amber-500/30 bg-amber-500/5">
+        <Card key={alert.id} className="border-warning/30 bg-warning/5">
           <CardContent className="py-3 px-3">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+                <p className="text-xs font-semibold text-warning">
                   {ALERT_LABELS[alert.alertType] ?? alert.alertType}
                 </p>
                 <p className="text-sm mt-1 leading-snug">{alert.message}</p>

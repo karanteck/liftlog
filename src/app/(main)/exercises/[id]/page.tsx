@@ -307,7 +307,7 @@ export default async function ExerciseHistoryPage({
                             {s.isWarmup ? (
                               <Badge
                                 variant="outline"
-                                className="text-xs px-1 py-0 text-yellow-500 border-yellow-500/50"
+                                className="text-xs px-1 py-0 text-warning border-warning/50"
                               >
                                 W
                               </Badge>
@@ -330,7 +330,7 @@ export default async function ExerciseHistoryPage({
                             {labels.map((l) => (
                               <Badge
                                 key={l}
-                                className="text-[9px] px-1 py-0 bg-amber-500/20 text-amber-500 border-amber-500/30"
+                                className="text-[9px] px-1 py-0 bg-warning/20 text-warning border-warning/30"
                                 variant="outline"
                               >
                                 {l}

@@ -88,10 +88,10 @@ export function WorkoutSummary({
         </div>
 
         {sessionPRs.length > 0 && (
-          <Card className="border-amber-500/30 bg-amber-500/5">
+          <Card className="border-warning/30 bg-warning/5">
             <CardContent className="py-3 px-4">
               <div className="flex items-center gap-2 mb-2">
-                <Trophy className="h-5 w-5 text-amber-500" />
+                <Trophy className="h-5 w-5 text-warning" />
                 <p className="font-semibold text-sm">Personal Records</p>
               </div>
               <div className="space-y-1">

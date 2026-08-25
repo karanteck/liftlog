@@ -59,7 +59,7 @@ export type VariationOption = {
 };
 
 const MIN_SESSIONS = 6;
-const COOLDOWN_DAYS = 14;
+export const COOLDOWN_DAYS = 14;
 
 // ============================================================
 // Cooldown check

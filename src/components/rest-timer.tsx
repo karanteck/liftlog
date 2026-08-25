@@ -67,7 +67,7 @@ export function RestTimer({
               cy={CIRCLE_SIZE / 2}
               r={RADIUS}
               fill="none"
-              className={done ? "stroke-green-500" : "stroke-primary"}
+              className={done ? "stroke-success" : "stroke-primary"}
               strokeWidth={STROKE_WIDTH}
               strokeLinecap="round"
               strokeDasharray={CIRCUMFERENCE}
@@ -77,7 +77,7 @@ export function RestTimer({
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
             <span
-              className={`text-2xl font-mono font-bold tabular-nums ${done ? "text-green-500" : "text-foreground"}`}
+              className={`text-2xl font-mono font-bold tabular-nums ${done ? "text-success" : "text-foreground"}`}
             >
               {display}
             </span>
