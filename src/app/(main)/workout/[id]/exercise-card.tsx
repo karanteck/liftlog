@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Minus, Plus, ChevronUp } from "lucide-react";
+import { Check, Minus, Plus, ChevronUp, ExternalLink } from "lucide-react";
 import type { ExerciseState } from "./types";
 
 export function ExerciseCard({
@@ -72,6 +72,15 @@ export function ExerciseCard({
             <Link href={`/exercises/${ex.exerciseId}`} className="font-semibold text-primary hover:underline">
               {ex.name}
             </Link>
+            <a
+              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(ex.name + " exercise form")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1.5 text-muted-foreground hover:text-foreground shrink-0"
+              aria-label={`How to perform ${ex.name}`}
+            >
+              <ExternalLink className="h-4 w-4" />
+            </a>
             {allSetsComplete && (
               <button onClick={onToggleCollapse} className="ml-2 text-muted-foreground hover:text-foreground">
                 <ChevronUp className="h-4 w-4" />

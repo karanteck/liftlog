@@ -9,6 +9,7 @@ import {
   Scale,
   Calculator,
   Shield,
+  Upload,
   ChevronRight,
 } from "lucide-react";
 
@@ -30,6 +31,7 @@ export default async function MorePage() {
     { href: "/routines", label: "Routines", icon: ListChecks },
     { href: "/bodyweight", label: "Bodyweight", icon: Scale },
     { href: "/plates", label: "Plate Calculator", icon: Calculator },
+    { href: "/more/import", label: "Import Workouts", icon: Upload },
   ];
 
   return (

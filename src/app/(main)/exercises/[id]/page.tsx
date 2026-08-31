@@ -188,7 +188,15 @@ export default async function ExerciseHistoryPage({
     <div className="flex flex-col min-h-screen">
       <header className="flex items-center gap-3 px-4 py-3 border-b">
         <BackButton />
-        <h1 className="text-lg font-bold">{exercise.name}</h1>
+        <h1 className="text-lg font-bold flex-1">{exercise.name}</h1>
+        <a
+          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exercise.name + " exercise form")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 shrink-0"
+        >
+          How to perform
+        </a>
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">

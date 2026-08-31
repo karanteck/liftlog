@@ -229,7 +229,7 @@ export function ExerciseSearch({
       }}
       showSwipeHandle
     >
-      <DrawerContent>
+      <DrawerContent style={{ '--drawer-content-max-height': 'calc(100dvh - 2rem)', '--drawer-content-height': 'calc(100dvh - 2rem)' } as React.CSSProperties}>
         {showCustomForm ? (
           <CustomExerciseForm
             onCreated={handleCustomCreated}
@@ -238,19 +238,18 @@ export function ExerciseSearch({
         ) : (
           <>
             <header className="border-b shrink-0">
-              <div className="flex items-center gap-2 px-4 py-3">
+              <div className="flex items-center gap-2 px-4 py-2">
                 <Button variant="ghost" size="sm" onClick={onClose}>
                   Cancel
                 </Button>
                 <Input
-                  autoFocus
                   placeholder="Search exercises..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="flex-1"
                 />
               </div>
-              <div className="flex gap-1.5 px-4 pb-1.5 overflow-x-auto">
+              <div className="flex gap-1.5 px-4 pb-1 overflow-x-auto">
                 {MUSCLE_GROUPS.map((mg) => (
                   <button
                     key={mg}

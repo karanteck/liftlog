@@ -12,16 +12,20 @@ export function BottomNav() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase
-      .from("workouts")
-      .select("id")
-      .is("ended_at", null)
-      .order("started_at", { ascending: false })
-      .limit(1)
-      .maybeSingle()
-      .then(({ data }) => {
-        setActiveWorkoutId(data?.id ?? null);
-      });
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("workouts")
+        .select("id")
+        .eq("user_id", user.id)
+        .is("ended_at", null)
+        .order("started_at", { ascending: false })
+        .limit(1)
+        .maybeSingle()
+        .then(({ data }) => {
+          setActiveWorkoutId(data?.id ?? null);
+        });
+    });
   }, [pathname]);
 
   const tabs = [
