@@ -339,6 +339,21 @@ Workout session improvements (all done):
   component detects sets for exercises outside the routine template
   and includes them.
 
+User feedback fixes (all done):
+- Bottom nav active workout query: added `user_id` filter so household
+  members' active workouts don't appear as yours (teal dot + nav link)
+- Exercise search drawer: forced near-full-screen height (2rem top gap
+  instead of 6rem), removed autoFocus to prevent mobile keyboard from
+  hiding exercise list, compacted header padding
+- YouTube "how to perform" links: ExternalLink icon next to exercise
+  name in workout session exercise cards; text link in exercise detail
+  page header. Opens YouTube search for "[exercise name] exercise form"
+- CSV import (`/more/import`): upload CSV from Strong, Hevy, or JEFIT.
+  Auto-detects format from column headers. Matches exercise names to
+  database (by name and aliases). Shows preview with unmatched exercise
+  warnings before importing. Parser at `src/lib/csv-import.ts`.
+  Accessible from More page → Import Workouts.
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed
