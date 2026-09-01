@@ -4,8 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CalendarHeatmap } from "@/components/calendar-heatmap";
-import { List, CalendarDays } from "lucide-react";
-import { formatDateRelative, formatDuration } from "@/lib/format";
+import { List, CalendarDays, Dumbbell } from "lucide-react";
+import { formatDateRelative, formatDuration, getMonday } from "@/lib/format";
 
 export default async function HistoryPage({
   searchParams,
@@ -89,6 +89,40 @@ export default async function HistoryPage({
     }
   }
 
+  const weekGroups = (() => {
+    if (!workouts || workouts.length === 0 || isCalendar) return [];
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const currentMonday = getMonday(now.toISOString().split("T")[0]);
+    const prevMonday = (() => {
+      const d = new Date(currentMonday + "T00:00:00");
+      d.setDate(d.getDate() - 7);
+      return d.toISOString().split("T")[0];
+    })();
+
+    const groups: { label: string; items: typeof workouts }[] = [];
+    let current: (typeof groups)[0] | null = null;
+
+    for (const w of workouts) {
+      const monday = getMonday(w.date);
+      let label: string;
+      if (monday === currentMonday) label = "This week";
+      else if (monday === prevMonday) label = "Last week";
+      else {
+        const d = new Date(monday + "T00:00:00");
+        label = `Week of ${d.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`;
+      }
+
+      if (!current || current.label !== label) {
+        current = { label, items: [] };
+        groups.push(current);
+      }
+      current.items.push(w);
+    }
+
+    return groups;
+  })();
+
   return (
     <div className="flex flex-col min-h-screen pb-24">
       <header className="px-4 py-3 border-b">
@@ -99,7 +133,7 @@ export default async function HistoryPage({
               <Button
                 variant={isCalendar ? "ghost" : "secondary"}
                 size="icon"
-                className="h-8 w-8"
+                className="h-10 w-10"
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -108,7 +142,7 @@ export default async function HistoryPage({
               <Button
                 variant={isCalendar ? "secondary" : "ghost"}
                 size="icon"
-                className="h-8 w-8"
+                className="h-10 w-10"
               >
                 <CalendarDays className="h-4 w-4" />
               </Button>
@@ -124,7 +158,7 @@ export default async function HistoryPage({
               <Button
                 variant={showAll ? "ghost" : "secondary"}
                 size="sm"
-                className="h-8 text-xs"
+                className="h-10 text-sm"
               >
                 Mine
               </Button>
@@ -133,7 +167,7 @@ export default async function HistoryPage({
               <Button
                 variant={showAll ? "secondary" : "ghost"}
                 size="sm"
-                className="h-8 text-xs"
+                className="h-10 text-sm"
               >
                 Household
               </Button>
@@ -142,11 +176,17 @@ export default async function HistoryPage({
         )}
 
         {(!workouts || workouts.length === 0) && (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>No workouts yet.</p>
-            <p className="mt-1 text-sm">
-              Start your first workout from the home screen.
+          <div className="text-center py-12">
+            <Dumbbell className="h-10 w-10 mx-auto text-muted-foreground/50 mb-3" />
+            <p className="text-base font-medium">No workouts yet</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your workout history will appear here
             </p>
+            <Link href="/workout/new">
+              <Button variant="outline" size="sm" className="mt-4">
+                Start your first workout
+              </Button>
+            </Link>
           </div>
         )}
 
@@ -162,55 +202,62 @@ export default async function HistoryPage({
           />
         )}
 
-        {!isCalendar && workouts?.map((w) => {
-          const routineName =
-            (w.routines as unknown as { name: string } | null)?.name ??
-            "Empty Workout";
-          const ownerName =
-            (w.profiles as unknown as { name: string } | null)?.name ?? "";
-          const isOwn = w.user_id === user.id;
-          const sets = setCounts[w.id] ?? 0;
-          const volume = volumeMap[w.id] ?? 0;
-          const exNames = exerciseNamesMap[w.id] ?? [];
-          const shown = exNames.slice(0, 3);
-          const extra = exNames.length - shown.length;
+        {!isCalendar && weekGroups.map((group, gi) => (
+          <div key={gi} className="space-y-2">
+            <p className="sticky top-0 z-10 bg-background text-sm font-medium text-muted-foreground pt-3 pb-1">
+              {group.label}
+            </p>
+            {group.items.map((w) => {
+              const routineName =
+                (w.routines as unknown as { name: string } | null)?.name ??
+                "Empty Workout";
+              const ownerName =
+                (w.profiles as unknown as { name: string } | null)?.name ?? "";
+              const isOwn = w.user_id === user.id;
+              const sets = setCounts[w.id] ?? 0;
+              const volume = volumeMap[w.id] ?? 0;
+              const exNames = exerciseNamesMap[w.id] ?? [];
+              const shown = exNames.slice(0, 3);
+              const extra = exNames.length - shown.length;
 
-          return (
-            <Link key={w.id} href={`/history/${w.id}`}>
-              <Card className="cursor-pointer active:scale-[0.98] transition-transform border-l-2 border-l-primary">
-                <CardContent className="py-3 px-4">
-                  <div className="flex items-center justify-between">
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold">
-                        {routineName}
-                        {showAll && !isOwn && (
-                          <span className="text-muted-foreground font-normal ml-1.5 text-sm">
-                            ({ownerName.split(" ")[0]})
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatDateRelative(w.date)} &middot;{" "}
-                        {formatDuration(w.started_at, w.ended_at)} &middot;{" "}
-                        {sets} sets
-                        {volume > 0 && (
-                          <> &middot; {volume >= 1000 ? `${(volume / 1000).toFixed(1)}t` : `${Math.round(volume)} kg`}</>
-                        )}
-                      </p>
-                      {shown.length > 0 && (
-                        <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                          {shown.join(", ")}
-                          {extra > 0 && `, +${extra} more`}
-                        </p>
-                      )}
-                    </div>
-                    <span className="text-muted-foreground text-sm ml-2">&rsaquo;</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
+              return (
+                <Link key={w.id} href={`/history/${w.id}`}>
+                  <Card className="cursor-pointer active:scale-[0.98] transition-transform border-l-2 border-l-primary">
+                    <CardContent className="py-3 px-4">
+                      <div className="flex items-center justify-between">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold">
+                            {routineName}
+                            {showAll && !isOwn && (
+                              <span className="text-muted-foreground font-normal ml-1.5 text-sm">
+                                ({ownerName.split(" ")[0]})
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {formatDateRelative(w.date)} &middot;{" "}
+                            {formatDuration(w.started_at, w.ended_at)} &middot;{" "}
+                            {sets} sets
+                            {volume > 0 && (
+                              <> &middot; {volume >= 1000 ? `${(volume / 1000).toFixed(1)}t` : `${Math.round(volume)} kg`}</>
+                            )}
+                          </p>
+                          {shown.length > 0 && (
+                            <p className="text-sm text-muted-foreground mt-0.5 truncate">
+                              {shown.join(", ")}
+                              {extra > 0 && `, +${extra} more`}
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-muted-foreground text-sm ml-2">&rsaquo;</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </main>
     </div>
   );

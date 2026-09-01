@@ -28,7 +28,7 @@ export function E1rmChart({ data }: { data: DataPoint[] }) {
   return (
     <Card>
       <CardContent className="py-3 px-2">
-        <p className="text-xs font-medium text-muted-foreground mb-2 px-2">
+        <p className="text-sm font-medium text-muted-foreground mb-2 px-2">
           Estimated 1RM trend
         </p>
         <ResponsiveContainer width="100%" height={200}>
@@ -36,12 +36,12 @@ export function E1rmChart({ data }: { data: DataPoint[] }) {
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 11 }}
+              tick={{ fontSize: 13 }}
               interval="preserveStartEnd"
             />
             <YAxis
               domain={["dataMin - 2", "dataMax + 2"]}
-              tick={{ fontSize: 11 }}
+              tick={{ fontSize: 13 }}
               width={40}
               unit="kg"
             />

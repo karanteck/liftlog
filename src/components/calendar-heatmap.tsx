@@ -89,7 +89,7 @@ export function CalendarHeatmap({ workouts }: { workouts: WorkoutDay[] }) {
 
       <div className="grid grid-cols-7 gap-1 text-center">
         {DAY_LABELS.map((d, i) => (
-          <div key={i} className="text-xs text-muted-foreground font-medium py-1">
+          <div key={i} className="text-sm text-muted-foreground font-medium py-1">
             {d}
           </div>
         ))}
@@ -114,7 +114,7 @@ export function CalendarHeatmap({ workouts }: { workouts: WorkoutDay[] }) {
                 }
               }}
               className={`
-                relative flex flex-col items-center justify-center rounded-lg py-2
+                relative flex flex-col items-center justify-center rounded-lg py-2.5
                 text-sm transition-colors
                 ${hasWorkout ? "cursor-pointer active:scale-95" : "cursor-default"}
                 ${isToday ? "ring-1 ring-primary" : ""}

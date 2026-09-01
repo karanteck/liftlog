@@ -635,12 +635,12 @@ export function WorkoutSession({
       <header className="sticky top-0 z-40 bg-background border-b px-4 py-2">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div className="flex items-center gap-2">
-            <Link href={isEditing ? `/history/${workout.id}` : "/"} className="text-muted-foreground hover:text-foreground p-1">
+            <Link href={isEditing ? `/history/${workout.id}` : "/"} className="text-muted-foreground hover:text-foreground p-2">
               <ChevronLeft className="h-6 w-6" />
             </Link>
             <div>
               <h1 className="font-bold">{workout.routineName ?? "Empty Workout"}</h1>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 {isEditing ? (
                   <span>Editing</span>
                 ) : isBackdated ? (
@@ -683,9 +683,9 @@ export function WorkoutSession({
             </AlertDialog>
           )}
         </div>
-        <div className="h-1 bg-muted mt-2 -mx-4">
+        <div className="h-2 bg-muted mt-2 -mx-4 rounded-full">
           <div
-            className="h-full bg-primary transition-all duration-300"
+            className="h-full bg-primary transition-all duration-300 rounded-full"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>
@@ -694,7 +694,7 @@ export function WorkoutSession({
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
         <button
           onClick={() => setShowDetails((v) => !v)}
-          className="text-xs text-muted-foreground hover:text-foreground w-full text-left"
+          className="text-sm text-muted-foreground hover:text-foreground w-full text-left"
         >
           <span className="inline-flex items-center gap-1">
             {showDetails ? "Hide" : "Add"} bodyweight &amp; notes
@@ -705,7 +705,7 @@ export function WorkoutSession({
         {showDetails && (
           <div className="rounded-lg border bg-card p-4 space-y-3">
             <div>
-              <label className="text-xs text-muted-foreground block mb-1">Bodyweight (kg)</label>
+              <label className="text-sm text-muted-foreground block mb-1">Bodyweight (kg)</label>
               <input
                 type="text"
                 inputMode="decimal"
@@ -716,7 +716,7 @@ export function WorkoutSession({
               />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground block mb-1">Notes</label>
+              <label className="text-sm text-muted-foreground block mb-1">Notes</label>
               <textarea
                 placeholder="How did it feel?"
                 value={notes}

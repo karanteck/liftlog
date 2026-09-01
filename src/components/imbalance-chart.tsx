@@ -13,6 +13,7 @@ import {
   Legend,
   ReferenceLine,
 } from "recharts";
+import { BarChart3 } from "lucide-react";
 import { useImbalanceColors } from "@/lib/chart-colors";
 import { getMonday, formatDateShort } from "@/lib/format";
 
@@ -114,9 +115,10 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
   if (pushPullData.length === 0) {
     return (
       <Card>
-        <CardContent className="py-6 text-center text-muted-foreground text-sm">
-          <p className="font-medium text-foreground">Imbalance Ratios</p>
-          <p className="mt-1">No data yet</p>
+        <CardContent className="py-8 text-center">
+          <BarChart3 className="h-10 w-10 mx-auto text-muted-foreground/50 mb-3" />
+          <p className="text-base font-medium">Imbalance Ratios</p>
+          <p className="text-sm text-muted-foreground mt-1">Log a few workouts to see trends here</p>
         </CardContent>
       </Card>
     );
@@ -127,10 +129,10 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
       <Card>
         <CardContent className="py-3 px-2">
           <div className="flex items-baseline justify-between px-2 mb-1">
-            <p className="text-xs font-medium text-muted-foreground">
+            <p className="text-sm font-medium text-muted-foreground">
               Push vs Pull (sets)
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Overall:{" "}
               <span className="font-medium text-foreground">
                 {overallPushPull}
@@ -138,19 +140,19 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
             </p>
           </div>
           {insight && (
-            <p className="text-sm text-muted-foreground px-2 mb-2">{insight}</p>
+            <p className="text-sm font-medium text-foreground px-2 mb-2 border-l-2 border-primary pl-2">{insight}</p>
           )}
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={pushPullData}>
               <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="week" tick={{ fontSize: 11 }} />
+              <XAxis dataKey="week" tick={{ fontSize: 13 }} />
               <YAxis
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 13 }}
                 width={25}
                 allowDecimals={false}
               />
               <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 11 }} iconSize={10} />
+              <Legend wrapperStyle={{ fontSize: 13 }} iconSize={12} />
               <Bar dataKey="Push" fill={imbalanceColors.push} radius={[4, 4, 0, 0]} />
               <Bar dataKey="Pull" fill={imbalanceColors.pull} radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -161,10 +163,10 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
       <Card>
         <CardContent className="py-3 px-2">
           <div className="flex items-baseline justify-between px-2 mb-2">
-            <p className="text-xs font-medium text-muted-foreground">
+            <p className="text-sm font-medium text-muted-foreground">
               Quads vs Hamstrings (sets)
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Overall:{" "}
               <span className="font-medium text-foreground">
                 {overallQuadHam}
@@ -174,14 +176,14 @@ export function ImbalanceChart({ sets }: { sets: SetRecord[] }) {
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={quadHamData}>
               <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="week" tick={{ fontSize: 11 }} />
+              <XAxis dataKey="week" tick={{ fontSize: 13 }} />
               <YAxis
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 13 }}
                 width={25}
                 allowDecimals={false}
               />
               <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 11 }} iconSize={10} />
+              <Legend wrapperStyle={{ fontSize: 13 }} iconSize={12} />
               <Bar dataKey="Quads" fill={imbalanceColors.quads} radius={[4, 4, 0, 0]} />
               <Bar dataKey="Hamstrings" fill={imbalanceColors.hamstrings} radius={[4, 4, 0, 0]} />
             </BarChart>

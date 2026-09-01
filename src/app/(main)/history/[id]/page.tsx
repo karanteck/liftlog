@@ -152,7 +152,7 @@ export default async function WorkoutDetailPage({
                 {ex.name}
               </Link>
               <div className="space-y-1">
-                <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+                <div className="grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
                   <span>Set</span>
                   <span>kg</span>
                   <span>Reps</span>
@@ -161,7 +161,7 @@ export default async function WorkoutDetailPage({
                 {ex.sets.map((s, i) => (
                   <div
                     key={i}
-                    className={`grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 items-center px-1 py-1 rounded text-sm ${
+                    className={`grid grid-cols-[2rem_1fr_1fr_2.5rem] gap-2 items-center px-1 py-1.5 rounded text-sm ${
                       s.isWarmup ? "text-muted-foreground" : ""
                     }`}
                   >

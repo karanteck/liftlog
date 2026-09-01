@@ -254,7 +254,7 @@ export function ExerciseSearch({
                   <button
                     key={mg}
                     onClick={() => setMuscleFilter(mg)}
-                    className={`shrink-0 text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    className={`shrink-0 text-sm px-3 py-2 min-h-[36px] rounded-full border transition-colors ${
                       muscleFilter === mg
                         ? "bg-primary text-primary-foreground border-primary"
                         : "border-border text-muted-foreground hover:text-foreground"
@@ -271,7 +271,7 @@ export function ExerciseSearch({
                   <button
                     key={eq.value}
                     onClick={() => setEquipmentFilter(eq.value)}
-                    className={`shrink-0 text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    className={`shrink-0 text-sm px-3 py-2 min-h-[36px] rounded-full border transition-colors ${
                       equipmentFilter === eq.value
                         ? "bg-primary text-primary-foreground border-primary"
                         : "border-border text-muted-foreground hover:text-foreground"
@@ -313,7 +313,7 @@ export function ExerciseSearch({
 
               {recentExercises.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">
                     Recently used
                   </p>
                   {recentExercises.map((e) => (
@@ -328,7 +328,7 @@ export function ExerciseSearch({
 
               {grouped.map((g) => (
                 <div key={g.muscleGroup} className="mb-4">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                  <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">
                     {g.muscleGroup}
                   </p>
                   {g.exercises.map((e) => (

@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { BarChart3 } from "lucide-react";
 import { useMuscleColors } from "@/lib/chart-colors";
 import { getMonday, formatDateShort } from "@/lib/format";
 
@@ -83,9 +84,10 @@ export function VolumeTrendChart({ sets }: { sets: SetRecord[] }) {
   if (chartData.length === 0) {
     return (
       <Card>
-        <CardContent className="py-6 text-center text-muted-foreground text-sm">
-          <p className="font-medium text-foreground">Volume Load Trends</p>
-          <p className="mt-1">No data yet</p>
+        <CardContent className="py-8 text-center">
+          <BarChart3 className="h-10 w-10 mx-auto text-muted-foreground/50 mb-3" />
+          <p className="text-base font-medium">Volume Load Trends</p>
+          <p className="text-sm text-muted-foreground mt-1">Log a few workouts to see trends here</p>
         </CardContent>
       </Card>
     );
@@ -94,21 +96,21 @@ export function VolumeTrendChart({ sets }: { sets: SetRecord[] }) {
   return (
     <Card>
       <CardContent className="py-3 px-2">
-        <p className="text-xs font-medium text-muted-foreground mb-1 px-2">
+        <p className="text-sm font-medium text-muted-foreground mb-1 px-2">
           Weekly volume load by muscle group (kg)
         </p>
         {insight && (
-          <p className="text-sm text-muted-foreground px-2 mb-2">{insight}</p>
+          <p className="text-sm font-medium text-foreground px-2 mb-2 border-l-2 border-primary pl-2">{insight}</p>
         )}
         <ResponsiveContainer width="100%" height={280}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis dataKey="week" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} width={45} />
+            <XAxis dataKey="week" tick={{ fontSize: 13 }} />
+            <YAxis tick={{ fontSize: 13 }} width={45} />
             <Tooltip
               formatter={(value) => [`${value} kg`, undefined]}
             />
-            <Legend wrapperStyle={{ fontSize: 11 }} iconSize={10} />
+            <Legend wrapperStyle={{ fontSize: 13 }} iconSize={12} />
             {muscleGroups.map((g) => (
               <Line
                 key={g}

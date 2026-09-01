@@ -131,7 +131,7 @@ export default async function AnalyticsPage({
                 <Button
                   variant={activeRange === opt.value ? "secondary" : "ghost"}
                   size="sm"
-                  className="h-7 text-xs px-2"
+                  className="h-9 text-sm px-3"
                 >
                   {opt.label}
                 </Button>

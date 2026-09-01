@@ -42,7 +42,7 @@ export function RestTimer({
   const display = `${done ? "+" : ""}${mins}:${secs.toString().padStart(2, "0")}`;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card safe-bottom">
+    <div className="fixed left-4 right-4 z-50 bg-card rounded-xl shadow-lg ring-1 ring-foreground/10" style={{ bottom: "calc(5rem + env(safe-area-inset-bottom))" }}>
       <div className="max-w-lg mx-auto flex flex-col items-center py-5 gap-2">
         <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
           {done ? "Rest complete" : "Rest"}

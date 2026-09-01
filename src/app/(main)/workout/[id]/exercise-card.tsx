@@ -89,15 +89,15 @@ export function ExerciseCard({
           </div>
           <div className="flex items-center gap-2 mt-0.5">
             {(ex.trackingType === "weight_reps" || ex.trackingType === "bodyweight_reps" || ex.trackingType === "reps_only") && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 Target: {ex.targetRepMin}–{ex.targetRepMax} reps
               </span>
             )}
             {ex.trackingType === "time" && (
-              <span className="text-xs text-muted-foreground">Log duration</span>
+              <span className="text-sm text-muted-foreground">Log duration</span>
             )}
             {ex.trackingType === "distance_time" && (
-              <span className="text-xs text-muted-foreground">Log distance and time</span>
+              <span className="text-sm text-muted-foreground">Log distance and time</span>
             )}
           </div>
         </div>
@@ -111,7 +111,7 @@ export function ExerciseCard({
               <Button
                 size="sm"
                 variant="outline"
-                className="h-7 text-xs border-info/30 text-info hover:bg-info/10"
+                className="h-9 text-sm border-info/30 text-info hover:bg-info/10"
                 onClick={() => onAcceptProgression(exIdx)}
               >
                 Use {ex.progressionPrompt.suggestedWeight}kg
@@ -119,7 +119,7 @@ export function ExerciseCard({
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-7 text-xs text-muted-foreground"
+                className="h-9 text-sm text-muted-foreground"
                 onClick={() => onDismissProgression(exIdx)}
               >
                 Keep {ex.progressionPrompt.previousWeight}kg
@@ -200,7 +200,7 @@ export function ExerciseCard({
                         <button
                           key={v}
                           onClick={() => onUpdateRpe(exIdx, setIdx, v)}
-                          className={`h-7 w-7 rounded-full text-xs font-medium transition-colors ${
+                          className={`h-9 w-9 rounded-full text-xs font-medium transition-colors ${
                             set.rpe === v.toString()
                               ? "bg-primary text-primary-foreground"
                               : "bg-accent hover:bg-accent/80 text-foreground"
@@ -211,7 +211,7 @@ export function ExerciseCard({
                       ))}
                       <button
                         onClick={() => onSetRpeOpen(null)}
-                        className="h-7 w-7 rounded-full text-xs text-muted-foreground hover:text-foreground bg-accent/50"
+                        className="h-9 w-9 rounded-full text-xs text-muted-foreground hover:text-foreground bg-accent/50"
                       >
                         ×
                       </button>
@@ -236,7 +236,7 @@ export function ExerciseCard({
 
         <button
           onClick={() => onAddSet(exIdx)}
-          className="mt-2 w-full text-sm text-muted-foreground hover:text-foreground py-3"
+          className="mt-2 w-full text-sm text-muted-foreground hover:text-foreground py-3 min-h-[44px]"
         >
           + Add set
         </button>
@@ -248,35 +248,35 @@ export function ExerciseCard({
 function SetGridHeader({ trackingType }: { trackingType: string }) {
   if (trackingType === "weight_reps") {
     return (
-      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
         <span>Set</span><span>kg</span><span>Reps</span><span />
       </div>
     );
   }
   if (trackingType === "bodyweight_reps") {
     return (
-      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
         <span>Set</span><span>+kg</span><span>Reps</span><span />
       </div>
     );
   }
   if (trackingType === "reps_only") {
     return (
-      <div className="grid grid-cols-[2rem_1fr_3.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+      <div className="grid grid-cols-[2rem_1fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
         <span>Set</span><span>Reps</span><span />
       </div>
     );
   }
   if (trackingType === "time") {
     return (
-      <div className="grid grid-cols-[2rem_1fr_3.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+      <div className="grid grid-cols-[2rem_1fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
         <span>#</span><span>Minutes</span><span />
       </div>
     );
   }
   if (trackingType === "distance_time") {
     return (
-      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-xs text-muted-foreground font-medium px-1">
+      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
         <span>#</span><span>km</span><span>Minutes</span><span />
       </div>
     );
@@ -302,7 +302,7 @@ function SetInputs({
   const inputClass = "h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60";
 
   if (trackingType === "weight_reps" || trackingType === "bodyweight_reps") {
-    const stepperBtnClass = "h-8 w-8 shrink-0 rounded-md border flex items-center justify-center disabled:opacity-40 active:bg-accent";
+    const stepperBtnClass = "h-11 w-11 shrink-0 rounded-md border flex items-center justify-center disabled:opacity-40 active:bg-accent";
     return (
       <>
         <div className="flex items-center gap-1">
@@ -316,7 +316,7 @@ function SetInputs({
             disabled={set.isCompleted}
             className={stepperBtnClass}
           >
-            <Minus className="h-3.5 w-3.5" />
+            <Minus className="h-4 w-4" />
           </button>
           <input
             type="text"
@@ -336,7 +336,7 @@ function SetInputs({
             disabled={set.isCompleted}
             className={stepperBtnClass}
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-4 w-4" />
           </button>
         </div>
         <input

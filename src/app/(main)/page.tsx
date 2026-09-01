@@ -186,7 +186,7 @@ export default async function Home() {
                 Resume Workout
               </Button>
             </Link>
-            <p className="text-xs text-muted-foreground text-center mt-1.5">
+            <p className="text-sm text-muted-foreground text-center mt-1.5">
               {activeWorkoutRoutineName}
               {activeWorkoutSetCount > 0 && (
                 <> &middot; {activeWorkoutSetCount} set{activeWorkoutSetCount !== 1 ? "s" : ""} done</>
@@ -194,7 +194,7 @@ export default async function Home() {
             </p>
             <Link
               href="/workout/new"
-              className="block text-center mt-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="block text-center mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               or start a new workout
             </Link>
@@ -224,18 +224,18 @@ export default async function Home() {
         <div className="grid grid-cols-2 gap-3">
           <Card>
             <CardContent className="py-3 px-3 text-center">
-              <TrendingUp className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
+              <TrendingUp className="h-6 w-6 mx-auto text-primary mb-1" />
               <p className="text-3xl font-bold tabular-nums">
                 {weekWorkoutCount}
               </p>
-              <p className="text-xs text-muted-foreground">this week</p>
+              <p className="text-sm text-muted-foreground">this week</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className={streak >= 3 ? "bg-warning/5" : ""}>
             <CardContent className="py-3 px-3 text-center">
-              <Flame className="h-6 w-6 mx-auto text-muted-foreground mb-1" />
+              <Flame className="h-6 w-6 mx-auto text-warning mb-1" />
               <p className="text-3xl font-bold tabular-nums">{streak}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 week{streak !== 1 ? "s" : ""} streak
               </p>
             </CardContent>
@@ -243,8 +243,8 @@ export default async function Home() {
         </div>
 
         {latestBodyweight && (
-          <p className="text-xs text-muted-foreground text-center">
-            <Scale className="h-3.5 w-3.5 inline mr-1 align-text-bottom" />
+          <p className="text-sm text-muted-foreground text-center">
+            <Scale className="h-4 w-4 inline mr-1 align-text-bottom" />
             {latestBodyweight} kg
           </p>
         )}
@@ -262,7 +262,7 @@ export default async function Home() {
                         return (obj as { name: string } | null)?.name ?? "Workout";
                       })()}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       {formatDateRelative(lastWorkout.date)} &middot;{" "}
                       {formatDuration(lastWorkout.started_at, lastWorkout.ended_at)} &middot;{" "}
                       {lastWorkoutSets} sets
