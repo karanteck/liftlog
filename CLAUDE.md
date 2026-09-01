@@ -354,6 +354,27 @@ User feedback fixes (all done):
   warnings before importing. Parser at `src/lib/csv-import.ts`.
   Accessible from More page → Import Workouts.
 
+UX polish pass (all done — 4 tiers, 14 files):
+
+- Tier 1: Workout screen touch targets — weight stepper buttons h-8→h-11
+  (44px), RPE circles h-7→h-9 (36px), progression prompt buttons h-7→h-9,
+  set grid headers and labels text-xs→text-sm, "+ Add set" min-h-[44px]
+- Tier 2: Rest timer repositioned — floats as a card above bottom nav
+  (`bottom: calc(5rem + safe-area)`) instead of covering it edge-to-edge.
+  Added rounded-xl, shadow-lg, ring border
+- Tier 3: App-wide readability — text-xs→text-sm across home page stat
+  labels, history page filters/exercise names, history detail set grid,
+  analytics range buttons, all 5 chart component titles, calendar heatmap
+  day headers (py-2→py-2.5), exercise search filter chips (min-h-[36px])
+  and section headers. Chart axis/legend fonts 11→13px. Chart insights
+  promoted from muted-foreground to font-medium text-foreground
+- Tier 4: History list grouped by week with sticky headers ("This week",
+  "Last week", "Week of 18 Aug") using getMonday(). Home stat icons
+  colored (TrendingUp text-primary, Flame text-warning, streak card
+  bg-warning/5 at 3+ weeks). Chart insights styled with border-l-2
+  border-primary accent. Empty states enhanced with BarChart3 icon
+  (h-10 w-10), text-base headline, and action CTA
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed
