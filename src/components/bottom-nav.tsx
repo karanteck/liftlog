@@ -5,10 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Home, Dumbbell, Clock, BarChart3, Menu } from "lucide-react";
+import { useKeyboardOpen } from "@/lib/use-keyboard-open";
 
 export function BottomNav() {
   const pathname = usePathname();
   const [activeWorkoutId, setActiveWorkoutId] = useState<string | null>(null);
+  const keyboardOpen = useKeyboardOpen();
 
   useEffect(() => {
     const supabase = createClient();
@@ -37,7 +39,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 safe-bottom pb-3">
+    <nav className={`fixed bottom-0 left-0 right-0 z-40 border-t bg-background backdrop-blur safe-bottom pb-3 transition-all duration-200 ${keyboardOpen ? "translate-y-full opacity-0 pointer-events-none" : ""}`}>
       <div className="max-w-lg mx-auto flex items-center justify-around h-16">
         {tabs.map((tab) => {
           const isActive =

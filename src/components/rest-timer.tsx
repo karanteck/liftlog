@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useKeyboardOpen } from "@/lib/use-keyboard-open";
 
 const CIRCLE_SIZE = 120;
 const STROKE_WIDTH = 6;
@@ -10,18 +11,22 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export function RestTimer({
   duration,
+  startedAt,
   onDismiss,
 }: {
   duration: number;
+  startedAt: number;
   onDismiss: () => void;
 }) {
-  const [remaining, setRemaining] = useState(duration);
+  const calcRemaining = () => duration - Math.floor((Date.now() - startedAt) / 1000);
+  const [remaining, setRemaining] = useState(calcRemaining);
   const vibratedRef = useRef(false);
+  const keyboardOpen = useKeyboardOpen();
 
   useEffect(() => {
-    const t = setInterval(() => setRemaining((r) => r - 1), 1000);
+    const t = setInterval(() => setRemaining(calcRemaining()), 1000);
     return () => clearInterval(t);
-  }, []);
+  }, [duration, startedAt]);
 
   useEffect(() => {
     if (remaining <= 0 && !vibratedRef.current) {
@@ -41,8 +46,15 @@ export function RestTimer({
   const secs = absRemaining % 60;
   const display = `${done ? "+" : ""}${mins}:${secs.toString().padStart(2, "0")}`;
 
+  const bottomStyle = keyboardOpen
+    ? "env(safe-area-inset-bottom, 0.5rem)"
+    : "calc(5rem + env(safe-area-inset-bottom))";
+
   return (
-    <div className="fixed left-4 right-4 z-50 bg-card rounded-xl shadow-lg ring-1 ring-foreground/10" style={{ bottom: "calc(5rem + env(safe-area-inset-bottom))" }}>
+    <div
+      className="fixed left-4 right-4 z-50 bg-card rounded-xl shadow-lg ring-1 ring-foreground/10 transition-all duration-200"
+      style={{ bottom: bottomStyle }}
+    >
       <div className="max-w-lg mx-auto flex flex-col items-center py-5 gap-2">
         <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
           {done ? "Rest complete" : "Rest"}

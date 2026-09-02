@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { RestTimer } from "@/components/rest-timer";
+import { useRestTimer } from "@/components/rest-timer-provider";
 import { ExerciseSearch } from "@/components/exercise-search";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronUp, ChevronDown } from "lucide-react";
@@ -150,11 +150,7 @@ export function WorkoutSession({
     return states;
   });
   const [elapsed, setElapsed] = useState(0);
-  const [restTimer, setRestTimer] = useState<{
-    duration: number;
-    setDbId: string;
-    startedAt: number;
-  } | null>(null);
+  const { startTimer, dismissTimer } = useRestTimer();
   const [finishing, setFinishing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [currentPRs, setCurrentPRs] = useState<Record<string, PRRecord>>(initialPRs);
@@ -420,7 +416,7 @@ export function WorkoutSession({
 
       if (!isEditing && !set.isWarmup && !isCardio) {
         setLastSetAt(Date.now());
-        setRestTimer({ duration: restDuration(ex.repTier), setDbId: data.id, startedAt: Date.now() });
+        startTimer(restDuration(ex.repTier), data.id);
 
         const prRecord = currentPRsRef.current[ex.exerciseId] ?? { maxWeight: null, bestE1rm: null, bestVolume: null };
         const newPRs = checkNewPRs(prRecord, weight, reps);
@@ -524,6 +520,7 @@ export function WorkoutSession({
 
   const finishWorkout = useCallback(async () => {
     setFinishing(true);
+    dismissTimer();
 
     const bw = bodyweight ? parseFloat(bodyweight) : null;
     const updateData: { ended_at: string; bodyweight?: number; notes?: string } = {
@@ -572,7 +569,7 @@ export function WorkoutSession({
     runPlateauDetection(supabase, userId).catch(() => {});
 
     setShowSummary(true);
-  }, [supabase, workout.id, workout.date, exercises, bodyweight, notes, userId]);
+  }, [supabase, workout.id, workout.date, exercises, bodyweight, notes, userId, dismissTimer]);
 
   const saveEdits = useCallback(async () => {
     setFinishing(true);
@@ -787,17 +784,6 @@ export function WorkoutSession({
         </div>
       )}
 
-      {restTimer && (
-        <RestTimer
-          key={restTimer.startedAt}
-          duration={restTimer.duration}
-          onDismiss={() => {
-            const restSeconds = Math.round((Date.now() - restTimer.startedAt) / 1000);
-            supabase.from("sets").update({ rest_seconds: restSeconds }).eq("id", restTimer.setDbId).then();
-            setRestTimer(null);
-          }}
-        />
-      )}
     </div>
   );
 }

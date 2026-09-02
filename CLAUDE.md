@@ -375,6 +375,30 @@ UX polish pass (all done — 4 tiers, 14 files):
   border-primary accent. Empty states enhanced with BarChart3 icon
   (h-10 w-10), text-base headline, and action CTA
 
+In-gym bug fixes (all done — 4 fixes from workout session feedback):
+
+1. Bottom nav opaque + keyboard hiding: background changed from 80–95%
+   opacity to fully opaque (no content bleeding). `visualViewport` API
+   detects iOS keyboard and slides nav off-screen with transform
+   animation (fixes nav floating mid-screen during input focus).
+   Shared `useKeyboardOpen` hook at `src/lib/use-keyboard-open.ts`.
+2. Routine editor sets editing: `value`+`onChange` → `defaultValue`+`onBlur`
+   on Sets/Min reps/Max reps inputs. Was impossible to clear and retype
+   because `parseInt("")` returned NaN and rejected the change.
+3. Weight input readability: set grid changed from `1fr/1fr` to `3fr/2fr`
+   for weight_reps and bodyweight_reps (weight gets 60% of space).
+   Stepper buttons narrowed `w-11`→`w-9` (36px wide, 44px tall).
+   Weight input usable width: ~15px → ~54px. Headers updated to match.
+4. Rest timer persistence: timer state moved from local React state in
+   `WorkoutSession` to `RestTimerProvider` context at layout level.
+   Persisted to localStorage, survives navigation and page refresh.
+   Wall-clock math (`Date.now() - startedAt`) instead of decrementing
+   counter — accurate after unmount+remount. Timer also adjusts
+   position when keyboard is open (drops below hidden nav). Timer
+   dismissed on workout finish.
+   New files: `src/components/rest-timer-provider.tsx`,
+   `src/components/layout-rest-timer.tsx`
+
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed

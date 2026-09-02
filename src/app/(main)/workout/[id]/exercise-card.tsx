@@ -137,7 +137,9 @@ export function ExerciseCard({
               className={`grid ${
                 ex.trackingType === "time" || ex.trackingType === "reps_only"
                   ? "grid-cols-[2rem_1fr_3.5rem]"
-                  : "grid-cols-[2rem_1fr_1fr_3.5rem]"
+                  : ex.trackingType === "distance_time"
+                    ? "grid-cols-[2rem_1fr_1fr_3.5rem]"
+                    : "grid-cols-[2rem_3fr_2fr_3.5rem]"
               } gap-2 items-center px-1 py-1 rounded ${
                 set.isCompleted
                   ? "bg-success/10"
@@ -248,14 +250,14 @@ export function ExerciseCard({
 function SetGridHeader({ trackingType }: { trackingType: string }) {
   if (trackingType === "weight_reps") {
     return (
-      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
+      <div className="grid grid-cols-[2rem_3fr_2fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
         <span>Set</span><span>kg</span><span>Reps</span><span />
       </div>
     );
   }
   if (trackingType === "bodyweight_reps") {
     return (
-      <div className="grid grid-cols-[2rem_1fr_1fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
+      <div className="grid grid-cols-[2rem_3fr_2fr_3.5rem] gap-2 text-sm text-muted-foreground font-medium px-1">
         <span>Set</span><span>+kg</span><span>Reps</span><span />
       </div>
     );
@@ -302,7 +304,7 @@ function SetInputs({
   const inputClass = "h-11 w-full rounded-md border bg-transparent px-2 text-sm tabular-nums text-center disabled:opacity-60";
 
   if (trackingType === "weight_reps" || trackingType === "bodyweight_reps") {
-    const stepperBtnClass = "h-11 w-11 shrink-0 rounded-md border flex items-center justify-center disabled:opacity-40 active:bg-accent";
+    const stepperBtnClass = "h-11 w-9 shrink-0 rounded-md border flex items-center justify-center disabled:opacity-40 active:bg-accent";
     return (
       <>
         <div className="flex items-center gap-1">

@@ -102,6 +102,7 @@ export function RoutineEditor({
 
   const updateTarget = useCallback(
     (idx: number, field: "targetSets" | "targetRepMin" | "targetRepMax", value: string) => {
+      if (!value.trim()) return;
       const num = parseInt(value, 10);
       if (isNaN(num) || num < 0) return;
       setExercises((prev) => {
@@ -241,8 +242,8 @@ export function RoutineEditor({
                     <input
                       type="text"
                       inputMode="numeric"
-                      value={ex.targetSets}
-                      onChange={(e) =>
+                      defaultValue={ex.targetSets}
+                      onBlur={(e) =>
                         updateTarget(idx, "targetSets", e.target.value)
                       }
                       className="h-8 w-full rounded border bg-transparent px-2 text-sm text-center tabular-nums"
@@ -255,8 +256,8 @@ export function RoutineEditor({
                     <input
                       type="text"
                       inputMode="numeric"
-                      value={ex.targetRepMin}
-                      onChange={(e) =>
+                      defaultValue={ex.targetRepMin}
+                      onBlur={(e) =>
                         updateTarget(idx, "targetRepMin", e.target.value)
                       }
                       className="h-8 w-full rounded border bg-transparent px-2 text-sm text-center tabular-nums"
@@ -269,8 +270,8 @@ export function RoutineEditor({
                     <input
                       type="text"
                       inputMode="numeric"
-                      value={ex.targetRepMax}
-                      onChange={(e) =>
+                      defaultValue={ex.targetRepMax}
+                      onBlur={(e) =>
                         updateTarget(idx, "targetRepMax", e.target.value)
                       }
                       className="h-8 w-full rounded border bg-transparent px-2 text-sm text-center tabular-nums"
