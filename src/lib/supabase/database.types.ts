@@ -446,6 +446,10 @@ export type Database = {
       auth_household_id: { Args: never; Returns: string }
       auth_is_admin: { Args: never; Returns: boolean }
       auth_is_approved: { Args: never; Returns: boolean }
+      home_page_data: {
+        Args: { p_user_id: string }
+        Returns: Record<string, unknown>
+      }
     }
     Enums: {
       plateau_alert_type:

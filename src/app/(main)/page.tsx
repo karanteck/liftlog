@@ -10,6 +10,29 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { Dumbbell, ChevronRight, Scale, Flame, TrendingUp, Play } from "lucide-react";
 import { formatDateRelative, formatDuration, getMonday } from "@/lib/format";
 
+type HomePageData = {
+  profile: { name: string; is_approved: boolean; is_admin: boolean };
+  bodyweight: number | null;
+  week_workout_count: number;
+  streak_dates: string[];
+  last_workout: {
+    id: string;
+    date: string;
+    started_at: string;
+    ended_at: string;
+    routine_name: string | null;
+    set_count: number;
+    volume: number;
+  } | null;
+  last_routine: { id: string; name: string } | null;
+  active_workout: {
+    id: string;
+    started_at: string;
+    routine_name: string | null;
+    set_count: number;
+  } | null;
+};
+
 function computeStreak(dates: string[]): number {
   if (dates.length === 0) return 0;
   const now = new Date();
@@ -44,13 +67,14 @@ export default async function Home() {
 
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("name, is_approved, is_admin")
-    .eq("id", user.id)
-    .single();
+  const [{ data: rpcData }, alerts] = await Promise.all([
+    supabase.rpc("home_page_data", { p_user_id: user.id }),
+    getActiveAlerts(supabase, user.id),
+  ]);
 
-  if (!profile?.is_approved) {
+  const data = rpcData as HomePageData | null;
+
+  if (!data?.profile?.is_approved) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <h1 className="text-2xl font-bold">Almost there</h1>
@@ -63,108 +87,17 @@ export default async function Home() {
     );
   }
 
-  const mondayStr = getMonday(new Date().toISOString().split("T")[0]);
-
-  const [alertsResult, bodyweightResult, weekWorkoutsResult, lastWorkoutResult, streakResult, lastRoutineResult, activeWorkoutResult] =
-    await Promise.all([
-      getActiveAlerts(supabase, user.id),
-      supabase
-        .from("bodyweight_log")
-        .select("weight")
-        .eq("user_id", user.id)
-        .order("date", { ascending: false })
-        .limit(1)
-        .single(),
-      supabase
-        .from("workouts")
-        .select("id")
-        .eq("user_id", user.id)
-        .gte("date", mondayStr)
-        .not("ended_at", "is", null),
-      supabase
-        .from("workouts")
-        .select("id, date, started_at, ended_at, routines ( name )")
-        .eq("user_id", user.id)
-        .not("ended_at", "is", null)
-        .order("date", { ascending: false })
-        .limit(1)
-        .single(),
-      supabase
-        .from("workouts")
-        .select("date")
-        .eq("user_id", user.id)
-        .not("ended_at", "is", null)
-        .order("date", { ascending: false })
-        .limit(200),
-      supabase
-        .from("workouts")
-        .select("routine_id, routines ( id, name )")
-        .eq("user_id", user.id)
-        .not("ended_at", "is", null)
-        .not("routine_id", "is", null)
-        .order("date", { ascending: false })
-        .limit(1)
-        .single(),
-      supabase
-        .from("workouts")
-        .select("id, started_at, routines ( name )")
-        .eq("user_id", user.id)
-        .is("ended_at", null)
-        .order("started_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-    ]);
-
-  const alerts = alertsResult;
-  const latestBodyweight = bodyweightResult.data?.weight
-    ? Number(bodyweightResult.data.weight)
-    : null;
-  const weekWorkoutCount = weekWorkoutsResult.data?.length ?? 0;
-  const streak = computeStreak(
-    (streakResult.data ?? []).map((w) => w.date)
-  );
-
-  const lastWorkout = lastWorkoutResult.data;
-  let lastWorkoutVolume = 0;
-  let lastWorkoutSets = 0;
-  if (lastWorkout) {
-    const { data: sets } = await supabase
-      .from("sets")
-      .select("weight, reps, is_warmup")
-      .eq("workout_id", lastWorkout.id)
-      .eq("is_warmup", false);
-
-    if (sets) {
-      lastWorkoutSets = sets.length;
-      lastWorkoutVolume = sets.reduce(
-        (sum, s) => sum + (s.weight ?? 0) * (s.reps ?? 0),
-        0
-      );
-    }
-  }
-
-  const lastRoutineRaw = lastRoutineResult.data?.routines as unknown;
-  const lastRoutine = Array.isArray(lastRoutineRaw)
-    ? (lastRoutineRaw[0] as { id: string; name: string } | undefined) ?? null
-    : (lastRoutineRaw as { id: string; name: string } | null);
-
-  const activeWorkout = activeWorkoutResult.data;
-  let activeWorkoutSetCount = 0;
-  let activeWorkoutRoutineName = "Empty Workout";
-  if (activeWorkout) {
-    const r = activeWorkout.routines as unknown;
-    const obj = Array.isArray(r) ? r[0] : r;
-    activeWorkoutRoutineName = (obj as { name: string } | null)?.name ?? "Empty Workout";
-
-    const { count } = await supabase
-      .from("sets")
-      .select("*", { count: "exact", head: true })
-      .eq("workout_id", activeWorkout.id)
-      .eq("is_warmup", false);
-    activeWorkoutSetCount = count ?? 0;
-  }
-
-  const firstName = profile.name.split(" ")[0];
+  const latestBodyweight = data.bodyweight ? Number(data.bodyweight) : null;
+  const weekWorkoutCount = data.week_workout_count;
+  const streak = computeStreak(data.streak_dates);
+  const lastWorkout = data.last_workout;
+  const lastWorkoutSets = lastWorkout?.set_count ?? 0;
+  const lastWorkoutVolume = lastWorkout?.volume ?? 0;
+  const lastRoutine = data.last_routine;
+  const activeWorkout = data.active_workout;
+  const activeWorkoutRoutineName = activeWorkout?.routine_name ?? "Empty Workout";
+  const activeWorkoutSetCount = activeWorkout?.set_count ?? 0;
+  const firstName = data.profile.name.split(" ")[0];
 
   return (
     <div className="flex flex-col min-h-screen pb-24">
@@ -256,11 +189,7 @@ export default async function Home() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-sm">
-                      {(() => {
-                        const r = lastWorkout.routines as unknown;
-                        const obj = Array.isArray(r) ? r[0] : r;
-                        return (obj as { name: string } | null)?.name ?? "Workout";
-                      })()}
+                      {lastWorkout.routine_name ?? "Workout"}
                     </p>
                     <p className="text-sm text-muted-foreground mt-0.5">
                       {formatDateRelative(lastWorkout.date)} &middot;{" "}
