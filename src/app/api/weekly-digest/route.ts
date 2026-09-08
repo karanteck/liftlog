@@ -28,9 +28,11 @@ export async function POST(request: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const supabase = createAdminClient();
 
+    const weekId = getISOWeek(new Date());
+
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, name")
+      .select("id, name, last_digest_week")
       .eq("is_approved", true);
 
     if (profilesError || !profiles?.length) {
@@ -63,6 +65,11 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
+      if (profile.last_digest_week === weekId) {
+        results.push({ user: profile.name, status: "skipped", error: "already sent this week" });
+        continue;
+      }
+
       try {
         const digestData = await buildDigestData(supabase, profile.id, profile.name);
         const digestHtml = buildDigestHtml(digestData);
@@ -77,6 +84,10 @@ export async function POST(request: NextRequest) {
         if (sendError) {
           results.push({ user: profile.name, status: "failed", error: sendError.message });
         } else {
+          await supabase
+            .from("profiles")
+            .update({ last_digest_week: weekId })
+            .eq("id", profile.id);
           results.push({ user: profile.name, status: "sent" });
         }
       } catch (err) {
@@ -88,7 +99,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const weekId = getISOWeek(new Date());
     return NextResponse.json({ results, week: weekId }, {
       headers: { "X-Digest-Week": weekId },
     });

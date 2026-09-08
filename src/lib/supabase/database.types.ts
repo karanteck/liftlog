@@ -210,6 +210,7 @@ export type Database = {
           id: string
           is_admin: boolean
           is_approved: boolean
+          last_digest_week: string | null
           name: string
           unit_pref: string
           updated_at: string
@@ -220,6 +221,7 @@ export type Database = {
           id: string
           is_admin?: boolean
           is_approved?: boolean
+          last_digest_week?: string | null
           name: string
           unit_pref?: string
           updated_at?: string
@@ -230,6 +232,7 @@ export type Database = {
           id?: string
           is_admin?: boolean
           is_approved?: boolean
+          last_digest_week?: string | null
           name?: string
           unit_pref?: string
           updated_at?: string
