@@ -12,7 +12,6 @@ const RANGE_OPTIONS = [
   { value: "12w", label: "12 weeks", days: 84 },
   { value: "26w", label: "6 months", days: 182 },
   { value: "52w", label: "1 year", days: 365 },
-  { value: "all", label: "All time", days: null },
 ];
 
 export default async function AnalyticsPage({
