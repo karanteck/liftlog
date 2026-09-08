@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useRestTimer } from "@/components/rest-timer-provider";
+import { useActiveWorkout } from "@/components/active-workout-provider";
 import { ExerciseSearch } from "@/components/exercise-search";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronUp, ChevronDown } from "lucide-react";
@@ -153,6 +154,7 @@ export function WorkoutSession({
   });
   const [elapsed, setElapsed] = useState(0);
   const { startTimer, dismissTimer, updateTimerSetId } = useRestTimer();
+  const { setActiveWorkoutId } = useActiveWorkout();
   const [finishing, setFinishing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [currentPRs, setCurrentPRs] = useState<Record<string, PRRecord>>(initialPRs);
@@ -594,8 +596,9 @@ export function WorkoutSession({
 
     runPlateauDetection(supabase, userId).catch(() => {});
 
+    setActiveWorkoutId(null);
     setShowSummary(true);
-  }, [supabase, workout.id, workout.date, exercises, bodyweight, notes, userId, dismissTimer]);
+  }, [supabase, workout.id, workout.date, exercises, bodyweight, notes, userId, dismissTimer, setActiveWorkoutId]);
 
   const saveEdits = useCallback(async () => {
     setFinishing(true);

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useActiveWorkout } from "@/components/active-workout-provider";
 
 type Routine = {
   id: string;
@@ -28,6 +29,7 @@ function timeAgo(dateStr: string): string {
 export function RoutinePicker({ routines }: { routines: Routine[] }) {
   const router = useRouter();
   const supabase = createClient();
+  const { setActiveWorkoutId } = useActiveWorkout();
   const [starting, setStarting] = useState<string | null>(null);
   const todayStr = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(todayStr);
@@ -58,6 +60,7 @@ export function RoutinePicker({ routines }: { routines: Routine[] }) {
       return;
     }
 
+    setActiveWorkoutId(data.id);
     router.push(`/workout/${data.id}`);
   }
 

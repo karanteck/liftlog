@@ -1,34 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { Home, Dumbbell, Clock, BarChart3, Menu } from "lucide-react";
 import { useKeyboardOpen } from "@/lib/use-keyboard-open";
+import { useActiveWorkout } from "@/components/active-workout-provider";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const [activeWorkoutId, setActiveWorkoutId] = useState<string | null>(null);
+  const { activeWorkoutId } = useActiveWorkout();
   const keyboardOpen = useKeyboardOpen();
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      supabase
-        .from("workouts")
-        .select("id")
-        .eq("user_id", user.id)
-        .is("ended_at", null)
-        .order("started_at", { ascending: false })
-        .limit(1)
-        .maybeSingle()
-        .then(({ data }) => {
-          setActiveWorkoutId(data?.id ?? null);
-        });
-    });
-  }, [pathname]);
 
   const tabs = [
     { href: "/", label: "Home", icon: Home, match: "/" },
