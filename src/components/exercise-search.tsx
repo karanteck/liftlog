@@ -70,7 +70,8 @@ export function ExerciseSearch({
   }) => void;
   onClose: () => void;
 }) {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [recentIds, setRecentIds] = useState<string[]>([]);
   const [query, setQuery] = useState("");
@@ -145,7 +146,7 @@ export function ExerciseSearch({
       setLoading(false);
     }
     load();
-  }, [open, supabase, userId]);
+  }, [open, userId]);
 
   const filtered = useMemo(() => {
     let list = exercises.filter((e) => !excludeIds.includes(e.id));

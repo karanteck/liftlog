@@ -143,7 +143,8 @@ export function WorkoutSession({
   exercisePRs: Record<string, PRRecord>;
 }) {
   const router = useRouter();
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const isEditing = workout.isFinished;
 
   const [exerciseStates, setExerciseStates] = useState<ExerciseState[]>(() => {
@@ -257,7 +258,7 @@ export function WorkoutSession({
         },
       ]);
     },
-    [supabase, userId]
+    [userId]
   );
 
   const acceptProgression = useCallback((exIdx: number) => {
@@ -468,7 +469,7 @@ export function WorkoutSession({
           updateTimerSetId(optimisticTimerId, data.id);
         });
     },
-    [supabase, workout.id, previousPerformance, isEditing, startTimer, updateTimerSetId]
+    [workout.id, previousPerformance, isEditing, startTimer, updateTimerSetId]
   );
 
   const uncompleteSet = useCallback(
@@ -499,7 +500,7 @@ export function WorkoutSession({
       );
       setCurrentPRs((prev) => ({ ...prev, [ex.exerciseId]: computePRs([...previousSets, ...allRemaining]) }));
     },
-    [supabase, previousPerformance]
+    [previousPerformance]
   );
 
   const addSet = useCallback((exIdx: number) => {
@@ -544,7 +545,7 @@ export function WorkoutSession({
       });
       setRpeOpenFor(null);
     },
-    [supabase]
+    []
   );
 
   const finishWorkout = useCallback(async () => {
@@ -599,7 +600,7 @@ export function WorkoutSession({
 
     setActiveWorkoutId(null);
     setShowSummary(true);
-  }, [supabase, workout.id, workout.date, exercises, bodyweight, notes, userId, dismissTimer, setActiveWorkoutId]);
+  }, [workout.id, workout.date, exercises, bodyweight, notes, userId, dismissTimer, setActiveWorkoutId]);
 
   const saveEdits = useCallback(async () => {
     setFinishing(true);
@@ -630,7 +631,7 @@ export function WorkoutSession({
 
     toast.success("Changes saved");
     router.push(`/history/${workout.id}`);
-  }, [supabase, workout.id, workout.date, bodyweight, notes, userId, router]);
+  }, [workout.id, workout.date, bodyweight, notes, userId, router]);
 
   const elapsedMin = Math.floor(elapsed / 60);
   const elapsedSec = elapsed % 60;

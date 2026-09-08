@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,8 @@ type Household = {
 };
 
 export function AdminPanel() {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [users, setUsers] = useState<Profile[]>([]);
   const [households, setHouseholds] = useState<Household[]>([]);
   const [newHouseholdName, setNewHouseholdName] = useState("");
@@ -41,7 +42,7 @@ export function AdminPanel() {
     setUsers(profiles ?? []);
     setHouseholds(hh ?? []);
     setLoading(false);
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     loadData();
