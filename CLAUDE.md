@@ -149,7 +149,7 @@ Spec gaps acknowledged and intentionally skipped:
 
 Offline-first was removed from the spec (not pursuing).
 
-11 database migrations exist (00001–00011). All applied to Supabase.
+13 database migrations exist (00001–00013). All applied to Supabase.
 
 Vercel environment variables set: `SUPABASE_SECRET_KEY`, `RESEND_API_KEY`,
 `CRON_SECRET` (all marked sensitive, production + preview).
@@ -283,8 +283,6 @@ Moderate:
   (plateau.test.ts). Run with `npm test`.
 
 Marginal:
-- Service worker offline fallback: `public/offline.html` cached on
-  install, served when navigation requests fail (no network)
 - Shared format utilities: `src/lib/format.ts` with `parseLocalDate`,
   `formatDateShort`, `formatDateLong`, `formatDateRelative`,
   `formatDuration`. Replaced 6 duplicate definitions across 7 files.
@@ -402,3 +400,44 @@ In-gym bug fixes (all done — 4 fixes from workout session feedback):
 Housekeeping (all done):
 - Middleware → proxy rename completed (`src/proxy.ts`), no deprecation warning
 - Weekly digest route try-catch kept as safety net, indentation fixed
+
+Performance pass (all done — 11 steps across 3 tiers, see `PERFORMANCE_PLAN.md`):
+
+Tier 1 — Perceived speed:
+1. Optimistic set completion: UI updates instantly on tap, DB save runs
+   in background with rollback on error. `isSaving` flag prevents
+   double-tap. Rest timer setDbId updated race-safely.
+2. Active workout context: `ActiveWorkoutProvider` holds workout ID from
+   server, eliminates 2 Supabase queries per navigation in bottom nav.
+3. Route prefetching: `router.prefetch()` on mount for all 5 nav tabs
+   plus likely next pages (workout/new, history). Skeletons appear
+   instantly on navigation.
+4. Home page single RPC: `home_page_data()` Postgres function replaces
+   8-9 individual Supabase queries with one round-trip. Migration
+   `00012_home_page_data_function.sql`.
+
+Tier 2 — Data and query fixes:
+5. History pagination: cursor-based (date, started_at), 20 per page,
+   "Load more" button. Client component `history-list.tsx` handles
+   subsequent pages. Calendar view uses separate lightweight query.
+6. Analytics "All time" removed: max range is now 1 year (365 days).
+   The "1 year" option already existed; "All time" was unbounded.
+
+Tier 3 — Code quality:
+7. `unwrapRelation<T>()` helper (`src/lib/supabase/helpers.ts`):
+   replaced 23 `as unknown as` casts across 11 files. Centralizes
+   Supabase relation type assumption.
+8. Supabase client singleton: `createClient()` moved to `useRef` in
+   workout-session, exercise-search, admin-panel. Removed `supabase`
+   from 8 useCallback/useEffect dependency arrays.
+9. Weekly digest idempotency: `last_digest_week` column on profiles
+   table. Skips users already emailed this week. Migration
+   `00013_last_digest_week.sql`.
+10. Removed 5 `router.refresh()` calls after `router.push()` — push
+    already fetches fresh server data for the destination page.
+11. Accessibility zoom re-enabled (removed maximumScale/userScalable).
+    Removed manual theme script (conflicts with next-themes). Removed
+    minimal service worker (`sw.js` + `offline.html`) — only cached
+    one fallback page, not worth the complexity.
+
+13 database migrations exist (00001–00013). 00012–00013 added in this pass.
