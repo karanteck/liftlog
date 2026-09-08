@@ -1,15 +1,25 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Home, Dumbbell, Clock, BarChart3, Menu } from "lucide-react";
 import { useKeyboardOpen } from "@/lib/use-keyboard-open";
 import { useActiveWorkout } from "@/components/active-workout-provider";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { activeWorkoutId } = useActiveWorkout();
   const keyboardOpen = useKeyboardOpen();
+
+  useEffect(() => {
+    router.prefetch("/");
+    router.prefetch("/workout/new");
+    router.prefetch("/history");
+    router.prefetch("/analytics");
+    router.prefetch("/more");
+  }, [router]);
 
   const tabs = [
     { href: "/", label: "Home", icon: Home, match: "/" },

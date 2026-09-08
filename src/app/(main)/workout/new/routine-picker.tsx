@@ -61,6 +61,7 @@ export function RoutinePicker({ routines }: { routines: Routine[] }) {
     }
 
     setActiveWorkoutId(data.id);
+    router.prefetch(`/workout/${data.id}`);
     router.push(`/workout/${data.id}`);
   }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +18,10 @@ export function WorkoutSummary({
   sessionPRs: { exerciseName: string; types: PRType[] }[];
 }) {
   const router = useRouter();
+
+  useEffect(() => {
+    router.prefetch("/");
+  }, [router]);
 
   const elapsedMin = Math.floor(elapsed / 60);
   const elapsedSec = elapsed % 60;
