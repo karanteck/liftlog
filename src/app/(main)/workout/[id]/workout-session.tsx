@@ -70,6 +70,7 @@ function buildInitialState(
           distance: "",
           isWarmup: existing.isWarmup,
           isCompleted: true,
+          isSaving: false,
         };
       }
       const prevForSet = prev[i];
@@ -83,6 +84,7 @@ function buildInitialState(
         distance: "",
         isWarmup: false,
         isCompleted: false,
+        isSaving: false,
       };
     });
 
@@ -150,7 +152,7 @@ export function WorkoutSession({
     return states;
   });
   const [elapsed, setElapsed] = useState(0);
-  const { startTimer, dismissTimer } = useRestTimer();
+  const { startTimer, dismissTimer, updateTimerSetId } = useRestTimer();
   const [finishing, setFinishing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [currentPRs, setCurrentPRs] = useState<Record<string, PRRecord>>(initialPRs);
@@ -245,6 +247,7 @@ export function WorkoutSession({
             distance: "",
             isWarmup: false,
             isCompleted: false,
+            isSaving: false,
           })),
           previousSets: prev,
           progressionPrompt,
@@ -329,10 +332,10 @@ export function WorkoutSession({
   }, []);
 
   const completeSet = useCallback(
-    async (exIdx: number, setIdx: number) => {
+    (exIdx: number, setIdx: number) => {
       const ex = exerciseStatesRef.current[exIdx];
       const set = ex.sets[setIdx];
-      if (set.isCompleted) return;
+      if (set.isCompleted || set.isSaving) return;
 
       const tt = ex.trackingType;
       if (tt === "weight_reps" || tt === "bodyweight_reps") {
@@ -366,37 +369,12 @@ export function WorkoutSession({
       const durationSeconds = set.duration ? parseDuration(set.duration) : null;
       const distanceMeters = set.distance ? parseFloat(set.distance) * 1000 : null;
 
-      const { data, error } = await supabase
-        .from("sets")
-        .insert({
-          workout_id: workout.id,
-          exercise_id: ex.exerciseId,
-          set_number: set.setNumber,
-          weight,
-          reps,
-          rpe,
-          duration_seconds: durationSeconds,
-          distance_meters: distanceMeters,
-          is_warmup: set.isWarmup,
-        })
-        .select("id")
-        .single();
-
-      if (error) {
-        toast.error("Failed to save set: " + error.message);
-        return;
-      }
-
-      if (!isEditing && typeof navigator !== "undefined" && "vibrate" in navigator) {
-        navigator.vibrate(50);
-      }
-
+      // Optimistic update: mark completed + saving immediately
       setExerciseStates((prev) => {
         const next = [...prev];
         const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
-        exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], dbId: data.id, isCompleted: true };
+        exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], isCompleted: true, isSaving: true };
 
-        const tt = exCopy.trackingType;
         const nextEmptyIdx = exCopy.sets.findIndex(
           (s, i) => i > setIdx && !s.isCompleted && !s.weight && !s.reps && !s.duration && !s.distance
         );
@@ -412,11 +390,17 @@ export function WorkoutSession({
         return next;
       });
 
+      // Fire haptic, rest timer, PR detection on the optimistic update
+      if (!isEditing && typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate(50);
+      }
+
       const isCardio = ex.trackingType === "time" || ex.trackingType === "distance_time";
+      const optimisticTimerId = `optimistic_${Date.now()}_${setIdx}`;
 
       if (!isEditing && !set.isWarmup && !isCardio) {
         setLastSetAt(Date.now());
-        startTimer(restDuration(ex.repTier), data.id);
+        startTimer(restDuration(ex.repTier), optimisticTimerId);
 
         const prRecord = currentPRsRef.current[ex.exerciseId] ?? { maxWeight: null, bestE1rm: null, bestVolume: null };
         const newPRs = checkNewPRs(prRecord, weight, reps);
@@ -439,15 +423,56 @@ export function WorkoutSession({
           setCurrentPRs((prev) => ({ ...prev, [ex.exerciseId]: computePRs([...previousSets, ...allSetsForExercise]) }));
         }
       }
+
+      // Background: insert to database
+      supabase
+        .from("sets")
+        .insert({
+          workout_id: workout.id,
+          exercise_id: ex.exerciseId,
+          set_number: set.setNumber,
+          weight,
+          reps,
+          rpe,
+          duration_seconds: durationSeconds,
+          distance_meters: distanceMeters,
+          is_warmup: set.isWarmup,
+        })
+        .select("id")
+        .single()
+        .then(({ data, error }) => {
+          if (error) {
+            // Roll back the optimistic update
+            setExerciseStates((prev) => {
+              const next = [...prev];
+              const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
+              exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], isCompleted: false, isSaving: false, dbId: null };
+              next[exIdx] = exCopy;
+              return next;
+            });
+            toast.error("Failed to save set: " + error.message);
+            return;
+          }
+
+          // Success: store real DB ID, clear saving flag
+          setExerciseStates((prev) => {
+            const next = [...prev];
+            const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
+            exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], dbId: data.id, isSaving: false };
+            next[exIdx] = exCopy;
+            return next;
+          });
+          updateTimerSetId(optimisticTimerId, data.id);
+        });
     },
-    [supabase, workout.id, previousPerformance]
+    [supabase, workout.id, previousPerformance, isEditing, startTimer, updateTimerSetId]
   );
 
   const uncompleteSet = useCallback(
     async (exIdx: number, setIdx: number) => {
       const ex = exerciseStatesRef.current[exIdx];
       const set = ex.sets[setIdx];
-      if (!set.isCompleted || !set.dbId) return;
+      if (!set.isCompleted || !set.dbId || set.isSaving) return;
 
       const { error } = await supabase.from("sets").delete().eq("id", set.dbId);
       if (error) {
@@ -489,6 +514,7 @@ export function WorkoutSession({
         distance: lastSet?.distance ?? "",
         isWarmup: false,
         isCompleted: false,
+        isSaving: false,
       });
       next[exIdx] = ex;
       return next;

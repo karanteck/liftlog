@@ -185,7 +185,8 @@ export function ExerciseCard({
                     ? onUncompleteSet(exIdx, setIdx)
                     : onCompleteSet(exIdx, setIdx)
                 }
-                className={`h-14 w-14 rounded-md flex items-center justify-center text-lg transition-colors ${
+                disabled={set.isSaving}
+                className={`h-14 w-14 rounded-md flex items-center justify-center text-lg transition-colors disabled:opacity-70 ${
                   set.isCompleted
                     ? "bg-success text-white active:bg-success/80 animate-[set-complete_300ms_ease-out]"
                     : "border hover:bg-accent"

@@ -35,6 +35,7 @@ export type SetState = {
   distance: string;
   isWarmup: boolean;
   isCompleted: boolean;
+  isSaving: boolean;
 };
 
 export type ProgressionPrompt = {

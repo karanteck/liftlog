@@ -16,12 +16,14 @@ type RestTimerContextValue = {
   timerState: TimerState | null;
   startTimer: (duration: number, setDbId: string) => void;
   dismissTimer: () => void;
+  updateTimerSetId: (previousId: string, newId: string) => void;
 };
 
 const RestTimerContext = createContext<RestTimerContextValue>({
   timerState: null,
   startTimer: () => {},
   dismissTimer: () => {},
+  updateTimerSetId: () => {},
 });
 
 export function useRestTimer() {
@@ -56,6 +58,15 @@ export function RestTimerProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, []);
 
+  const updateTimerSetId = useCallback((previousId: string, newId: string) => {
+    setTimerState((prev) => {
+      if (!prev || prev.setDbId !== previousId) return prev;
+      const updated = { ...prev, setDbId: newId };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }, []);
+
   const dismissTimer = useCallback(() => {
     if (timerState) {
       const restSeconds = Math.round((Date.now() - timerState.startedAt) / 1000);
@@ -72,7 +83,7 @@ export function RestTimerProvider({ children }: { children: React.ReactNode }) {
   }, [timerState]);
 
   return (
-    <RestTimerContext.Provider value={{ timerState, startTimer, dismissTimer }}>
+    <RestTimerContext.Provider value={{ timerState, startTimer, dismissTimer, updateTimerSetId }}>
       {children}
     </RestTimerContext.Provider>
   );
