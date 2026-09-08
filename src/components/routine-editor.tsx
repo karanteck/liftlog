@@ -169,7 +169,6 @@ export function RoutineEditor({
 
     setSaving(false);
     router.push("/routines");
-    router.refresh();
   }
 
   return (

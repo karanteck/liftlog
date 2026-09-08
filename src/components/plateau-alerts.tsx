@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +28,7 @@ const ALERT_LABELS: Record<string, string> = {
 const MAX_VISIBLE = 3;
 
 export function PlateauAlerts({ alerts }: { alerts: Alert[] }) {
-  const router = useRouter();
+
   const supabase = createClient();
   const [dismissing, setDismissing] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
@@ -52,7 +51,6 @@ export function PlateauAlerts({ alerts }: { alerts: Alert[] }) {
 
     if (!error) {
       setDismissed((prev) => new Set(prev).add(alertId));
-      router.refresh();
     }
     setDismissing(null);
   }

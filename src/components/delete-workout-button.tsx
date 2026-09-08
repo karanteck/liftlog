@@ -27,7 +27,6 @@ export function DeleteWorkoutButton({ workoutId }: { workoutId: string }) {
     }
 
     router.push("/history");
-    router.refresh();
   }
 
   if (!confirming) {

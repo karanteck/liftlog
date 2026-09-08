@@ -42,7 +42,6 @@ function LoginForm() {
     }
 
     router.push("/");
-    router.refresh();
   }
 
   return (

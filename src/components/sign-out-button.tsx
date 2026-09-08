@@ -13,7 +13,6 @@ export function SignOutButton({ children, ...props }: Props) {
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/login");
-    router.refresh();
   }
 
   return (
