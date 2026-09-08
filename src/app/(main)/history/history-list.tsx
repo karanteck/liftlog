@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dumbbell } from "lucide-react";
@@ -98,7 +99,7 @@ async function fetchPage(
       const r = (s.reps as number) ?? 0;
       volumeMap[s.workout_id] = (volumeMap[s.workout_id] ?? 0) + w * r;
 
-      const exName = (s.exercises as unknown as { name: string } | null)?.name;
+      const exName = unwrapRelation<{ name: string }>(s.exercises)?.name;
       if (exName) {
         if (!exerciseNamesMap[s.workout_id]) exerciseNamesMap[s.workout_id] = [];
         if (!exerciseNamesMap[s.workout_id].includes(exName)) {
@@ -114,8 +115,8 @@ async function fetchPage(
     date: w.date,
     startedAt: w.started_at,
     endedAt: w.ended_at,
-    routineName: (w.routines as unknown as { name: string } | null)?.name ?? "Empty Workout",
-    ownerName: (w.profiles as unknown as { name: string } | null)?.name ?? "",
+    routineName: unwrapRelation<{ name: string }>(w.routines)?.name ?? "Empty Workout",
+    ownerName: unwrapRelation<{ name: string }>(w.profiles)?.name ?? "",
     setCount: setCounts[w.id] ?? 0,
     volume: volumeMap[w.id] ?? 0,
     exerciseNames: exerciseNamesMap[w.id] ?? [],

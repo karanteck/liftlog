@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { Button } from "@/components/ui/button";
 import { RoutineEditor } from "@/components/routine-editor";
 
@@ -49,12 +50,12 @@ export default async function EditRoutinePage({
 
   const exercises =
     routineExercises?.map((re) => {
-      const ex = re.exercises as unknown as {
+      const ex = unwrapRelation<{
         id: string;
         name: string;
         muscle_group: string;
         default_rep_tier: string;
-      };
+      }>(re.exercises)!;
       return {
         routineExerciseId: re.id,
         exerciseId: ex.id,

@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { Card, CardContent } from "@/components/ui/card";
 import { BackButton } from "@/components/back-button";
 import { Badge } from "@/components/ui/badge";
@@ -83,12 +84,12 @@ export default async function ExerciseHistoryPage({
   const sessionMap = new Map<string, SessionGroup>();
 
   for (const s of sets ?? []) {
-    const w = s.workouts as unknown as WorkoutJoin | null;
+    const w = unwrapRelation<WorkoutJoin>(s.workouts);
     if (!w) continue;
 
     if (!sessionMap.has(w.id)) {
       const routineName =
-        (w.routines as unknown as { name: string } | null)?.name ??
+        unwrapRelation<{ name: string }>(w.routines)?.name ??
         "Empty Workout";
       sessionMap.set(w.id, {
         workoutId: w.id,

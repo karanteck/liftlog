@@ -1,4 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { formatDateRelative } from "@/lib/format";
 
 export type DigestData = {
@@ -62,7 +63,7 @@ export async function buildDigestData(
   ]);
 
   const workouts = (workoutsResult.data ?? []).map((w) => {
-    const routine = w.routines as unknown as { name: string } | null;
+    const routine = unwrapRelation<{ name: string }>(w.routines);
     return {
       id: w.id as string,
       date: w.date as string,

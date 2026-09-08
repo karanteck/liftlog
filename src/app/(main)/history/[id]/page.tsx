@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -77,7 +78,7 @@ export default async function WorkoutDetailPage({
 
   for (const s of sets ?? []) {
     const exName =
-      (s.exercises as unknown as { name: string } | null)?.name ?? "Unknown";
+      unwrapRelation<{ name: string }>(s.exercises)?.name ?? "Unknown";
     if (!exerciseMap.has(s.exercise_id)) {
       exerciseMap.set(s.exercise_id, { name: exName, sets: [] });
     }
@@ -91,7 +92,7 @@ export default async function WorkoutDetailPage({
   }
 
   const routineName =
-    (workout.routines as unknown as { name: string } | null)?.name ??
+    unwrapRelation<{ name: string }>(workout.routines)?.name ??
     "Empty Workout";
   const workingSets = (sets ?? []).filter((s) => !s.is_warmup).length;
   const totalVolume = (sets ?? [])

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { Button } from "@/components/ui/button";
 import { RoutineList } from "@/components/routine-list";
 
@@ -33,7 +34,7 @@ export default async function RoutinesPage() {
       id: r.id,
       name: r.name,
       lastPerformedAt: r.last_performed_at,
-      exerciseCount: (r.routine_exercises as unknown as { id: string }[])
+      exerciseCount: (r.routine_exercises as { id: string }[] | null)
         ?.length ?? 0,
     })) ?? [];
 

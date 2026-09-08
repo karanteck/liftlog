@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { HardSetsChart } from "@/components/hard-sets-chart";
 import { VolumeTrendChart } from "@/components/volume-trend-chart";
 import { FrequencyChart } from "@/components/frequency-chart";
@@ -64,13 +65,13 @@ export default async function AnalyticsPage({
 
   const parsedSets: ParsedSet[] = (rawSets ?? [])
     .filter((s) => {
-      const ex = s.exercises as unknown as { muscle_group: string; movement_pattern: string } | null;
-      const wo = s.workouts as unknown as { date: string } | null;
+      const ex = unwrapRelation<{ muscle_group: string; movement_pattern: string }>(s.exercises);
+      const wo = unwrapRelation<{ date: string }>(s.workouts);
       return ex && wo;
     })
     .map((s) => {
-      const ex = s.exercises as unknown as { muscle_group: string; movement_pattern: string };
-      const wo = s.workouts as unknown as { date: string };
+      const ex = unwrapRelation<{ muscle_group: string; movement_pattern: string }>(s.exercises)!;
+      const wo = unwrapRelation<{ date: string }>(s.workouts)!;
       return {
         date: wo.date,
         muscleGroup: ex.muscle_group,

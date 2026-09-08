@@ -1,5 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { WorkoutSession } from "./workout-session";
 import { computePRs, type PRRecord } from "@/lib/pr";
 
@@ -71,12 +72,12 @@ export default async function WorkoutPage({
 
     exercises =
       routineExercises?.map((re) => {
-        const ex = re.exercises as unknown as {
+        const ex = unwrapRelation<{
           id: string;
           name: string;
           default_rep_tier: string;
           tracking_type: string;
-        };
+        }>(re.exercises)!;
         return {
           exerciseId: ex.id,
           name: ex.name,
@@ -188,7 +189,7 @@ export default async function WorkoutPage({
     > = {};
 
     for (const s of prevSets) {
-      const w = s.workouts as unknown as { id: string; date: string };
+      const w = unwrapRelation<{ id: string; date: string }>(s.workouts)!;
       if (!byExercise[s.exercise_id]) byExercise[s.exercise_id] = [];
       let workoutGroup = byExercise[s.exercise_id].find(
         (g) => g.workoutDate === w.date
@@ -237,7 +238,7 @@ export default async function WorkoutPage({
     <WorkoutSession
       workout={{
         id: workout.id,
-        routineName: (workout.routines as unknown as { name: string } | null)?.name ?? null,
+        routineName: unwrapRelation<{ name: string }>(workout.routines)?.name ?? null,
         date: workout.date,
         startedAt: workout.started_at,
         isFinished: !!workout.ended_at,

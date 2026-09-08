@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { Button } from "@/components/ui/button";
 import { useRestTimer } from "@/components/rest-timer-provider";
 import { useActiveWorkout } from "@/components/active-workout-provider";
@@ -200,7 +201,7 @@ export function WorkoutSession({
       if (prevSets && prevSets.length > 0) {
         const byDate: Record<string, { weight: number | null; reps: number | null; rpe: number | null; setNumber: number }[]> = {};
         for (const s of prevSets) {
-          const wo = s.workouts as unknown as { date: string };
+          const wo = unwrapRelation<{ date: string }>(s.workouts)!;
           if (!byDate[wo.date]) byDate[wo.date] = [];
           byDate[wo.date].push({ weight: s.weight, reps: s.reps, rpe: s.rpe, setNumber: s.set_number });
         }

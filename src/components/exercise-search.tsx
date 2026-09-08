@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { unwrapRelation } from "@/lib/supabase/helpers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -125,7 +126,7 @@ export function ExerciseSearch({
 
       if (recentResult?.data) {
         const userSets = recentResult.data.filter((s) => {
-          const w = s.workouts as unknown as { user_id: string };
+          const w = unwrapRelation<{ user_id: string }>(s.workouts)!;
           return w.user_id === userId;
         });
         const seen = new Set<string>();
