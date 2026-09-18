@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DeleteWorkoutButton } from "@/components/delete-workout-button";
 import { Pencil } from "lucide-react";
 import { formatDateLong, formatDuration } from "@/lib/format";
+import { ExportWorkoutButton } from "@/components/export-workout-button";
 
 export default async function WorkoutDetailPage({
   params,
@@ -55,12 +56,17 @@ export default async function WorkoutDetailPage({
       reps,
       rpe,
       is_warmup,
+      rest_seconds,
+      distance_meters,
+      duration_seconds,
+      created_at,
       exercises (
         name
       )
     `
     )
     .eq("workout_id", workout.id)
+    .order("created_at")
     .order("set_number");
 
   type SetRow = {
@@ -99,6 +105,28 @@ export default async function WorkoutDetailPage({
     .filter((s) => !s.is_warmup && s.weight && s.reps)
     .reduce((sum, s) => sum + (s.weight ?? 0) * (s.reps ?? 0), 0);
 
+  const exportData = {
+    routineName,
+    date: workout.date,
+    startedAt: workout.started_at,
+    endedAt: workout.ended_at,
+    bodyweight: workout.bodyweight,
+    notes: workout.notes,
+    sets: (sets ?? []).map((s) => ({
+      exercise:
+        unwrapRelation<{ name: string }>(s.exercises)?.name ?? "Unknown",
+      setNumber: s.set_number,
+      weight: s.weight,
+      reps: s.reps,
+      rpe: s.rpe,
+      isWarmup: s.is_warmup,
+      restSeconds: s.rest_seconds,
+      distanceMeters: s.distance_meters,
+      durationSeconds: s.duration_seconds,
+      completedAt: s.created_at,
+    })),
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex items-center justify-between px-4 py-3 border-b">
@@ -110,17 +138,20 @@ export default async function WorkoutDetailPage({
           </Link>
           <h1 className="text-lg font-bold">{routineName}</h1>
         </div>
-        {workout.user_id === user.id && (
-          <div className="flex items-center gap-1">
-            <Link href={`/workout/${workout.id}`}>
-              <Button variant="ghost" size="sm">
-                <Pencil className="h-4 w-4 mr-1" />
-                Edit
-              </Button>
-            </Link>
-            <DeleteWorkoutButton workoutId={workout.id} />
-          </div>
-        )}
+        <div className="flex items-center gap-1">
+          <ExportWorkoutButton workout={exportData} />
+          {workout.user_id === user.id && (
+            <>
+              <Link href={`/workout/${workout.id}`}>
+                <Button variant="ghost" size="sm">
+                  <Pencil className="h-4 w-4 mr-1" />
+                  Edit
+                </Button>
+              </Link>
+              <DeleteWorkoutButton workoutId={workout.id} />
+            </>
+          )}
+        </div>
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-4">
