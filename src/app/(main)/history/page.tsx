@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarHeatmap } from "@/components/calendar-heatmap";
 import { List, CalendarDays } from "lucide-react";
 import { HistoryList, type WorkoutItem } from "./history-list";
+import { ExportAllWorkoutsButton } from "@/components/export-all-workouts-button";
 
 const PAGE_SIZE = 20;
 
@@ -46,7 +47,7 @@ export default async function HistoryPage({
 
     return (
       <div className="flex flex-col min-h-screen pb-24">
-        <Header isCalendar={isCalendar} view={view} display={display} />
+        <Header isCalendar={isCalendar} view={view} display={display} userId={user.id} />
         <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-2">
           {hasHousehold && <HouseholdToggle showAll={showAll} display={display} />}
           {calWorkouts && calWorkouts.length > 0 ? (
@@ -126,7 +127,7 @@ export default async function HistoryPage({
 
   return (
     <div className="flex flex-col min-h-screen pb-24">
-      <Header isCalendar={isCalendar} view={view} display={display} />
+      <Header isCalendar={isCalendar} view={view} display={display} userId={user.id} />
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full space-y-2">
         {hasHousehold && <HouseholdToggle showAll={showAll} display={display} />}
         <HistoryList
@@ -144,16 +145,20 @@ function Header({
   isCalendar,
   view,
   display,
+  userId,
 }: {
   isCalendar: boolean;
   view?: string;
   display?: string;
+  userId: string;
 }) {
   return (
     <header className="px-4 py-3 border-b">
       <div className="max-w-lg mx-auto flex items-center justify-between">
         <h1 className="text-lg font-bold">Workout History</h1>
-        <div className="flex gap-1 bg-muted rounded-lg p-0.5">
+        <div className="flex items-center gap-2">
+          <ExportAllWorkoutsButton userId={userId} />
+          <div className="flex gap-1 bg-muted rounded-lg p-0.5">
           <Link
             href={`/history?${new URLSearchParams({ ...(view ? { view } : {}), display: "list" }).toString()}`}
             replace
@@ -178,6 +183,7 @@ function Header({
               <CalendarDays className="h-4 w-4" />
             </Button>
           </Link>
+          </div>
         </div>
       </div>
     </header>
