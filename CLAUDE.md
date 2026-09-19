@@ -405,16 +405,17 @@ Performance pass (all done — 11 steps across 3 tiers, see `PERFORMANCE_PLAN.md
 
 Tier 1 — Perceived speed:
 1. Optimistic set completion: UI updates instantly on tap, DB save runs
-   in background with rollback on error. `isSaving` flag prevents
-   double-tap. Rest timer setDbId updated race-safely.
+   in background with rollback on error. (PowerSync made writes local,
+   so `isSaving` flag and `updateTimerSetId` workaround were removed.)
 2. Active workout context: `ActiveWorkoutProvider` holds workout ID from
    server, eliminates 2 Supabase queries per navigation in bottom nav.
 3. Route prefetching: `router.prefetch()` on mount for all 5 nav tabs
    plus likely next pages (workout/new, history). Skeletons appear
    instantly on navigation.
-4. Home page single RPC: `home_page_data()` Postgres function replaces
-   8-9 individual Supabase queries with one round-trip. Migration
-   `00012_home_page_data_function.sql`.
+4. Home page single RPC: `home_page_data()` Postgres function exists
+   but is no longer used — PowerSync reads all dashboard data from
+   local SQLite via `home-dashboard.tsx`. Migration
+   `00012_home_page_data_function.sql` kept for reference.
 
 Tier 2 — Data and query fixes:
 5. History pagination: cursor-based (date, started_at), 20 per page,
@@ -440,4 +441,47 @@ Tier 3 — Code quality:
     minimal service worker (`sw.js` + `offline.html`) — only cached
     one fallback page, not worth the complexity.
 
-13 database migrations exist (00001–00013). 00012–00013 added in this pass.
+14 database migrations exist (00001–00014). 00012–00013 added in this pass.
+00014 added for PowerSync publication.
+
+PowerSync local-first integration (complete):
+
+Architecture: PowerSync puts a local SQLite database (via IndexedDB) on
+the user's device. All client-side reads and writes go to local SQLite.
+PowerSync syncs changes to/from Supabase in the background. This
+eliminates skeleton loading screens on every page navigation — data is
+already on the device.
+
+- Packages: `@powersync/web`, `@powersync/react`
+- Schema: `src/lib/powersync/schema.ts` — 8 tables (exercises, profiles,
+  routines, routine_exercises, workouts, sets, bodyweight_log,
+  plateau_alerts)
+- Connector: `src/lib/powersync/connector.ts` — handles auth
+  (fetchCredentials from Supabase session) and uploads (CRUD→Supabase)
+- Provider: `src/components/powersync-provider.tsx` — custom context
+  with nullable `PowerSyncDatabase`, SSR-safe, wraps `(main)/layout.tsx`
+- Migration: `00014_powersync_publication.sql` — Postgres publication
+  for change detection
+- Env var: `NEXT_PUBLIC_POWERSYNC_URL` in `.env.local` and Vercel
+
+What uses PowerSync (client components with `usePowerSyncDb()`):
+- exercise-search, history-list, export-all-workouts-button,
+  workout-session (reads + writes), home-dashboard, plateau-alerts,
+  delete-workout-button, rest-timer-provider, routine-list,
+  routine-picker, bodyweight-tracker, routine-editor,
+  custom-exercise-form, import page
+
+What stays on Supabase (unchanged):
+- All server components and API routes (run on server, no local DB)
+- Auth (login, signup, sign-out) — PowerSync doesn't handle auth
+- Admin panel — queries `households` table which isn't synced
+- `runPlateauDetection()` — complex analytics, fire-and-forget
+- Weekly digest API route — runs server-side via pg_cron
+
+Key patterns:
+- `usePowerSyncDb()` returns `PowerSyncDatabase | null` — always null-check
+- Reads: `db.getAll<T>(sql, params)`, `db.getOptional<T>(sql, params)`
+- Writes: `db.execute(sql, params)` — local SQLite, connector uploads
+- Booleans: integers in SQLite (0/1), use `is_warmup = 0` in WHERE
+- Arrays: JSON strings, `JSON.parse()` on read, `JSON.stringify()` on write
+- New IDs: `crypto.randomUUID()` (browser API)
