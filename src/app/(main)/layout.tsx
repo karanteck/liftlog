@@ -12,18 +12,9 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
   if (!user) redirect("/login");
 
-  const { data: activeWorkout } = await supabase
-    .from("workouts")
-    .select("id")
-    .eq("user_id", user.id)
-    .is("ended_at", null)
-    .order("started_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
   return (
     <PowerSyncProvider>
-      <ActiveWorkoutProvider initialId={activeWorkout?.id ?? null}>
+      <ActiveWorkoutProvider userId={user.id}>
         <RestTimerProvider>
           {children}
           <LayoutRestTimer />

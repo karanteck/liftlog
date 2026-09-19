@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import type { PowerSyncDatabase } from "@powersync/web";
 import { usePowerSyncDb } from "@/components/powersync-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Dumbbell } from "lucide-react";
 import { formatDateRelative, formatDuration, getMonday } from "@/lib/format";
 
@@ -63,9 +64,9 @@ async function fetchPage(
   db: PowerSyncDatabase,
   userId: string,
   showAll: boolean,
-  cursor: { date: string; startedAt: string }
+  cursor?: { date: string; startedAt: string }
 ): Promise<{ items: WorkoutItem[]; hasMore: boolean }> {
-  const params: (string | number)[] = [cursor.date, cursor.date, cursor.startedAt];
+  const params: (string | number)[] = [];
   let sql = `
     SELECT w.id, w.user_id, w.date, w.started_at, w.ended_at,
            COALESCE(r.name, 'Empty Workout') AS routine_name,
@@ -73,7 +74,12 @@ async function fetchPage(
     FROM workouts w
     LEFT JOIN routines r ON w.routine_id = r.id
     LEFT JOIN profiles p ON w.user_id = p.id
-    WHERE (w.date < ? OR (w.date = ? AND w.started_at < ?))`;
+    WHERE 1=1`;
+
+  if (cursor) {
+    sql += ` AND (w.date < ? OR (w.date = ? AND w.started_at < ?))`;
+    params.push(cursor.date, cursor.date, cursor.startedAt);
+  }
 
   if (!showAll) {
     sql += ` AND w.user_id = ?`;
@@ -149,24 +155,31 @@ async function fetchPage(
 }
 
 export function HistoryList({
-  initialItems,
-  initialHasMore,
   userId,
   showAll,
 }: {
-  initialItems: WorkoutItem[];
-  initialHasMore: boolean;
   userId: string;
   showAll: boolean;
 }) {
   const db = usePowerSyncDb();
-  const [items, setItems] = useState(initialItems);
-  const [hasMore, setHasMore] = useState(initialHasMore);
-  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<WorkoutItem[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  useEffect(() => {
+    if (!db) return;
+    setInitialLoading(true);
+    fetchPage(db, userId, showAll).then((result) => {
+      setItems(result.items);
+      setHasMore(result.hasMore);
+      setInitialLoading(false);
+    });
+  }, [db, userId, showAll]);
 
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore || items.length === 0 || !db) return;
-    setLoading(true);
+    if (loadingMore || !hasMore || items.length === 0 || !db) return;
+    setLoadingMore(true);
 
     const last = items[items.length - 1];
     const result = await fetchPage(db, userId, showAll, {
@@ -176,8 +189,19 @@ export function HistoryList({
 
     setItems((prev) => [...prev, ...result.items]);
     setHasMore(result.hasMore);
-    setLoading(false);
-  }, [loading, hasMore, items, userId, showAll, db]);
+    setLoadingMore(false);
+  }, [loadingMore, hasMore, items, userId, showAll, db]);
+
+  if (initialLoading) {
+    return (
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-24" />
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-20 w-full rounded-md" />
+        ))}
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -254,9 +278,9 @@ export function HistoryList({
           variant="outline"
           className="w-full mt-4"
           onClick={loadMore}
-          disabled={loading}
+          disabled={loadingMore}
         >
-          {loading ? "Loading..." : "Load more"}
+          {loadingMore ? "Loading..." : "Load more"}
         </Button>
       )}
     </div>
