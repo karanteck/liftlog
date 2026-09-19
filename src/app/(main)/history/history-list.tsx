@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { unwrapRelation } from "@/lib/supabase/helpers";
+import type { PowerSyncDatabase } from "@powersync/web";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dumbbell } from "lucide-react";
@@ -60,51 +60,74 @@ function groupByWeek(workouts: WorkoutItem[]) {
 }
 
 async function fetchPage(
-  supabase: ReturnType<typeof createClient>,
+  db: PowerSyncDatabase,
   userId: string,
   showAll: boolean,
   cursor: { date: string; startedAt: string }
 ): Promise<{ items: WorkoutItem[]; hasMore: boolean }> {
-  let query = supabase
-    .from("workouts")
-    .select("id, user_id, date, started_at, ended_at, routines(name), profiles(name)")
-    .or(`date.lt.${cursor.date},and(date.eq.${cursor.date},started_at.lt.${cursor.startedAt})`)
-    .order("date", { ascending: false })
-    .order("started_at", { ascending: false })
-    .limit(PAGE_SIZE + 1);
+  const params: (string | number)[] = [cursor.date, cursor.date, cursor.startedAt];
+  let sql = `
+    SELECT w.id, w.user_id, w.date, w.started_at, w.ended_at,
+           COALESCE(r.name, 'Empty Workout') AS routine_name,
+           COALESCE(p.name, '') AS owner_name
+    FROM workouts w
+    LEFT JOIN routines r ON w.routine_id = r.id
+    LEFT JOIN profiles p ON w.user_id = p.id
+    WHERE (w.date < ? OR (w.date = ? AND w.started_at < ?))`;
 
-  if (!showAll) query = query.eq("user_id", userId);
+  if (!showAll) {
+    sql += ` AND w.user_id = ?`;
+    params.push(userId);
+  }
 
-  const { data: workouts } = await query;
-  if (!workouts || workouts.length === 0) return { items: [], hasMore: false };
+  sql += ` ORDER BY w.date DESC, w.started_at DESC LIMIT ?`;
+  params.push(PAGE_SIZE + 1);
+
+  const workouts = await db.getAll<{
+    id: string;
+    user_id: string;
+    date: string;
+    started_at: string;
+    ended_at: string | null;
+    routine_name: string;
+    owner_name: string;
+  }>(sql, params);
+
+  if (workouts.length === 0) return { items: [], hasMore: false };
 
   const hasMore = workouts.length > PAGE_SIZE;
   const page = hasMore ? workouts.slice(0, PAGE_SIZE) : workouts;
   const workoutIds = page.map((w) => w.id);
 
-  const { data: sets } = await supabase
-    .from("sets")
-    .select("workout_id, weight, reps, exercises(name)")
-    .in("workout_id", workoutIds)
-    .eq("is_warmup", false);
+  const placeholders = workoutIds.map(() => "?").join(",");
+  const sets = await db.getAll<{
+    workout_id: string;
+    weight: number | null;
+    reps: number | null;
+    exercise_name: string;
+  }>(
+    `SELECT s.workout_id, s.weight, s.reps, e.name AS exercise_name
+     FROM sets s
+     INNER JOIN exercises e ON s.exercise_id = e.id
+     WHERE s.workout_id IN (${placeholders})
+       AND s.is_warmup = 0`,
+    workoutIds
+  );
 
   const setCounts: Record<string, number> = {};
   const volumeMap: Record<string, number> = {};
   const exerciseNamesMap: Record<string, string[]> = {};
 
-  if (sets) {
-    for (const s of sets) {
-      setCounts[s.workout_id] = (setCounts[s.workout_id] ?? 0) + 1;
-      const w = (s.weight as number) ?? 0;
-      const r = (s.reps as number) ?? 0;
-      volumeMap[s.workout_id] = (volumeMap[s.workout_id] ?? 0) + w * r;
+  for (const s of sets) {
+    setCounts[s.workout_id] = (setCounts[s.workout_id] ?? 0) + 1;
+    const w = s.weight ?? 0;
+    const r = s.reps ?? 0;
+    volumeMap[s.workout_id] = (volumeMap[s.workout_id] ?? 0) + w * r;
 
-      const exName = unwrapRelation<{ name: string }>(s.exercises)?.name;
-      if (exName) {
-        if (!exerciseNamesMap[s.workout_id]) exerciseNamesMap[s.workout_id] = [];
-        if (!exerciseNamesMap[s.workout_id].includes(exName)) {
-          exerciseNamesMap[s.workout_id].push(exName);
-        }
+    if (s.exercise_name) {
+      if (!exerciseNamesMap[s.workout_id]) exerciseNamesMap[s.workout_id] = [];
+      if (!exerciseNamesMap[s.workout_id].includes(s.exercise_name)) {
+        exerciseNamesMap[s.workout_id].push(s.exercise_name);
       }
     }
   }
@@ -115,8 +138,8 @@ async function fetchPage(
     date: w.date,
     startedAt: w.started_at,
     endedAt: w.ended_at,
-    routineName: unwrapRelation<{ name: string }>(w.routines)?.name ?? "Empty Workout",
-    ownerName: unwrapRelation<{ name: string }>(w.profiles)?.name ?? "",
+    routineName: w.routine_name,
+    ownerName: w.owner_name,
     setCount: setCounts[w.id] ?? 0,
     volume: volumeMap[w.id] ?? 0,
     exerciseNames: exerciseNamesMap[w.id] ?? [],
@@ -136,17 +159,17 @@ export function HistoryList({
   userId: string;
   showAll: boolean;
 }) {
+  const db = usePowerSyncDb();
   const [items, setItems] = useState(initialItems);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [loading, setLoading] = useState(false);
-  const supabaseRef = useRef(createClient());
 
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore || items.length === 0) return;
+    if (loading || !hasMore || items.length === 0 || !db) return;
     setLoading(true);
 
     const last = items[items.length - 1];
-    const result = await fetchPage(supabaseRef.current, userId, showAll, {
+    const result = await fetchPage(db, userId, showAll, {
       date: last.date,
       startedAt: last.startedAt,
     });
@@ -154,7 +177,7 @@ export function HistoryList({
     setItems((prev) => [...prev, ...result.items]);
     setHasMore(result.hasMore);
     setLoading(false);
-  }, [loading, hasMore, items, userId, showAll]);
+  }, [loading, hasMore, items, userId, showAll, db]);
 
   if (items.length === 0) {
     return (

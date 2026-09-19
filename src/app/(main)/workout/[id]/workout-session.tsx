@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { unwrapRelation } from "@/lib/supabase/helpers";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { Button } from "@/components/ui/button";
 import { useRestTimer } from "@/components/rest-timer-provider";
 import { useActiveWorkout } from "@/components/active-workout-provider";
@@ -72,7 +72,6 @@ function buildInitialState(
           distance: "",
           isWarmup: existing.isWarmup,
           isCompleted: true,
-          isSaving: false,
         };
       }
       const prevForSet = prev[i];
@@ -86,7 +85,6 @@ function buildInitialState(
         distance: "",
         isWarmup: false,
         isCompleted: false,
-        isSaving: false,
       };
     });
 
@@ -145,6 +143,7 @@ export function WorkoutSession({
   const router = useRouter();
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
+  const db = usePowerSyncDb();
   const isEditing = workout.isFinished;
 
   const [exerciseStates, setExerciseStates] = useState<ExerciseState[]>(() => {
@@ -155,7 +154,7 @@ export function WorkoutSession({
     return states;
   });
   const [elapsed, setElapsed] = useState(0);
-  const { startTimer, dismissTimer, updateTimerSetId } = useRestTimer();
+  const { startTimer, dismissTimer } = useRestTimer();
   const { setActiveWorkoutId } = useActiveWorkout();
   const [finishing, setFinishing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -191,20 +190,29 @@ export function WorkoutSession({
       let prev: PrevSet[] = [];
       let progressionPrompt: ProgressionPrompt | null = null;
 
-      const { data: prevSets } = await supabase
-        .from("sets")
-        .select("weight, reps, rpe, set_number, is_warmup, workouts!inner ( date, user_id )")
-        .eq("exercise_id", exercise.id)
-        .eq("is_warmup", false)
-        .eq("workouts.user_id", userId)
-        .order("set_number");
+      const prevSets = db
+        ? await db.getAll<{
+            weight: number | null;
+            reps: number | null;
+            rpe: number | null;
+            set_number: number;
+            is_warmup: number;
+            date: string;
+          }>(
+            `SELECT s.weight, s.reps, s.rpe, s.set_number, s.is_warmup, w.date
+             FROM sets s
+             INNER JOIN workouts w ON s.workout_id = w.id
+             WHERE s.exercise_id = ? AND s.is_warmup = 0 AND w.user_id = ?
+             ORDER BY s.set_number`,
+            [exercise.id, userId]
+          )
+        : [];
 
-      if (prevSets && prevSets.length > 0) {
+      if (prevSets.length > 0) {
         const byDate: Record<string, { weight: number | null; reps: number | null; rpe: number | null; setNumber: number }[]> = {};
         for (const s of prevSets) {
-          const wo = unwrapRelation<{ date: string }>(s.workouts)!;
-          if (!byDate[wo.date]) byDate[wo.date] = [];
-          byDate[wo.date].push({ weight: s.weight, reps: s.reps, rpe: s.rpe, setNumber: s.set_number });
+          if (!byDate[s.date]) byDate[s.date] = [];
+          byDate[s.date].push({ weight: s.weight, reps: s.reps, rpe: s.rpe, setNumber: s.set_number });
         }
         const dates = Object.keys(byDate).sort().reverse();
         const mostRecent = byDate[dates[0]]
@@ -227,7 +235,7 @@ export function WorkoutSession({
         const prSets = prevSets.map((s) => ({
           weight: s.weight,
           reps: s.reps,
-          isWarmup: s.is_warmup,
+          isWarmup: !!s.is_warmup,
         }));
         setCurrentPRs((p) => ({ ...p, [exercise.id]: computePRs(prSets) }));
       }
@@ -251,7 +259,6 @@ export function WorkoutSession({
             distance: "",
             isWarmup: false,
             isCompleted: false,
-            isSaving: false,
           })),
           previousSets: prev,
           progressionPrompt,
@@ -339,7 +346,7 @@ export function WorkoutSession({
     (exIdx: number, setIdx: number) => {
       const ex = exerciseStatesRef.current[exIdx];
       const set = ex.sets[setIdx];
-      if (set.isCompleted || set.isSaving) return;
+      if (set.isCompleted) return;
 
       const tt = ex.trackingType;
       if (tt === "weight_reps" || tt === "bodyweight_reps") {
@@ -373,11 +380,12 @@ export function WorkoutSession({
       const durationSeconds = set.duration ? parseDuration(set.duration) : null;
       const distanceMeters = set.distance ? parseFloat(set.distance) * 1000 : null;
 
-      // Optimistic update: mark completed + saving immediately
+      const setId = crypto.randomUUID();
+
       setExerciseStates((prev) => {
         const next = [...prev];
         const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
-        exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], isCompleted: true, isSaving: true };
+        exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], isCompleted: true, dbId: setId };
 
         const nextEmptyIdx = exCopy.sets.findIndex(
           (s, i) => i > setIdx && !s.isCompleted && !s.weight && !s.reps && !s.duration && !s.distance
@@ -400,11 +408,10 @@ export function WorkoutSession({
       }
 
       const isCardio = ex.trackingType === "time" || ex.trackingType === "distance_time";
-      const optimisticTimerId = `optimistic_${Date.now()}_${setIdx}`;
 
       if (!isEditing && !set.isWarmup && !isCardio) {
         setLastSetAt(Date.now());
-        startTimer(restDuration(ex.repTier), optimisticTimerId);
+        startTimer(restDuration(ex.repTier), setId);
 
         const prRecord = currentPRsRef.current[ex.exerciseId] ?? { maxWeight: null, bestE1rm: null, bestVolume: null };
         const newPRs = checkNewPRs(prRecord, weight, reps);
@@ -428,59 +435,37 @@ export function WorkoutSession({
         }
       }
 
-      // Background: insert to database
-      supabase
-        .from("sets")
-        .insert({
-          workout_id: workout.id,
-          exercise_id: ex.exerciseId,
-          set_number: set.setNumber,
-          weight,
-          reps,
-          rpe,
-          duration_seconds: durationSeconds,
-          distance_meters: distanceMeters,
-          is_warmup: set.isWarmup,
-        })
-        .select("id")
-        .single()
-        .then(({ data, error }) => {
-          if (error) {
-            // Roll back the optimistic update
-            setExerciseStates((prev) => {
-              const next = [...prev];
-              const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
-              exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], isCompleted: false, isSaving: false, dbId: null };
-              next[exIdx] = exCopy;
-              return next;
-            });
-            toast.error("Failed to save set: " + error.message);
-            return;
-          }
-
-          // Success: store real DB ID, clear saving flag
+      if (db) {
+        db.execute(
+          `INSERT INTO sets (id, workout_id, exercise_id, set_number, weight, reps, rpe, duration_seconds, distance_meters, is_warmup)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [setId, workout.id, ex.exerciseId, set.setNumber, weight, reps, rpe, durationSeconds, distanceMeters, set.isWarmup ? 1 : 0]
+        ).catch((err: Error) => {
           setExerciseStates((prev) => {
             const next = [...prev];
             const exCopy = { ...next[exIdx], sets: [...next[exIdx].sets] };
-            exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], dbId: data.id, isSaving: false };
+            exCopy.sets[setIdx] = { ...exCopy.sets[setIdx], isCompleted: false, dbId: null };
             next[exIdx] = exCopy;
             return next;
           });
-          updateTimerSetId(optimisticTimerId, data.id);
+          toast.error("Failed to save set: " + err.message);
         });
+      }
     },
-    [workout.id, previousPerformance, isEditing, startTimer, updateTimerSetId]
+    [workout.id, previousPerformance, isEditing, startTimer]
   );
 
   const uncompleteSet = useCallback(
     async (exIdx: number, setIdx: number) => {
       const ex = exerciseStatesRef.current[exIdx];
       const set = ex.sets[setIdx];
-      if (!set.isCompleted || !set.dbId || set.isSaving) return;
+      if (!set.isCompleted || !set.dbId) return;
 
-      const { error } = await supabase.from("sets").delete().eq("id", set.dbId);
-      if (error) {
-        toast.error("Failed to undo set: " + error.message);
+      if (!db) return;
+      try {
+        await db.execute("DELETE FROM sets WHERE id = ?", [set.dbId]);
+      } catch (err: unknown) {
+        toast.error("Failed to undo set: " + (err instanceof Error ? err.message : "unknown"));
         return;
       }
 
@@ -518,7 +503,6 @@ export function WorkoutSession({
         distance: lastSet?.distance ?? "",
         isWarmup: false,
         isCompleted: false,
-        isSaving: false,
       });
       next[exIdx] = ex;
       return next;
@@ -530,8 +514,10 @@ export function WorkoutSession({
       const set = exerciseStatesRef.current[exIdx]?.sets[setIdx];
       if (!set?.dbId) return;
 
-      const { error } = await supabase.from("sets").update({ rpe: value }).eq("id", set.dbId);
-      if (error) {
+      if (!db) return;
+      try {
+        await db.execute("UPDATE sets SET rpe = ? WHERE id = ?", [value, set.dbId]);
+      } catch {
         toast.error("Failed to save RPE");
         return;
       }
@@ -549,89 +535,95 @@ export function WorkoutSession({
   );
 
   const finishWorkout = useCallback(async () => {
+    if (!db) return;
     setFinishing(true);
     dismissTimer();
 
     const bw = bodyweight ? parseFloat(bodyweight) : null;
-    const updateData: { ended_at: string; bodyweight?: number; notes?: string } = {
-      ended_at: new Date().toISOString(),
-    };
-    if (bw && bw > 0) updateData.bodyweight = bw;
-    if (notes.trim()) updateData.notes = notes.trim();
+    const now = new Date().toISOString();
 
-    const { error: finishError } = await supabase
-      .from("workouts")
-      .update(updateData)
-      .eq("id", workout.id);
+    try {
+      const setClauses = ["ended_at = ?"];
+      const params: (string | number | null)[] = [now];
+      if (bw && bw > 0) { setClauses.push("bodyweight = ?"); params.push(bw); }
+      if (notes.trim()) { setClauses.push("notes = ?"); params.push(notes.trim()); }
+      params.push(workout.id);
 
-    if (finishError) {
+      await db.execute(
+        `UPDATE workouts SET ${setClauses.join(", ")} WHERE id = ?`,
+        params
+      );
+
+      if (bw && bw > 0) {
+        const existing = await db.getOptional<{ id: string }>(
+          "SELECT id FROM bodyweight_log WHERE user_id = ? AND date = ?",
+          [userId, workout.date]
+        );
+        if (existing) {
+          await db.execute("UPDATE bodyweight_log SET weight = ? WHERE id = ?", [bw, existing.id]);
+        } else {
+          await db.execute(
+            "INSERT INTO bodyweight_log (id, user_id, date, weight) VALUES (?, ?, ?, ?)",
+            [crypto.randomUUID(), userId, workout.date, bw]
+          );
+        }
+      }
+
+      const w = await db.getOptional<{ routine_id: string | null }>(
+        "SELECT routine_id FROM workouts WHERE id = ?",
+        [workout.id]
+      );
+      if (w?.routine_id) {
+        await db.execute(
+          "UPDATE routines SET last_performed_at = ? WHERE id = ?",
+          [now, w.routine_id]
+        );
+      }
+
+      runPlateauDetection(supabase, userId).catch(() => {});
+
+      setActiveWorkoutId(null);
+      setShowSummary(true);
+    } catch {
       toast.error("Failed to save workout. Check your connection and try again.");
       setFinishing(false);
-      return;
     }
-
-    if (bw && bw > 0) {
-      const { error: bwError } = await supabase
-        .from("bodyweight_log")
-        .upsert(
-          { user_id: userId, date: workout.date, weight: bw },
-          { onConflict: "user_id,date" }
-        );
-      if (bwError) toast.error("Bodyweight entry failed to save.");
-    }
-
-    const routineExercise = exercises[0];
-    if (routineExercise) {
-      const { data: w } = await supabase
-        .from("workouts")
-        .select("routine_id")
-        .eq("id", workout.id)
-        .single();
-
-      if (w?.routine_id) {
-        await supabase
-          .from("routines")
-          .update({ last_performed_at: new Date().toISOString() })
-          .eq("id", w.routine_id);
-      }
-    }
-
-    runPlateauDetection(supabase, userId).catch(() => {});
-
-    setActiveWorkoutId(null);
-    setShowSummary(true);
-  }, [workout.id, workout.date, exercises, bodyweight, notes, userId, dismissTimer, setActiveWorkoutId]);
+  }, [workout.id, workout.date, exercises, bodyweight, notes, userId, dismissTimer, setActiveWorkoutId, db]);
 
   const saveEdits = useCallback(async () => {
+    if (!db) return;
     setFinishing(true);
 
     const bw = bodyweight ? parseFloat(bodyweight) : null;
-    const { error } = await supabase
-      .from("workouts")
-      .update({
-        bodyweight: bw && bw > 0 ? bw : null,
-        notes: notes.trim() || null,
-      })
-      .eq("id", workout.id);
 
-    if (error) {
+    try {
+      await db.execute(
+        "UPDATE workouts SET bodyweight = ?, notes = ? WHERE id = ?",
+        [bw && bw > 0 ? bw : null, notes.trim() || null, workout.id]
+      );
+
+      if (bw && bw > 0) {
+        const existing = await db.getOptional<{ id: string }>(
+          "SELECT id FROM bodyweight_log WHERE user_id = ? AND date = ?",
+          [userId, workout.date]
+        );
+        if (existing) {
+          await db.execute("UPDATE bodyweight_log SET weight = ? WHERE id = ?", [bw, existing.id]);
+        } else {
+          await db.execute(
+            "INSERT INTO bodyweight_log (id, user_id, date, weight) VALUES (?, ?, ?, ?)",
+            [crypto.randomUUID(), userId, workout.date, bw]
+          );
+        }
+      }
+
+      toast.success("Changes saved");
+      router.push(`/history/${workout.id}`);
+    } catch {
       toast.error("Failed to save changes");
       setFinishing(false);
-      return;
     }
-
-    if (bw && bw > 0) {
-      await supabase
-        .from("bodyweight_log")
-        .upsert(
-          { user_id: userId, date: workout.date, weight: bw },
-          { onConflict: "user_id,date" }
-        );
-    }
-
-    toast.success("Changes saved");
-    router.push(`/history/${workout.id}`);
-  }, [workout.id, workout.date, bodyweight, notes, userId, router]);
+  }, [workout.id, workout.date, bodyweight, notes, userId, router, db]);
 
   const elapsedMin = Math.floor(elapsed / 60);
   const elapsedSec = elapsed % 60;

@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { RestTimerProvider } from "@/components/rest-timer-provider";
 import { ActiveWorkoutProvider } from "@/components/active-workout-provider";
 import { LayoutRestTimer } from "@/components/layout-rest-timer";
+import { PowerSyncProvider } from "@/components/powersync-provider";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -21,12 +22,14 @@ export default async function MainLayout({ children }: { children: React.ReactNo
     .maybeSingle();
 
   return (
-    <ActiveWorkoutProvider initialId={activeWorkout?.id ?? null}>
-      <RestTimerProvider>
-        {children}
-        <LayoutRestTimer />
-        <BottomNav />
-      </RestTimerProvider>
-    </ActiveWorkoutProvider>
+    <PowerSyncProvider>
+      <ActiveWorkoutProvider initialId={activeWorkout?.id ?? null}>
+        <RestTimerProvider>
+          {children}
+          <LayoutRestTimer />
+          <BottomNav />
+        </RestTimerProvider>
+      </ActiveWorkoutProvider>
+    </PowerSyncProvider>
   );
 }

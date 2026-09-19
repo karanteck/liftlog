@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 
 const STORAGE_KEY = "strongboi_rest_timer";
 const STALE_BUFFER = 300;
@@ -32,7 +32,7 @@ export function useRestTimer() {
 
 export function RestTimerProvider({ children }: { children: React.ReactNode }) {
   const [timerState, setTimerState] = useState<TimerState | null>(null);
-  const supabaseRef = useRef(createClient());
+  const db = usePowerSyncDb();
 
   useEffect(() => {
     try {
@@ -68,19 +68,18 @@ export function RestTimerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const dismissTimer = useCallback(() => {
-    if (timerState) {
+    if (timerState && db) {
       const restSeconds = Math.round((Date.now() - timerState.startedAt) / 1000);
-      supabaseRef.current
-        .from("sets")
-        .update({ rest_seconds: restSeconds })
-        .eq("id", timerState.setDbId)
-        .then();
+      db.execute(
+        "UPDATE sets SET rest_seconds = ? WHERE id = ?",
+        [restSeconds, timerState.setDbId]
+      ).catch(() => {});
     }
     setTimerState(null);
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {}
-  }, [timerState]);
+  }, [timerState, db]);
 
   return (
     <RestTimerContext.Provider value={{ timerState, startTimer, dismissTimer, updateTimerSetId }}>

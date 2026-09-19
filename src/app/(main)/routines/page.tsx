@@ -48,7 +48,7 @@ export default async function RoutinesPage() {
       </header>
 
       <main className="flex-1 px-4 py-4 max-w-lg mx-auto w-full">
-        <RoutineList routines={formatted} />
+        <RoutineList routines={formatted} userId={user.id} />
       </main>
     </div>
   );

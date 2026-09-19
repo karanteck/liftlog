@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export function BodyweightTracker({
   userId: string;
   initialEntries: Entry[];
 }) {
-  const supabase = createClient();
+  const db = usePowerSyncDb();
   const [entries, setEntries] = useState<Entry[]>(initialEntries);
   const [weight, setWeight] = useState("");
   const [saving, setSaving] = useState(false);
@@ -63,61 +63,44 @@ export function BodyweightTracker({
   }, [entries]);
 
   async function handleSave() {
+    if (!db) return;
     const w = parseFloat(weight);
     if (isNaN(w) || w <= 0 || w > 500) return;
 
     setSaving(true);
 
-    if (todayEntry) {
-      const { error } = await supabase
-        .from("bodyweight_log")
-        .update({ weight: w })
-        .eq("id", todayEntry.id);
-
-      if (error) {
-        toast.error("Failed to update: " + error.message);
-        setSaving(false);
-        return;
+    try {
+      if (todayEntry) {
+        await db.execute(
+          "UPDATE bodyweight_log SET weight = ? WHERE id = ?",
+          [w, todayEntry.id]
+        );
+        setEntries((prev) =>
+          prev.map((e) => (e.id === todayEntry.id ? { ...e, weight: w } : e))
+        );
+      } else {
+        const id = crypto.randomUUID();
+        await db.execute(
+          "INSERT INTO bodyweight_log (id, user_id, date, weight) VALUES (?, ?, ?, ?)",
+          [id, userId, todayStr, w]
+        );
+        setEntries((prev) => [{ id, date: todayStr, weight: w }, ...prev]);
       }
-
-      setEntries((prev) =>
-        prev.map((e) => (e.id === todayEntry.id ? { ...e, weight: w } : e))
-      );
-    } else {
-      const { data, error } = await supabase
-        .from("bodyweight_log")
-        .insert({ user_id: userId, date: todayStr, weight: w })
-        .select("id, date, weight")
-        .single();
-
-      if (error) {
-        toast.error("Failed to save: " + error.message);
-        setSaving(false);
-        return;
-      }
-
-      setEntries((prev) => [
-        { id: data.id, date: data.date, weight: Number(data.weight) },
-        ...prev,
-      ]);
+      setWeight("");
+    } catch (e: unknown) {
+      toast.error("Failed to save: " + (e instanceof Error ? e.message : "unknown"));
     }
-
-    setWeight("");
     setSaving(false);
   }
 
   async function handleDelete(id: string) {
-    const { error } = await supabase
-      .from("bodyweight_log")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      toast.error("Failed to delete: " + error.message);
-      return;
+    if (!db) return;
+    try {
+      await db.execute("DELETE FROM bodyweight_log WHERE id = ?", [id]);
+      setEntries((prev) => prev.filter((e) => e.id !== id));
+    } catch (e: unknown) {
+      toast.error("Failed to delete: " + (e instanceof Error ? e.message : "unknown"));
     }
-
-    setEntries((prev) => prev.filter((e) => e.id !== id));
   }
 
   return (

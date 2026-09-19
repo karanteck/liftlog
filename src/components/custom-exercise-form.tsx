@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { Database } from "@/lib/supabase/database.types";
@@ -72,13 +72,15 @@ type Exercise = {
 };
 
 export function CustomExerciseForm({
+  userId,
   onCreated,
   onClose,
 }: {
+  userId?: string;
   onCreated: (exercise: Exercise) => void;
   onClose: () => void;
 }) {
-  const supabase = createClient();
+  const db = usePowerSyncDb();
   const [name, setName] = useState("");
   const [muscleGroup, setMuscleGroup] = useState("chest");
   const [equipment, setEquipment] = useState("machine");
@@ -88,6 +90,7 @@ export function CustomExerciseForm({
   const [saving, setSaving] = useState(false);
 
   async function handleCreate() {
+    if (!db) return;
     if (!name.trim()) {
       toast.error("Exercise name is required.");
       return;
@@ -95,33 +98,27 @@ export function CustomExerciseForm({
 
     setSaving(true);
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setSaving(false); return; }
+    try {
+      const id = crypto.randomUUID();
+      await db.execute(
+        `INSERT INTO exercises (id, name, aliases, muscle_group, secondary_muscles, equipment, movement_pattern, tracking_type, default_rep_tier, is_custom, owner_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, name.trim(), JSON.stringify([]), muscleGroup, JSON.stringify([]), equipment, movementPattern, trackingType, repTier, 1, userId ?? null]
+      );
 
-    const { data, error } = await supabase
-      .from("exercises")
-      .insert({
+      onCreated({
+        id,
         name: name.trim(),
         aliases: [],
         muscle_group: muscleGroup,
-        secondary_muscles: [],
         equipment,
-        movement_pattern: movementPattern,
-        tracking_type: trackingType,
         default_rep_tier: repTier,
-        is_custom: true,
-        owner_id: user.id,
-      })
-      .select("id, name, aliases, muscle_group, equipment, default_rep_tier, tracking_type")
-      .single();
-
-    if (error || !data) {
-      toast.error("Failed to create: " + (error?.message ?? "unknown error"));
+        tracking_type: trackingType,
+      });
+    } catch (e: unknown) {
+      toast.error("Failed to create: " + (e instanceof Error ? e.message : "unknown error"));
       setSaving(false);
-      return;
     }
-
-    onCreated(data);
   }
 
   return (

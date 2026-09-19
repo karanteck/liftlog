@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { unwrapRelation } from "@/lib/supabase/helpers";
+import { useEffect, useState, useMemo } from "react";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -70,8 +69,7 @@ export function ExerciseSearch({
   }) => void;
   onClose: () => void;
 }) {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const db = usePowerSyncDb();
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [recentIds, setRecentIds] = useState<string[]>([]);
   const [query, setQuery] = useState("");
@@ -79,74 +77,52 @@ export function ExerciseSearch({
   const [equipmentFilter, setEquipmentFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [showCustomForm, setShowCustomForm] = useState(false);
-  const exercisesCached = useRef(false);
-  const recentIdsCached = useRef(false);
 
   useEffect(() => {
-    if (lastSetCompleted) {
-      recentIdsCached.current = false;
-    }
-  }, [lastSetCompleted]);
-
-  useEffect(() => {
-    if (!open) return;
+    if (!open || !db) return;
     setQuery("");
     setMuscleFilter("all");
     setEquipmentFilter("all");
     setShowCustomForm(false);
-
-    const needExercises = !exercisesCached.current;
-    const needRecents = !recentIdsCached.current;
-    if (needExercises) setLoading(true);
+    setLoading(true);
 
     async function load() {
-      const exercisePromise = needExercises
-        ? supabase
-            .from("exercises")
-            .select("id, name, aliases, muscle_group, equipment, default_rep_tier, tracking_type")
-            .order("name")
-        : Promise.resolve(null);
+      const rows = await db!.getAll<{
+        id: string;
+        name: string;
+        aliases: string | null;
+        muscle_group: string;
+        equipment: string;
+        default_rep_tier: string;
+        tracking_type: string;
+      }>(
+        "SELECT id, name, aliases, muscle_group, equipment, default_rep_tier, tracking_type FROM exercises ORDER BY name"
+      );
+      setExercises(
+        rows.map((r) => ({
+          ...r,
+          aliases: r.aliases ? JSON.parse(r.aliases) : [],
+        }))
+      );
 
-      const recentPromise = (userId && needRecents)
-        ? supabase
-            .from("sets")
-            .select(`exercise_id, workouts!inner (user_id, date)`)
-            .order("created_at", { ascending: false })
-            .limit(200)
-        : Promise.resolve(null);
-
-      const [exerciseResult, recentResult] = await Promise.all([
-        exercisePromise,
-        recentPromise,
-      ]);
-
-      if (exerciseResult?.data) {
-        setExercises(exerciseResult.data);
-        exercisesCached.current = true;
-      }
-
-      if (recentResult?.data) {
-        const userSets = recentResult.data.filter((s) => {
-          const w = unwrapRelation<{ user_id: string }>(s.workouts)!;
-          return w.user_id === userId;
-        });
-        const seen = new Set<string>();
-        const recent: string[] = [];
-        for (const s of userSets) {
-          if (!seen.has(s.exercise_id)) {
-            seen.add(s.exercise_id);
-            recent.push(s.exercise_id);
-          }
-          if (recent.length >= 10) break;
-        }
-        setRecentIds(recent);
-        recentIdsCached.current = true;
+      if (userId) {
+        const recentRows = await db!.getAll<{ exercise_id: string }>(
+          `SELECT exercise_id, MAX(s.created_at) AS last_used
+           FROM sets s
+           INNER JOIN workouts w ON s.workout_id = w.id
+           WHERE w.user_id = ?
+           GROUP BY exercise_id
+           ORDER BY last_used DESC
+           LIMIT 10`,
+          [userId]
+        );
+        setRecentIds(recentRows.map((r) => r.exercise_id));
       }
 
       setLoading(false);
     }
     load();
-  }, [open, userId]);
+  }, [open, userId, db, lastSetCompleted]);
 
   const filtered = useMemo(() => {
     let list = exercises.filter((e) => !excludeIds.includes(e.id));
@@ -234,6 +210,7 @@ export function ExerciseSearch({
       <DrawerContent style={{ '--drawer-content-max-height': 'calc(100dvh - 2rem)', '--drawer-content-height': 'calc(100dvh - 2rem)' } as React.CSSProperties}>
         {showCustomForm ? (
           <CustomExerciseForm
+            userId={userId}
             onCreated={handleCustomCreated}
             onClose={() => setShowCustomForm(false)}
           />

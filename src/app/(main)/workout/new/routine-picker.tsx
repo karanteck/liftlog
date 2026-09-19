@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,9 +26,9 @@ function timeAgo(dateStr: string): string {
   return weeks === 1 ? "1 week ago" : `${weeks} weeks ago`;
 }
 
-export function RoutinePicker({ routines }: { routines: Routine[] }) {
+export function RoutinePicker({ routines, userId }: { routines: Routine[]; userId: string }) {
   const router = useRouter();
-  const supabase = createClient();
+  const db = usePowerSyncDb();
   const { setActiveWorkoutId } = useActiveWorkout();
   const [starting, setStarting] = useState<string | null>(null);
   const todayStr = new Date().toISOString().split("T")[0];
@@ -37,32 +37,26 @@ export function RoutinePicker({ routines }: { routines: Routine[] }) {
   const isToday = selectedDate === todayStr;
 
   async function startWorkout(routineId: string | null) {
+    if (!db) return;
     setStarting(routineId ?? "empty");
 
     const startedAt = isToday
       ? new Date().toISOString()
       : new Date(selectedDate + "T12:00:00").toISOString();
 
-    const { data, error } = await supabase
-      .from("workouts")
-      .insert({
-        user_id: (await supabase.auth.getUser()).data.user!.id,
-        routine_id: routineId,
-        date: selectedDate,
-        started_at: startedAt,
-      })
-      .select("id")
-      .single();
-
-    if (error || !data) {
+    const id = crypto.randomUUID();
+    try {
+      await db.execute(
+        "INSERT INTO workouts (id, user_id, routine_id, date, started_at) VALUES (?, ?, ?, ?, ?)",
+        [id, userId, routineId, selectedDate, startedAt]
+      );
+      setActiveWorkoutId(id);
+      router.prefetch(`/workout/${id}`);
+      router.push(`/workout/${id}`);
+    } catch (e: unknown) {
       setStarting(null);
-      toast.error("Failed to create workout: " + (error?.message ?? "unknown error"));
-      return;
+      toast.error("Failed to create workout: " + (e instanceof Error ? e.message : "unknown error"));
     }
-
-    setActiveWorkoutId(data.id);
-    router.prefetch(`/workout/${data.id}`);
-    router.push(`/workout/${data.id}`);
   }
 
   return (

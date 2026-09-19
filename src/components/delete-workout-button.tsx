@@ -2,31 +2,28 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export function DeleteWorkoutButton({ workoutId }: { workoutId: string }) {
   const router = useRouter();
-  const supabase = createClient();
+  const db = usePowerSyncDb();
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   async function handleDelete() {
+    if (!db) return;
     setDeleting(true);
-    const { error } = await supabase
-      .from("workouts")
-      .delete()
-      .eq("id", workoutId);
-
-    if (error) {
-      toast.error("Failed to delete: " + error.message);
+    try {
+      await db.execute("DELETE FROM sets WHERE workout_id = ?", [workoutId]);
+      await db.execute("DELETE FROM workouts WHERE id = ?", [workoutId]);
+      router.push("/history");
+    } catch (e: unknown) {
+      toast.error("Failed to delete: " + (e instanceof Error ? e.message : "unknown error"));
       setDeleting(false);
       setConfirming(false);
-      return;
     }
-
-    router.push("/history");
   }
 
   if (!confirming) {

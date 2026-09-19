@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
+import type { PowerSyncDatabase } from "@powersync/web";
 import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -22,12 +23,12 @@ type SetRow = {
   weight: number | null;
   reps: number | null;
   rpe: number | null;
-  is_warmup: boolean;
+  is_warmup: number;
   rest_seconds: number | null;
   distance_meters: number | null;
   duration_seconds: number | null;
   created_at: string;
-  exercises: { name: string } | { name: string }[] | null;
+  exercise_name: string;
 };
 
 type WorkoutRow = {
@@ -37,56 +38,36 @@ type WorkoutRow = {
   ended_at: string | null;
   notes: string | null;
   bodyweight: number | null;
-  routines: { name: string } | { name: string }[] | null;
+  routine_name: string;
 };
 
-function getExName(ex: SetRow["exercises"]): string {
-  if (!ex) return "Unknown";
-  if (Array.isArray(ex)) return ex[0]?.name ?? "Unknown";
-  return ex.name;
-}
-
-function getRoutineName(r: WorkoutRow["routines"]): string {
-  if (!r) return "Empty Workout";
-  if (Array.isArray(r)) return r[0]?.name ?? "Empty Workout";
-  return r.name;
-}
-
-async function fetchAllData(userId: string) {
-  const supabase = createClient();
-
-  const allWorkouts: WorkoutRow[] = [];
-  let from = 0;
-  const batchSize = 500;
-  while (true) {
-    const { data } = await supabase
-      .from("workouts")
-      .select("id, date, started_at, ended_at, notes, bodyweight, routines(name)")
-      .eq("user_id", userId)
-      .order("date", { ascending: true })
-      .range(from, from + batchSize - 1);
-    if (!data || data.length === 0) break;
-    allWorkouts.push(...(data as WorkoutRow[]));
-    if (data.length < batchSize) break;
-    from += batchSize;
-  }
+async function fetchAllData(db: PowerSyncDatabase, userId: string) {
+  const allWorkouts = await db.getAll<WorkoutRow>(
+    `SELECT w.id, w.date, w.started_at, w.ended_at, w.notes, w.bodyweight,
+            COALESCE(r.name, 'Empty Workout') AS routine_name
+     FROM workouts w
+     LEFT JOIN routines r ON w.routine_id = r.id
+     WHERE w.user_id = ?
+     ORDER BY w.date ASC`,
+    [userId]
+  );
 
   if (allWorkouts.length === 0) return { workouts: [], sets: [] };
 
+  const placeholders = allWorkouts.map(() => "?").join(",");
   const workoutIds = allWorkouts.map((w) => w.id);
-  const allSets: SetRow[] = [];
-  for (let i = 0; i < workoutIds.length; i += 50) {
-    const batch = workoutIds.slice(i, i + 50);
-    const { data } = await supabase
-      .from("sets")
-      .select(
-        "workout_id, set_number, weight, reps, rpe, is_warmup, rest_seconds, distance_meters, duration_seconds, created_at, exercises(name)"
-      )
-      .in("workout_id", batch)
-      .order("created_at")
-      .order("set_number");
-    if (data) allSets.push(...(data as SetRow[]));
-  }
+
+  const allSets = await db.getAll<SetRow>(
+    `SELECT s.workout_id, s.set_number, s.weight, s.reps, s.rpe,
+            s.is_warmup, s.rest_seconds, s.distance_meters,
+            s.duration_seconds, s.created_at,
+            COALESCE(e.name, 'Unknown') AS exercise_name
+     FROM sets s
+     LEFT JOIN exercises e ON s.exercise_id = e.id
+     WHERE s.workout_id IN (${placeholders})
+     ORDER BY s.created_at, s.set_number`,
+    workoutIds
+  );
 
   return { workouts: allWorkouts, sets: allSets };
 }
@@ -124,8 +105,8 @@ function toCSV(workouts: WorkoutRow[], sets: SetRow[]): string {
     const w = workoutMap.get(s.workout_id);
     return [
       w?.date ?? "",
-      w ? getRoutineName(w.routines) : "",
-      getExName(s.exercises),
+      w?.routine_name ?? "",
+      s.exercise_name,
       s.set_number,
       s.weight ?? "",
       s.reps ?? "",
@@ -159,14 +140,13 @@ function toJSON(workouts: WorkoutRow[], sets: SetRow[]): string {
     const wSets = setsByWorkout.get(w.id) ?? [];
     const exerciseMap = new Map<string, SetRow[]>();
     for (const s of wSets) {
-      const name = getExName(s.exercises);
-      if (!exerciseMap.has(name)) exerciseMap.set(name, []);
-      exerciseMap.get(name)!.push(s);
+      if (!exerciseMap.has(s.exercise_name)) exerciseMap.set(s.exercise_name, []);
+      exerciseMap.get(s.exercise_name)!.push(s);
     }
 
     return {
       date: w.date,
-      routine: getRoutineName(w.routines),
+      routine: w.routine_name,
       startedAt: w.started_at,
       endedAt: w.ended_at,
       bodyweight: w.bodyweight,
@@ -192,14 +172,16 @@ function toJSON(workouts: WorkoutRow[], sets: SetRow[]): string {
 }
 
 export function ExportAllWorkoutsButton({ userId }: { userId: string }) {
+  const db = usePowerSyncDb();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleExport(format: "csv" | "json") {
+    if (!db) return;
     setOpen(false);
     setLoading(true);
     try {
-      const { workouts, sets } = await fetchAllData(userId);
+      const { workouts, sets } = await fetchAllData(db, userId);
       if (workouts.length === 0) {
         toast.info("No workouts to export");
         return;

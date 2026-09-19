@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BackButton } from "@/components/back-button";
@@ -26,6 +26,7 @@ type ImportState =
 
 export default function ImportPage() {
   const router = useRouter();
+  const db = usePowerSyncDb();
   const fileRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<ImportState>({ step: "upload" });
   const [dragOver, setDragOver] = useState(false);
@@ -50,15 +51,16 @@ export default function ImportPage() {
     const normalized = normalizeRows(format, rows);
     const grouped = groupIntoWorkouts(normalized);
 
-    const supabase = createClient();
-    const { data: exercises } = await supabase
-      .from("exercises")
-      .select("id, name, aliases");
-
-    const { matched, unmatchedNames } = matchExercises(
-      grouped,
-      exercises ?? []
+    if (!db) return;
+    const exercises = await db.getAll<{ id: string; name: string; aliases: string | null }>(
+      "SELECT id, name, aliases FROM exercises"
     );
+    const parsed = exercises.map((e) => ({
+      ...e,
+      aliases: e.aliases ? JSON.parse(e.aliases) : [],
+    }));
+
+    const { matched, unmatchedNames } = matchExercises(grouped, parsed);
 
     const totalSets = matched.reduce(
       (sum, w) => sum + w.exercises.reduce((s, e) => s + e.sets.length, 0),
@@ -87,14 +89,16 @@ export default function ImportPage() {
   }
 
   async function runImport(workouts: ImportWorkout[]) {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
+    if (!db) return;
+
+    const profile = await db.getOptional<{ id: string }>(
+      "SELECT id FROM profiles LIMIT 1"
+    );
+    if (!profile) {
       toast.error("Not logged in.");
       return;
     }
+    const userId = profile.id;
 
     const importable = workouts.filter((w) =>
       w.exercises.some((e) => e.matchedExerciseId)
@@ -110,49 +114,39 @@ export default function ImportPage() {
       const startedAt = `${w.date}T${String(startHour).padStart(2, "0")}:00:00Z`;
       const endedAt = `${w.date}T${String(startHour + 1).padStart(2, "0")}:00:00Z`;
 
-      const { data: workout, error: wErr } = await supabase
-        .from("workouts")
-        .insert({
-          user_id: user.id,
-          date: w.date,
-          started_at: startedAt,
-          ended_at: endedAt,
-          notes: `Imported from CSV (${w.workoutName})`,
-        })
-        .select("id")
-        .single();
-
-      if (wErr || !workout) {
-        skipped++;
-        continue;
-      }
-
-      const setRows = w.exercises
-        .filter((e) => e.matchedExerciseId)
-        .flatMap((e, eIdx) =>
-          e.sets.map((s, sIdx) => ({
-            workout_id: workout.id,
-            exercise_id: e.matchedExerciseId!,
-            set_number: eIdx * 100 + sIdx + 1,
-            weight: s.weight,
-            reps: s.reps,
-            rpe: s.rpe,
-            is_warmup: s.isWarmup,
-            duration_seconds: s.durationSeconds,
-            distance_meters: s.distanceMeters,
-          }))
+      try {
+        const workoutId = crypto.randomUUID();
+        await db.execute(
+          "INSERT INTO workouts (id, user_id, date, started_at, ended_at, notes) VALUES (?, ?, ?, ?, ?, ?)",
+          [workoutId, userId, w.date, startedAt, endedAt, `Imported from CSV (${w.workoutName})`]
         );
 
-      if (setRows.length > 0) {
-        const { error: sErr } = await supabase.from("sets").insert(setRows);
-        if (sErr) {
-          await supabase.from("workouts").delete().eq("id", workout.id);
-          skipped++;
-          continue;
-        }
-      }
+        const setRows = w.exercises
+          .filter((e) => e.matchedExerciseId)
+          .flatMap((e, eIdx) =>
+            e.sets.map((s, sIdx) => ({
+              exerciseId: e.matchedExerciseId!,
+              setNumber: eIdx * 100 + sIdx + 1,
+              weight: s.weight,
+              reps: s.reps,
+              rpe: s.rpe,
+              isWarmup: s.isWarmup,
+              durationSeconds: s.durationSeconds,
+              distanceMeters: s.distanceMeters,
+            }))
+          );
 
-      imported++;
+        for (const s of setRows) {
+          await db.execute(
+            "INSERT INTO sets (id, workout_id, exercise_id, set_number, weight, reps, rpe, is_warmup, duration_seconds, distance_meters) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [crypto.randomUUID(), workoutId, s.exerciseId, s.setNumber, s.weight, s.reps, s.rpe, s.isWarmup ? 1 : 0, s.durationSeconds, s.distanceMeters]
+          );
+        }
+
+        imported++;
+      } catch {
+        skipped++;
+      }
       setState({ step: "importing", progress: imported + skipped, total: importable.length });
     }
 

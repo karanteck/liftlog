@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +41,7 @@ export function RoutineEditor({
   isNew: boolean;
 }) {
   const router = useRouter();
-  const supabase = createClient();
+  const db = usePowerSyncDb();
 
   const [name, setName] = useState(initialName);
   const [exercises, setExercises] = useState<RoutineExercise[]>(initialExercises);
@@ -115,6 +115,7 @@ export function RoutineEditor({
   );
 
   async function handleSave() {
+    if (!db) return;
     if (!name.trim()) {
       toast.error("Routine name is required.");
       return;
@@ -122,53 +123,33 @@ export function RoutineEditor({
 
     setSaving(true);
 
-    if (nameEdited || isNew) {
-      const { error } = await supabase
-        .from("routines")
-        .update({ name: name.trim() })
-        .eq("id", routineId);
-
-      if (error) {
-        toast.error("Failed to save name: " + error.message);
-        setSaving(false);
-        return;
+    try {
+      if (nameEdited || isNew) {
+        await db.execute(
+          "UPDATE routines SET name = ? WHERE id = ?",
+          [name.trim(), routineId]
+        );
       }
-    }
 
-    const { error: deleteError } = await supabase
-      .from("routine_exercises")
-      .delete()
-      .eq("routine_id", routineId);
+      await db.execute(
+        "DELETE FROM routine_exercises WHERE routine_id = ?",
+        [routineId]
+      );
 
-    if (deleteError) {
-      toast.error("Failed to update exercises: " + deleteError.message);
+      for (let i = 0; i < exercises.length; i++) {
+        const e = exercises[i];
+        await db.execute(
+          "INSERT INTO routine_exercises (id, routine_id, exercise_id, position, target_sets, target_rep_min, target_rep_max) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          [crypto.randomUUID(), routineId, e.exerciseId, i + 1, e.targetSets, e.targetRepMin, e.targetRepMax]
+        );
+      }
+
       setSaving(false);
-      return;
+      router.push("/routines");
+    } catch (e: unknown) {
+      toast.error("Failed to save: " + (e instanceof Error ? e.message : "unknown"));
+      setSaving(false);
     }
-
-    if (exercises.length > 0) {
-      const rows = exercises.map((e, i) => ({
-        routine_id: routineId,
-        exercise_id: e.exerciseId,
-        position: i + 1,
-        target_sets: e.targetSets,
-        target_rep_min: e.targetRepMin,
-        target_rep_max: e.targetRepMax,
-      }));
-
-      const { error: insertError } = await supabase
-        .from("routine_exercises")
-        .insert(rows);
-
-      if (insertError) {
-        toast.error("Failed to save exercises: " + insertError.message);
-        setSaving(false);
-        return;
-      }
-    }
-
-    setSaving(false);
-    router.push("/routines");
   }
 
   return (

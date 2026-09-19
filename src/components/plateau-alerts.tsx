@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -29,7 +29,7 @@ const MAX_VISIBLE = 3;
 
 export function PlateauAlerts({ alerts }: { alerts: Alert[] }) {
 
-  const supabase = createClient();
+  const db = usePowerSyncDb();
   const [dismissing, setDismissing] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [expanded, setExpanded] = useState(false);
@@ -43,15 +43,13 @@ export function PlateauAlerts({ alerts }: { alerts: Alert[] }) {
   const hiddenCount = visible.length - MAX_VISIBLE;
 
   async function handleDismiss(alertId: string) {
+    if (!db) return;
     setDismissing(alertId);
-    const { error } = await supabase
-      .from("plateau_alerts")
-      .update({ dismissed_at: new Date().toISOString() })
-      .eq("id", alertId);
-
-    if (!error) {
-      setDismissed((prev) => new Set(prev).add(alertId));
-    }
+    await db.execute(
+      "UPDATE plateau_alerts SET dismissed_at = ? WHERE id = ?",
+      [new Date().toISOString(), alertId]
+    );
+    setDismissed((prev) => new Set(prev).add(alertId));
     setDismissing(null);
   }
 

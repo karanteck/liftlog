@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { usePowerSyncDb } from "@/components/powersync-provider";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,81 +25,68 @@ function timeAgo(dateStr: string): string {
   return weeks === 1 ? "1 week ago" : `${weeks} weeks ago`;
 }
 
-export function RoutineList({ routines: initial }: { routines: Routine[] }) {
+export function RoutineList({ routines: initial, userId }: { routines: Routine[]; userId: string }) {
   const router = useRouter();
-  const supabase = createClient();
+  const db = usePowerSyncDb();
   const [routines, setRoutines] = useState(initial);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
   async function handleDuplicate(routine: Routine) {
+    if (!db) return;
     setBusy(routine.id);
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setBusy(null); return; }
+    try {
+      const newId = crypto.randomUUID();
+      await db.execute(
+        "INSERT INTO routines (id, user_id, name) VALUES (?, ?, ?)",
+        [newId, userId, `${routine.name} (Copy)`]
+      );
 
-    const { data: newRoutine, error: routineError } = await supabase
-      .from("routines")
-      .insert({ user_id: user.id, name: `${routine.name} (Copy)` })
-      .select("id")
-      .single();
+      const exercises = await db.getAll<{
+        exercise_id: string;
+        position: number;
+        target_sets: number;
+        target_rep_min: number;
+        target_rep_max: number;
+      }>(
+        "SELECT exercise_id, position, target_sets, target_rep_min, target_rep_max FROM routine_exercises WHERE routine_id = ? ORDER BY position",
+        [routine.id]
+      );
 
-    if (routineError || !newRoutine) {
-      toast.error("Failed to duplicate: " + (routineError?.message ?? "unknown"));
-      setBusy(null);
-      return;
-    }
-
-    const { data: exercises } = await supabase
-      .from("routine_exercises")
-      .select("exercise_id, position, target_sets, target_rep_min, target_rep_max")
-      .eq("routine_id", routine.id)
-      .order("position");
-
-    if (exercises && exercises.length > 0) {
-      const rows = exercises.map((e) => ({
-        routine_id: newRoutine.id,
-        exercise_id: e.exercise_id,
-        position: e.position,
-        target_sets: e.target_sets,
-        target_rep_min: e.target_rep_min,
-        target_rep_max: e.target_rep_max,
-      }));
-
-      const { error: insertError } = await supabase
-        .from("routine_exercises")
-        .insert(rows);
-
-      if (insertError) {
-        toast.error("Routine created but exercises failed to copy: " + insertError.message);
+      for (const e of exercises) {
+        await db.execute(
+          "INSERT INTO routine_exercises (id, routine_id, exercise_id, position, target_sets, target_rep_min, target_rep_max) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          [crypto.randomUUID(), newId, e.exercise_id, e.position, e.target_sets, e.target_rep_min, e.target_rep_max]
+        );
       }
-    }
 
-    setRoutines((prev) => [
-      ...prev,
-      {
-        id: newRoutine.id,
-        name: `${routine.name} (Copy)`,
-        lastPerformedAt: null,
-        exerciseCount: exercises?.length ?? 0,
-      },
-    ]);
+      setRoutines((prev) => [
+        ...prev,
+        {
+          id: newId,
+          name: `${routine.name} (Copy)`,
+          lastPerformedAt: null,
+          exerciseCount: exercises.length,
+        },
+      ]);
+    } catch (e: unknown) {
+      toast.error("Failed to duplicate: " + (e instanceof Error ? e.message : "unknown"));
+    }
     setBusy(null);
   }
 
   async function handleDelete(id: string) {
+    if (!db) return;
     setBusy(id);
 
-    const { error } = await supabase.from("routines").delete().eq("id", id);
-
-    if (error) {
-      toast.error("Failed to delete: " + error.message);
-      setBusy(null);
-      setConfirmDelete(null);
-      return;
+    try {
+      await db.execute("DELETE FROM routine_exercises WHERE routine_id = ?", [id]);
+      await db.execute("DELETE FROM routines WHERE id = ?", [id]);
+      setRoutines((prev) => prev.filter((r) => r.id !== id));
+    } catch (e: unknown) {
+      toast.error("Failed to delete: " + (e instanceof Error ? e.message : "unknown"));
     }
-
-    setRoutines((prev) => prev.filter((r) => r.id !== id));
     setConfirmDelete(null);
     setBusy(null);
   }

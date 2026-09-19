@@ -40,5 +40,5 @@ export default async function NewWorkoutPage() {
         .filter(Boolean),
     })) ?? [];
 
-  return <RoutinePicker routines={formatted} />;
+  return <RoutinePicker routines={formatted} userId={user.id} />;
 }
