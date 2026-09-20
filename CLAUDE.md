@@ -464,19 +464,32 @@ already on the device.
   for change detection
 - Env var: `NEXT_PUBLIC_POWERSYNC_URL` in `.env.local` and Vercel
 
+Server component pattern: every authenticated page's server component
+does auth-only (check user, redirect if not logged in), then renders a
+client component that loads data from PowerSync. Examples:
+- `page.tsx` → `home-dashboard.tsx` (home)
+- `page.tsx` → `history-dashboard.tsx` (history)
+- `page.tsx` → `workout-loader.tsx` (workout session)
+- `page.tsx` → `analytics-dashboard.tsx` (analytics)
+- `page.tsx` → `workout-detail.tsx` (history/[id])
+- `page.tsx` → `routine-detail.tsx` (routines/[id])
+- `page.tsx` → `exercise-detail.tsx` (exercises/[id])
+
 What uses PowerSync (client components with `usePowerSyncDb()`):
-- exercise-search, history-list, export-all-workouts-button,
-  workout-session (reads + writes), home-dashboard, plateau-alerts,
-  delete-workout-button, rest-timer-provider, routine-list,
-  routine-picker, bodyweight-tracker, routine-editor,
-  custom-exercise-form, import page
+- Page-level loaders: home-dashboard, history-dashboard, history-list,
+  workout-loader, workout-session, analytics-dashboard, workout-detail,
+  routine-detail, exercise-detail
+- Shared components: exercise-search, export-all-workouts-button,
+  plateau-alerts, delete-workout-button, rest-timer-provider,
+  routine-list, routine-picker, bodyweight-tracker, routine-editor,
+  custom-exercise-form, import page, active-workout-provider
 
 What stays on Supabase (unchanged):
-- All server components and API routes (run on server, no local DB)
 - Auth (login, signup, sign-out) — PowerSync doesn't handle auth
 - Admin panel — queries `households` table which isn't synced
 - `runPlateauDetection()` — complex analytics, fire-and-forget
 - Weekly digest API route — runs server-side via pg_cron
+- Server components — auth checks only (no data queries)
 
 Key patterns:
 - `usePowerSyncDb()` returns `PowerSyncDatabase | null` — always null-check
