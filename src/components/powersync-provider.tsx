@@ -26,7 +26,11 @@ export function PowerSyncProvider({ children }: { children: ReactNode }) {
       database: { dbFilename: "strongboi.db" },
     });
     const connector = new SupabaseConnector();
-    database.connect(connector).then(() => setDb(database));
+
+    database.init().then(() => {
+      setDb(database);
+      database.connect(connector);
+    });
 
     return () => {
       database.disconnect();
